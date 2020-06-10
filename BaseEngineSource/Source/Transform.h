@@ -6,6 +6,7 @@
 class Transform {
 public:
 	Transform();
+	Transform(const Transform& other);
 	~Transform();
 
 	void SetPosition(const glm::vec3& position);
@@ -15,18 +16,18 @@ public:
 	void SetRotation(const glm::quat& rotation);
 
 	// Rotate
-	void RotateX(const float& angle);
-	void RotateY(const float& angle);
-	void RotateZ(const float& angle);
-	void RotateAroundPoint(const glm::vec3& point, const float& angle, const glm::vec3& axis);
+	void RotateX(const float& degree);
+	void RotateY(const float& degree);
+	void RotateZ(const float& degree);
+	void Rotate(const glm::vec3& axis, const float& degree);
+	//void RotateAroundPoint(const glm::vec3& point, const float& angle, const glm::vec3& axis);
 
 	void SetParent(Transform* parent);
 
 	void Translate(const glm::vec3& direction);
-	void Translate(const float& x, const float& y, const float& z);
 
 	glm::vec3 GetPosition() const;
-	glm::mat4 GetMatrix();
+	glm::mat4 ModelMatrix();
 
 	void SetDirty();
 
@@ -35,11 +36,11 @@ private:
 
 	bool isDirty;
 
-	glm::vec3 position;
-	glm::vec3 scale;
+	glm::mat4 translation;
 	glm::quat rotation;
+	glm::mat4 scale;
+	glm::mat4 model;
 
-	glm::mat4 transform;
 	Transform* parent;
 };
 

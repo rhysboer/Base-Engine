@@ -43,6 +43,12 @@
     <Filter Include="Source Files\Source\Textures">
       <UniqueIdentifier>{1f9fc0e9-cff6-4cf3-b5b7-5f8181656f32}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Source\Objects">
+      <UniqueIdentifier>{b01d85fe-c54a-4e6b-94cd-52234f8a6fe9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Source\Objects">
+      <UniqueIdentifier>{efcc8eb2-16ce-4841-8194-d056553464f4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\imgui.cpp">
@@ -105,9 +111,6 @@
     <ClCompile Include="Source\Input.cpp">
       <Filter>Source Files\Source</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Object3D.cpp">
-      <Filter>Source Files\Source</Filter>
-    </ClCompile>
     <ClCompile Include="Source\PostProcess.cpp">
       <Filter>Source Files\Source</Filter>
     </ClCompile>
@@ -132,6 +135,12 @@
     <ClCompile Include="Application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Mesh.cpp">
+      <Filter>Source Files\Source\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Object3D.cpp">
+      <Filter>Source Files\Source\Objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\AABB.h">
@@ -146,9 +155,6 @@
     <ClInclude Include="Source\Input.h">
       <Filter>Header Files\Source</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Object3D.h">
-      <Filter>Header Files\Source</Filter>
-    </ClInclude>
     <ClInclude Include="Source\PostProcess.h">
       <Filter>Header Files\Source</Filter>
     </ClInclude>
@@ -159,9 +165,6 @@
       <Filter>Header Files\Source</Filter>
     </ClInclude>
     <ClInclude Include="Source\stb_image.h">
-      <Filter>Header Files\Source</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\StringHelper.h">
       <Filter>Header Files\Source</Filter>
     </ClInclude>
     <ClInclude Include="Source\Time.h">
@@ -229,6 +232,12 @@
     </ClInclude>
     <ClInclude Include="Application.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Mesh.h">
+      <Filter>Header Files\Source\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Object3D.h">
+      <Filter>Header Files\Source\Objects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

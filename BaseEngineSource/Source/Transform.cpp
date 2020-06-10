@@ -1,33 +1,34 @@
 #include "Transform.h"
 
-Transform::Transform() {
-	//: position(0), scale(1), rotation(), isDirty(true)
-	position = glm::vec3(0);
-	scale = glm::vec3(1);
-	rotation = glm::quat(1, 0, 0, 0);
+Transform::Transform() : translation(1), rotation(0,0,0,1), scale(1), model(1), isDirty(false), parent(nullptr) { }
 
-	UpdateTransform();
+Transform::Transform(const Transform& other) {
+	this->translation = other.translation;
+	this->rotation = other.rotation;
+	this->scale = other.scale;
+	this->parent = other.parent;
+	
+	SetDirty();
 }
 
-Transform::~Transform() {
-}
+Transform::~Transform() { }
 
 void Transform::SetPosition(const glm::vec3& position) {
 	SetDirty();
 	
-	this->position = position;
+	translation = glm::translate(glm::mat4(1), position);
 }
 
 void Transform::SetScale(const glm::vec3& scale) {
 	SetDirty();
 
-	this->scale = scale;
+	this->scale = glm::scale(glm::mat4(1), scale);
 }
 
 void Transform::SetScale(const float& scale) {
 	SetDirty();
 
-	this->scale = glm::vec3(scale);
+	this->scale = glm::scale(glm::mat4(1), glm::vec3(scale));
 }
 
 void Transform::SetRotation(const glm::vec3& euler) {
@@ -36,10 +37,16 @@ void Transform::SetRotation(const glm::vec3& euler) {
 	this->rotation = glm::quat(euler);
 }
 
-void Transform::RotateX(const float& angle) {
+void Transform::SetRotation(const glm::quat& rotation) {
 	SetDirty();
 
-	this->rotation = glm::rotate(this->rotation, glm::radians(angle), glm::vec3(1, 0, 0));
+	this->rotation = rotation;
+}
+
+void Transform::RotateX(const float& degree) {
+	SetDirty();
+
+	this->rotation = glm::rotate(this->rotation, glm::radians(degree), glm::vec3(1, 0, 0));
 }
 
 void Transform::RotateY(const float& angle) {
@@ -54,36 +61,34 @@ void Transform::RotateZ(const float& angle) {
 	this->rotation = glm::rotate(this->rotation, glm::radians(angle), glm::vec3(0, 0, 1));
 }
 
-void Transform::RotateAroundPoint(const glm::vec3& point, const float& angle, const glm::vec3& axis) {
+void Transform::Rotate(const glm::vec3& axis, const float& degree) {
 	SetDirty();
 
-	
-	//glm::mat4 lookAt = glm::lookAt(position, glm::vec3(point.x, position.y, point.z), axis);
-	//rotation = glm::toQuat(glm::inverse(lookAt));
-
-	glm::vec4 direction = glm::vec4(position - point, 1.0);
-	glm::vec4 rot = glm::rotate(glm::quat(1,0,0,0), glm::radians(angle), axis) * direction;
-	position = rot + glm::vec4(point, 0.0);
+	rotation = glm::rotate(rotation, glm::radians(degree), axis);
 }
 
-void Transform::SetParent(Transform* parent) {
-	SetDirty();
+//void Transform::RotateAroundPoint(const glm::vec3& point, const float& angle, const glm::vec3& axis) {
+//	SetDirty();
+//
+//	
+//	//glm::mat4 lookAt = glm::lookAt(position, glm::vec3(point.x, position.y, point.z), axis);
+//	//rotation = glm::toQuat(glm::inverse(lookAt));
+//
+//	glm::vec4 direction = glm::vec4(position - point, 1.0);
+//	glm::vec4 rot = glm::rotate(glm::quat(1,0,0,0), glm::radians(angle), axis) * direction;
+//	position = rot + glm::vec4(point, 0.0);
+//}
 
-	this->parent = parent;
-}
+//void Transform::SetParent(Transform* parent) {
+//	SetDirty();
+//
+//	this->parent = parent;
+//}
 
 void Transform::Translate(const glm::vec3& direction) {
 	SetDirty();
 	
-	this->position += direction;
-}
-
-void Transform::Translate(const float& x, const float& y, const float& z) {
-	SetDirty();
-
-	this->position.x += x;
-	this->position.y += y;
-	this->position.z += z;
+	this->translation = glm::translate(translation, direction);
 }
 
 void Transform::SetDirty() {
@@ -91,23 +96,17 @@ void Transform::SetDirty() {
 }
 
 glm::vec3 Transform::GetPosition() const {
-	return position;
+	return translation[3];
 }
 
-glm::mat4 Transform::GetMatrix() {
+glm::mat4 Transform::ModelMatrix() {
 	UpdateTransform();
 
-	return transform;
+	return model;
 }
 
 void Transform::UpdateTransform() {
-	transform = glm::translate(glm::mat4(1), position);
-	transform *= glm::toMat4(rotation);
-	transform = glm::scale(transform, scale);
-
-	if(parent)
-		transform = parent->GetMatrix() * transform;
-
+	model = translation * glm::toMat4(rotation) * scale;
 	isDirty = false;
 }
 

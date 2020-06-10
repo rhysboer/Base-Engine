@@ -1,65 +1,72 @@
 #include "Object3D.h"
 
-Object3D::Object3D(const glm::vec3& position, const std::vector<float>& vertex_data, const std::vector<int>& vertex_data_attributes, const std::vector<unsigned int>& indices) 
-	: transform(), render(RenderType::TRIANGLES) {
-	this->transform.SetPosition(position);
+Object3D::Object3D(const glm::vec3& position, const std::vector<float>& vertex_data, const std::vector<unsigned int>& vertex_data_attributes, const std::vector<unsigned int>& indices) 
+	: render(RenderType::TRIANGLES), shader(nullptr) {
 
-	// Generate Vertex & Buffer Array
-	glGenVertexArrays(1, &object.VAO);
-	glGenBuffers(1, &object.VBO);
-	if(indices.size() > 0) 
-		glGenBuffers(1, &object.EBO);
-
-	// Bind Vertex Array
-	glBindVertexArray(object.VAO);
-
-	// Bind Buffer Array
-	glBindBuffer(GL_ARRAY_BUFFER, object.VBO);
-	// Bind Buffer Array Data
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vertex_data.size(), &vertex_data[0], GL_STATIC_DRAW);
-
-	// Bind Indices
-	if(indices.size() > 0) {
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, object.EBO);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * indices.size(), &indices[0], GL_STATIC_DRAW);
-	}
-
-	int attributesPerVertex = 0;
-	for(int i = 0; i < vertex_data_attributes.size(); i++)
-		attributesPerVertex += vertex_data_attributes[i];
-
-	unsigned int offset = 0;
-	for(int i = 0; i < vertex_data_attributes.size(); i++) {
-		glVertexAttribPointer(i, vertex_data_attributes[i], GL_FLOAT, GL_FALSE, attributesPerVertex * sizeof(float), (void*)(offset * sizeof(float)));
-		glEnableVertexAttribArray(i);
-	
-		offset += vertex_data_attributes[i];
-	}
-
-	object.indicesCount = (indices.size() <= 0) ? (sizeof(float) * vertex_data.size()) / attributesPerVertex : indices.size();
-
-	// Unbind Vertex Array
-	glBindVertexArray(0);
-	
-	// Get Default Shader
-	shader = ShaderManager::GetShader("default");
+	mesh = new Mesh(vertex_data, vertex_data_attributes, indices);
+	transform = new Transform();
 }
 
 Object3D::~Object3D() {
-	if(object.VAO != 0) {
-		glDeleteVertexArrays(1, &object.VAO);
-		glDeleteBuffers(1, &object.VBO);
-	
-		if(object.EBO != 0)
-			glDeleteBuffers(1, &object.EBO);
+	delete mesh;
+	delete transform;
+}
+
+void Object3D::Render(BaseCamera& camera) {
+	Render(camera.ProjectionView());
+}
+
+void Object3D::Render(const glm::mat4& projectionView) {
+	if(!shader) return;
+
+	mesh->BindVAO();
+
+	shader->SetMatrix4(SHADER_MODEL, transform->ModelMatrix());
+	shader->SetMatrix4(SHADER_PROJECTIONVIEW, projectionView);
+
+	if(render == RenderType::TRIANGLES) {
+		if(!mesh->UsingEBO())
+			glDrawArrays(GL_TRIANGLES, 0, mesh->GetIndicesCount());
+		else
+			glDrawElements(GL_TRIANGLES, mesh->GetIndicesCount(), GL_UNSIGNED_INT, 0);
+	} else if(render == RenderType::LINES) {
+		glDrawArrays(GL_LINES, 0, mesh->GetIndicesCount());
 	}
 }
 
+void Object3D::RawRender() {
+	if(!shader) return;
+
+	mesh->BindVAO();
+
+	if(!mesh->UsingEBO())
+		glDrawArrays(GL_TRIANGLES, 0, mesh->GetIndicesCount());
+	else
+		glDrawElements(GL_TRIANGLES, mesh->GetIndicesCount(), GL_UNSIGNED_INT, 0);
+}
+
+void Object3D::SetShader(Shader* shader) {
+	this->shader = shader;
+}
+
+void Object3D::SetRender(const RenderType& render) {
+	this->render = render;
+}
+
+Shader* Object3D::GetShader() const {
+	return shader;
+}
+
+Transform& Object3D::GetTransform() {
+	return *transform;
+}
+
+// Create Primitives 
 #pragma region Primitives
 
 Object3D* Object3D::CreateObject_Plane(const glm::vec3& position, const unsigned int& size) {
 	std::vector<float> vertices = std::vector<float>();
-	std::vector<int> attributes = std::vector<int>({3, 3, 2});
+	std::vector<unsigned int> attributes = std::vector<unsigned int>({ 3, 3, 2 });
 	std::vector<unsigned int> indices = std::vector<unsigned int>();
 
 	// Generate Vertices
@@ -105,7 +112,7 @@ Object3D* Object3D::CreateObject_Cube(const glm::vec3& position) {
 		 1.0f,-1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // 0
 		 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, // 1
 		-1.0f,-1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, // 2
-						   
+
 		-1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, // 3
 		-1.0f,-1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, // 2
 		 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, // 1
@@ -114,7 +121,7 @@ Object3D* Object3D::CreateObject_Cube(const glm::vec3& position) {
 		 1.0f,-1.0f,-1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
 		 1.0f, 1.0f,-1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
 		 1.0f,-1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-						   
+
 		 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
 		 1.0f,-1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
 		 1.0f, 1.0f,-1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
@@ -123,7 +130,7 @@ Object3D* Object3D::CreateObject_Cube(const glm::vec3& position) {
 		-1.0f,-1.0f,-1.0f, 0.0f, 0.0f,-1.0f, 0.0f, 0.0f,
 		-1.0f, 1.0f,-1.0f, 0.0f, 0.0f,-1.0f, 0.0f, 1.0f,
 		 1.0f,-1.0f,-1.0f, 0.0f, 0.0f,-1.0f, 1.0f, 0.0f,
-						   
+
 		 1.0f, 1.0f,-1.0f, 0.0f, 0.0f,-1.0f, 1.0f, 1.0f,
 		 1.0f,-1.0f,-1.0f, 0.0f, 0.0f,-1.0f, 1.0f, 0.0f,
 		-1.0f, 1.0f,-1.0f, 0.0f, 0.0f,-1.0f, 0.0f, 1.0f,
@@ -132,7 +139,7 @@ Object3D* Object3D::CreateObject_Cube(const glm::vec3& position) {
 		-1.0f,-1.0f, 1.0f,-1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
 		-1.0f, 1.0f, 1.0f,-1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
 		-1.0f,-1.0f,-1.0f,-1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-						  
+
 		-1.0f, 1.0f,-1.0f,-1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
 		-1.0f,-1.0f,-1.0f,-1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
 		-1.0f, 1.0f, 1.0f,-1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
@@ -141,7 +148,7 @@ Object3D* Object3D::CreateObject_Cube(const glm::vec3& position) {
 		-1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
 		 1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
 		-1.0f, 1.0f,-1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-						  
+
 		 1.0f, 1.0f,-1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
 		-1.0f, 1.0f,-1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
 		 1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
@@ -150,16 +157,15 @@ Object3D* Object3D::CreateObject_Cube(const glm::vec3& position) {
 		-1.0f,-1.0f,-1.0f, 0.0f,-1.0f, 0.0f, 0.0f, 0.0f,
 		 1.0f,-1.0f,-1.0f, 0.0f,-1.0f, 0.0f, 1.0f, 0.0f,
 		-1.0f,-1.0f, 1.0f, 0.0f,-1.0f, 0.0f, 0.0f, 1.0f,
-						  
+
 		 1.0f,-1.0f, 1.0f, 0.0f,-1.0f, 0.0f, 1.0f, 1.0f,
 		-1.0f,-1.0f, 1.0f, 0.0f,-1.0f, 0.0f, 0.0f, 1.0f,
 		 1.0f,-1.0f,-1.0f, 0.0f,-1.0f, 0.0f, 1.0f, 0.0f,
-	});
-
+													 });
 	// Attributes: Vertex Position, Normals Texture Coordinates
-	std::vector<int> attributes = std::vector<int>({
+	std::vector<unsigned int> attributes = std::vector<unsigned int>({
 		3, 3, 2
-	});
+																	 });
 
 	return new Object3D(position, vertices, attributes);
 }
@@ -170,16 +176,15 @@ Object3D* Object3D::CreateObject_Quad(const glm::vec3& position) {
 		-1.0f,-1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
 		-1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
 		 1.0f,-1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
-						   		 
+
 		 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
 		 1.0f,-1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
 		-1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f
 													 });
-
 	// Attributes: Vertex Position, Texture Coordinates
-	std::vector<int> attributes = std::vector<int>({
+	std::vector<unsigned int> attributes = std::vector<unsigned int>({
 		3, 3, 2
-	});
+																	 });
 
 	return new Object3D(position, vertices, attributes);
 }
@@ -206,7 +211,7 @@ Object3D* Object3D::CreateObject_FromFile(const glm::vec3& position, const char*
 		printf("WARNING: Object3D - %s\n", warning.c_str());
 
 	std::vector<float> vertex_data = std::vector<float>();
-	std::vector<int> vertex_attributes = std::vector<int>({ 3 });
+	std::vector<unsigned int> vertex_attributes = std::vector<unsigned int>({ 3 });
 
 	if(attrib.normals.size() > 0)
 		vertex_attributes.push_back(3);
@@ -254,65 +259,3 @@ Object3D* Object3D::CreateObject_FromFile(const glm::vec3& position, const char*
 
 
 #pragma endregion
-
-
-void Object3D::Render(const glm::mat4& projectionView) {
-	if(!shader) return;
-
-	glBindVertexArray(object.VAO);
-
-	shader->SetMatrix4(SHADER_MODEL, transform.GetMatrix());
-	shader->SetMatrix4(SHADER_PROJECTIONVIEW, projectionView);
-
-	if(render == RenderType::TRIANGLES) {
-		if(object.EBO <= 0)
-			glDrawArrays(GL_TRIANGLES, 0, object.indicesCount);
-		else
-			glDrawElements(GL_TRIANGLES, object.indicesCount, GL_UNSIGNED_INT, 0);
-	} else if(render == RenderType::LINES) {
-		glDrawArrays(GL_LINES, 0, object.indicesCount);
-	}
-}
-
-void Object3D::Render(BaseCamera& camera) {
-	Render(camera.ProjectionView());
-}
-
-void Object3D::RawRender() {
-	if(!shader) return;
-
-	glBindVertexArray(object.VAO);
-
-	if(object.EBO <= 0)
-		glDrawArrays(GL_TRIANGLES, 0, object.indicesCount);
-	else
-		glDrawElements(GL_TRIANGLES, object.indicesCount, GL_UNSIGNED_INT, 0);
-}
-
-void Object3D::BindVAO() const {
-	glBindVertexArray(object.VAO);
-}
-
-void Object3D::BindVBO() const {
-	glBindBuffer(GL_ARRAY_BUFFER, object.VBO);
-}
-
-void Object3D::SetShader(Shader* shader) {
-	this->shader = shader;
-}
-
-void Object3D::SetRender(const RenderType& render) {
-	this->render = render;
-}
-
-Shader* Object3D::GetShader() const {
-	return shader;
-}
-
-glm::vec3 Object3D::GetPosition() {
-	return transform.GetPosition();
-}
-
-Transform& Object3D::GetTransform() {
-	return transform;
-}

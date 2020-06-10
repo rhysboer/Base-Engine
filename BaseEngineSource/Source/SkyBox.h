@@ -7,7 +7,7 @@
 class SkyBox {
 public:
 	
-	SkyBox(const char* cubemapPath);
+	SkyBox(const char* cubemapPath, Shader* shader);
 	~SkyBox();
 
 	void Render(BaseCamera& camera);

@@ -14,26 +14,31 @@ bool Shader::LoadShader(std::string vertSource, std::string fragSource, std::str
 	unsigned int shaderFragment;
 	unsigned int shaderGeometry;
 
+	const char* c_source;
+
 	shaderVertex = glCreateShader(GL_VERTEX_SHADER);
 	shaderFragment = glCreateShader(GL_FRAGMENT_SHADER);
 	if(geomShader.length() > 0)
 		shaderGeometry = glCreateShader(GL_GEOMETRY_SHADER);
 
 	// VERTEX
-	glShaderSource(shaderVertex, 1, StringHelper(vertSource), NULL);
+	c_source = vertSource.c_str();
+	glShaderSource(shaderVertex, 1, &c_source, NULL);
 	glCompileShader(shaderVertex);
 
 	if(!ErrorHandler(shaderVertex, GL_COMPILE_STATUS)) return false;
 
 	// FRAGMENT
-	glShaderSource(shaderFragment, 1, StringHelper(fragSource), NULL);
+	c_source = fragSource.c_str();
+	glShaderSource(shaderFragment, 1, &c_source, NULL);
 	glCompileShader(shaderFragment);
 
 	if(!ErrorHandler(shaderFragment, GL_COMPILE_STATUS)) return false;
 
 	// GEOMETRY
 	if(geomShader.length() > 0) {
-		glShaderSource(shaderGeometry, 1, StringHelper(geomShader), NULL);
+		c_source = geomShader.c_str();
+		glShaderSource(shaderGeometry, 1, &c_source, NULL);
 		glCompileShader(shaderGeometry);
 
 		if(!ErrorHandler(shaderGeometry, GL_COMPILE_STATUS)) return false;
@@ -63,7 +68,8 @@ bool Shader::LoadShader(const std::string& computeSource) {
 	unsigned int shaderIndex;
 
 	shaderIndex = glCreateShader(GL_COMPUTE_SHADER);
-	glShaderSource(shaderIndex, 1, StringHelper(computeSource), NULL);
+	const char* c_source = computeSource.c_str();
+	glShaderSource(shaderIndex, 1, &c_source, NULL);
 	glCompileShader(shaderIndex);
 
 	if(!ErrorHandler(shaderIndex, GL_COMPILE_STATUS)) return false;

@@ -4,20 +4,32 @@
 #include "tiny_obj_loader.h"
 #include "ShaderManager.h"
 #include "Transform.h"
+#include "Mesh.h"
 
 #define SHADER_MODEL "model"
 #define SHADER_PROJECTIONVIEW "projectionView"
 
 class Object3D {
 public:
-
 	enum class RenderType {
 		TRIANGLES = GL_TRIANGLES,
 		LINES = GL_LINES
 	};
 
-	Object3D(const glm::vec3& position, const std::vector<float>& vertex_data, const std::vector<int>& vertex_data_attributes, const std::vector<unsigned int>& indices = std::vector<unsigned int>());
+	Object3D(const glm::vec3& position, const std::vector<float>& vertex_data, const std::vector<unsigned int>& vertex_data_attributes, const std::vector<unsigned int>& indices = std::vector<unsigned int>());
 	~Object3D();
+
+	void Render(const glm::mat4& projectionView);
+	void Render(BaseCamera& camera);
+	void RawRender();
+
+	/* Setters */
+	void SetShader(Shader* shader);
+	void SetRender(const RenderType& render);
+	
+	/* Getters */
+	Shader* GetShader() const;
+	Transform& GetTransform();
 
 #pragma region Object Creation
 
@@ -28,32 +40,10 @@ public:
 
 #pragma endregion
 
-	void Render(const glm::mat4& projectionView);
-	void Render(BaseCamera& camera);
-	void RawRender();
-	void BindVAO() const;
-	void BindVBO() const;
-
-	/* Setters */
-	void SetShader(Shader* shader);
-	void SetRender(const RenderType& render);
-	
-	/* Getters */
-	Shader* GetShader() const;
-	glm::vec3 GetPosition();
-	Transform& GetTransform();
-
 private:
-	struct ObjectData {
-		unsigned int VAO;
-		unsigned int VBO;
-		unsigned int EBO;
-
-		unsigned int indicesCount;
-	} object;
-
 	RenderType render;
 
-	Transform transform;
+	Transform* transform;
 	Shader* shader;
+	Mesh* mesh;
 };

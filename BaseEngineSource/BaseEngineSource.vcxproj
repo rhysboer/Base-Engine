@@ -155,6 +155,7 @@
     <ClCompile Include="Source\imgui_stdlib.cpp" />
     <ClCompile Include="Source\imgui_widgets.cpp" />
     <ClCompile Include="Source\Input.cpp" />
+    <ClCompile Include="Source\Mesh.cpp" />
     <ClCompile Include="Source\Object3D.cpp" />
     <ClCompile Include="Source\PostProcess.cpp" />
     <ClCompile Include="Source\Shader.cpp" />
@@ -187,6 +188,7 @@
     <ClInclude Include="Source\imstb_textedit.h" />
     <ClInclude Include="Source\imstb_truetype.h" />
     <ClInclude Include="Source\Input.h" />
+    <ClInclude Include="Source\Mesh.h" />
     <ClInclude Include="Source\Object3D.h" />
     <ClInclude Include="Source\PostProcess.h" />
     <ClInclude Include="Source\Shader.h" />
@@ -194,7 +196,6 @@
     <ClInclude Include="Source\SkyBox.h" />
     <ClInclude Include="Source\Sprite.h" />
     <ClInclude Include="Source\stb_image.h" />
-    <ClInclude Include="Source\StringHelper.h" />
     <ClInclude Include="Source\Time.h" />
     <ClInclude Include="Source\tiny_obj_loader.h" />
     <ClInclude Include="Source\Transform.h" />

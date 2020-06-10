@@ -62,10 +62,6 @@ void Engine::Run() {
 	while(!glfwWindowShouldClose(this->window)) {
 		Time::Update();
 
-		std::string title = "Demo ms: " + std::to_string(Time::DeltaTime());
-		title += " fps: " + std::to_string(1.0f / Time::DeltaTime());
-		glfwSetWindowTitle(window, title.c_str());
-
 		// IMGUI
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();

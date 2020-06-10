@@ -1,6 +1,6 @@
 #include "SkyBox.h"
 
-SkyBox::SkyBox(const char* cubemapPath) {
+SkyBox::SkyBox(const char* cubemapPath, Shader* shader) {
 	// Vertices & attributes
 	std::vector<float> vertices = std::vector<float>({
 		/* FRONT */
@@ -57,14 +57,14 @@ SkyBox::SkyBox(const char* cubemapPath) {
 		-1.0f,-1.0f, 1.0f,
 		 1.0f,-1.0f, 1.0f,
 	});
-	std::vector<int> attributes = std::vector<int>({
+	std::vector<unsigned int> attributes = std::vector<unsigned int>({
 		3
 	});
 
 	texture = new Cubemap(cubemapPath);
 	cube = new Object3D(glm::vec3(0), vertices, attributes);
 
-	cube->SetShader(ShaderManager::AddShader("Skybox"));
+	cube->SetShader(shader);
 	cube->GetShader()->SetTextureUnit("cubemap", 0);
 }
 
