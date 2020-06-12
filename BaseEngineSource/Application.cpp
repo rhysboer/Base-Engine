@@ -11,7 +11,7 @@ void Application::OnEnd() {
 }
 
 void Application::OnUpdate() {
-
+	object->GetTransform().Rotate(glm::vec3(1, 0, 0.5f), 1.0f);
 }
 
 void Application::OnRender() {

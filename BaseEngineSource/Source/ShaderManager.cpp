@@ -1,11 +1,11 @@
 #include "ShaderManager.h"
 
-std::map<const char*, Shader*> ShaderManager::graphicShaders = std::map<const char*, Shader*>();
-std::map<const char*, Shader*> ShaderManager::computeShaders = std::map<const char*, Shader*>();
+std::map<std::string, Shader*> ShaderManager::graphicShaders = std::map<std::string, Shader*>();
+std::map<std::string, Shader*> ShaderManager::computeShaders = std::map<std::string, Shader*>();
 
 void ShaderManager::DestroyShaders() {
 	// Destroy Graphic Shaders
-	std::map<const char*, Shader*>::iterator iter = graphicShaders.begin();
+	std::map<std::string, Shader*>::iterator iter = graphicShaders.begin();
 	for(; iter != graphicShaders.end(); iter++) {
 		delete iter->second;
 		iter->second = nullptr;
@@ -23,14 +23,14 @@ Shader* ShaderManager::GetShader(const char* name, ShaderType type) {
 	switch(type) {
 		case ShaderManager::ShaderType::GRAPHIC:
 		{
-			std::map<const char*, Shader*>::iterator iter = graphicShaders.find(name);
+			std::map<std::string, Shader*>::iterator iter = graphicShaders.find(name);
 			if(iter != graphicShaders.end())
 				return (*iter).second;
 			break;
 		}
 		case ShaderManager::ShaderType::COMPUTE:
 		{
-			std::map<const char*, Shader*>::iterator iter = computeShaders.find(name);
+			std::map<std::string, Shader*>::iterator iter = computeShaders.find(name);
 			if(iter != computeShaders.end())
 				return (*iter).second;
 			break;

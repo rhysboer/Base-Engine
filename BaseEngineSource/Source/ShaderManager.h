@@ -21,7 +21,7 @@ public:
 
 private:
 
-	static std::map<const char*, Shader*> graphicShaders;
-	static std::map<const char*, Shader*> computeShaders;
+	static std::map<std::string, Shader*> graphicShaders;
+	static std::map<std::string, Shader*> computeShaders;
 };
 
