@@ -31,15 +31,6 @@ public:
 	Shader* GetShader() const;
 	Transform& GetTransform();
 
-#pragma region Object Creation
-
-	static Object3D* CreateObject_Plane(const glm::vec3& position, const unsigned int& size);
-	static Object3D* CreateObject_Cube(const glm::vec3& position);
-	static Object3D* CreateObject_Quad(const glm::vec3& position);
-	static Object3D* CreateObject_FromFile(const glm::vec3& position, const char* path);
-
-#pragma endregion
-
 private:
 	RenderType render;
 
@@ -47,3 +38,12 @@ private:
 	Shader* shader;
 	Mesh* mesh;
 };
+
+
+namespace CreateObject3D {
+	Object3D* Cube(const glm::vec3& position);
+	Object3D* Plane(const glm::vec3& position, const unsigned int& size);
+	Object3D* Quad(const glm::vec3& position);
+	Object3D* Circle(const glm::vec3& position, const float& radius); // ToDo
+	Object3D* FromOBJFile(const glm::vec3& position, const char* path);
+}

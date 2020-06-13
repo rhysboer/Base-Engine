@@ -140,7 +140,6 @@
     <ClCompile Include="Source\AABB.cpp" />
     <ClCompile Include="Source\BaseCamera.cpp" />
     <ClCompile Include="Source\BaseTexture.cpp" />
-    <ClCompile Include="Source\Camera.cpp" />
     <ClCompile Include="Source\Camera2D.cpp" />
     <ClCompile Include="Source\Camera3D.cpp" />
     <ClCompile Include="Source\Cubemap.cpp" />
@@ -171,7 +170,6 @@
     <ClInclude Include="Source\AABB.h" />
     <ClInclude Include="Source\BaseCamera.h" />
     <ClInclude Include="Source\BaseTexture.h" />
-    <ClInclude Include="Source\Camera.h" />
     <ClInclude Include="Source\Camera2D.h" />
     <ClInclude Include="Source\Camera3D.h" />
     <ClInclude Include="Source\Cubemap.h" />

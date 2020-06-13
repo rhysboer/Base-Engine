@@ -5,6 +5,7 @@ Object3D::Object3D(const glm::vec3& position, const std::vector<float>& vertex_d
 
 	mesh = new Mesh(vertex_data, vertex_data_attributes, indices);
 	transform = new Transform();
+	transform->SetPosition(position);
 }
 
 Object3D::~Object3D() {
@@ -61,10 +62,13 @@ Transform& Object3D::GetTransform() {
 	return *transform;
 }
 
-// Create Primitives 
+
+
+
+// Create Objects 
 #pragma region Primitives
 
-Object3D* Object3D::CreateObject_Plane(const glm::vec3& position, const unsigned int& size) {
+Object3D* CreateObject3D::Plane(const glm::vec3& position, const unsigned int& size) {
 	std::vector<float> vertices = std::vector<float>();
 	std::vector<unsigned int> attributes = std::vector<unsigned int>({ 3, 3, 2 });
 	std::vector<unsigned int> indices = std::vector<unsigned int>();
@@ -105,7 +109,7 @@ Object3D* Object3D::CreateObject_Plane(const glm::vec3& position, const unsigned
 	return new Object3D(position, vertices, attributes, indices);
 }
 
-Object3D* Object3D::CreateObject_Cube(const glm::vec3& position) {
+Object3D* CreateObject3D::Cube(const glm::vec3& position) {
 	std::vector<float> vertices = std::vector<float>({
 		/* 1-3 = Vertex Pos, 4-6 = Normals, 7-8 = Texture Coords*/
 		/* FRONT */
@@ -170,7 +174,7 @@ Object3D* Object3D::CreateObject_Cube(const glm::vec3& position) {
 	return new Object3D(position, vertices, attributes);
 }
 
-Object3D* Object3D::CreateObject_Quad(const glm::vec3& position) {
+Object3D* CreateObject3D::Quad(const glm::vec3& position) {
 	std::vector<float> vertices = std::vector<float>({
 		/* 1-3 = Vertex Pos, 4-6 = Normals, 7-8 = Texture Coords*/
 		-1.0f,-1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
@@ -189,7 +193,7 @@ Object3D* Object3D::CreateObject_Quad(const glm::vec3& position) {
 	return new Object3D(position, vertices, attributes);
 }
 
-Object3D* Object3D::CreateObject_FromFile(const glm::vec3& position, const char* path) {
+Object3D* CreateObject3D::FromOBJFile(const glm::vec3& position, const char* path) {
 	tinyobj::attrib_t attrib;
 	std::vector<tinyobj::shape_t> shapes;
 	std::vector<tinyobj::material_t> material;
@@ -213,9 +217,11 @@ Object3D* Object3D::CreateObject_FromFile(const glm::vec3& position, const char*
 	std::vector<float> vertex_data = std::vector<float>();
 	std::vector<unsigned int> vertex_attributes = std::vector<unsigned int>({ 3 });
 
-	if(attrib.normals.size() > 0)
+	if(!attrib.normals.empty())
 		vertex_attributes.push_back(3);
-	if(attrib.texcoords.size() > 0)
+	if(!attrib.colors.empty())
+		vertex_attributes.push_back(3);
+	if(!attrib.texcoords.empty())
 		vertex_attributes.push_back(2);
 
 	for(size_t s = 0; s < 1; s++) {
@@ -231,22 +237,30 @@ Object3D* Object3D::CreateObject_FromFile(const glm::vec3& position, const char*
 
 				// Vertex Position
 				vertex_data.push_back(attrib.vertices[3 * idx.vertex_index + 0]);
-				vertex_data.push_back(attrib.vertices[3 * idx.vertex_index + 1]);
+				vertex_data.push_back(-attrib.vertices[3 * idx.vertex_index + 1]);
 				vertex_data.push_back(attrib.vertices[3 * idx.vertex_index + 2]);
 
 				// Vertex Normals
-				if(attrib.normals.size() > 0) {
+				if(!attrib.normals.empty()) {
 					vertex_data.push_back(attrib.normals[3 * idx.normal_index + 0]);
 					vertex_data.push_back(attrib.normals[3 * idx.normal_index + 1]);
 					vertex_data.push_back(attrib.normals[3 * idx.normal_index + 2]);
 				}
 
+				// Vertex Color
+				if(!attrib.colors.empty()) {
+					vertex_data.push_back(attrib.colors[3 * idx.normal_index + 0]);
+					vertex_data.push_back(attrib.colors[3 * idx.normal_index + 1]);
+					vertex_data.push_back(attrib.colors[3 * idx.normal_index + 2]);
+				}
+
 				// Vertex Texcoords
-				if(attrib.texcoords.size() > 0) {
+				if(!attrib.texcoords.empty()) {
 					vertex_data.push_back(attrib.texcoords[2 * idx.texcoord_index + 0]);
 					vertex_data.push_back(1.0 - attrib.texcoords[2 * idx.texcoord_index + 1]);
 				}
 			}
+
 			index_offset += fv;
 
 			// per-face material

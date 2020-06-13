@@ -75,9 +75,6 @@
     <ClCompile Include="Source\BaseCamera.cpp">
       <Filter>Source Files\Source\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Camera.cpp">
-      <Filter>Source Files\Source\Camera</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Camera2D.cpp">
       <Filter>Source Files\Source\Camera</Filter>
     </ClCompile>
@@ -207,9 +204,6 @@
       <Filter>Header Files\Source\Imgui</Filter>
     </ClInclude>
     <ClInclude Include="Source\Camera2D.h">
-      <Filter>Header Files\Source\Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Camera.h">
       <Filter>Header Files\Source\Camera</Filter>
     </ClInclude>
     <ClInclude Include="Source\Camera3D.h">

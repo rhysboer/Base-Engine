@@ -2,15 +2,14 @@
 #include "Engine.h"
 
 BaseCamera::BaseCamera(const glm::vec3& _position, const glm::vec3& _worldUp, const float& _fov, const float& _near, const float& _far)
-	: view(0), projection(0), forward(0), up(0), right(0), worldUp(_worldUp), yaw(-90.0f), pitch(0), fov(glm::radians(_fov)), near(_near), far(_far), isDirty(true)
-{
+	: view(0), projection(0), forward(0), up(0), right(0), worldUp(_worldUp), yaw(-90.0f), pitch(0), fov(glm::radians(_fov)), near(_near), far(_far), isDirty(true) {
 	this->position = _position;
 }
 
 void BaseCamera::UpdateCamera() {
 
 	glm::vec3 temp = glm::vec3(0.0f);
-	temp.x = glm::cos(glm::radians(yaw))* glm::cos(glm::radians(pitch));
+	temp.x = glm::cos(glm::radians(yaw)) * glm::cos(glm::radians(pitch));
 	temp.y = glm::sin(glm::radians(pitch));
 	temp.z = glm::sin(glm::radians(yaw)) * glm::cos(glm::radians(pitch));
 	forward = glm::normalize(temp);
@@ -20,7 +19,7 @@ void BaseCamera::UpdateCamera() {
 
 	view = glm::lookAt(position, position + forward, up);
 
-	projection = CreateProjectionMatrix(); 
+	projection = CreateProjectionMatrix();
 
 	// Update the cameras frustum planes
 	UpdateFrustumPlanes();
@@ -42,7 +41,7 @@ void BaseCamera::UpdateFrustumPlanes() {
 								 projView[1][3] + projView[1][0],
 								 projView[2][3] + projView[2][0],
 								 projView[3][3] + projView[3][0]);
-								 
+
 	// top
 	frustumPlanes[2] = glm::vec4(projView[0][3] - projView[0][1],
 								 projView[1][3] - projView[1][1],
@@ -125,7 +124,7 @@ BaseCamera::BaseCamera(const BaseCamera& camera) {
 	this->yaw = camera.yaw;
 	this->pitch = camera.pitch;
 	this->fov = camera.fov;
-	this->near = camera.near;	
+	this->near = camera.near;
 	this->far = camera.far;
 	this->isDirty = camera.isDirty;
 }
@@ -159,6 +158,18 @@ void BaseCamera::SetDirty() {
 	isDirty = true;
 }
 
+void BaseCamera::SetPosition(const glm::vec3& position) {
+	this->position = position;
+
+	UpdateCamera();
+}
+
+void BaseCamera::Translate(const glm::vec3& offset) {
+	this->position += offset;
+
+	UpdateCamera();
+}
+
 glm::mat4 BaseCamera::View() {
 	DIRTY_CHECK;
 	return view;
@@ -171,7 +182,7 @@ glm::mat4 BaseCamera::Projection() {
 
 glm::mat4 BaseCamera::ProjectionView() {
 	DIRTY_CHECK;
-	
+
 	return projection * view;
 }
 

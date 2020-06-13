@@ -6,6 +6,10 @@
 #define DIRTY_CHECK if(isDirty) UpdateCamera();
 #define FRUSTUM_FACES 6
 
+// ToDo:
+// Add a camera perspective option, changing between ortho and projection with one function call.
+// Add transform to camera
+
 class BaseCamera {
 public:
 
@@ -18,6 +22,9 @@ public:
 	void SetFar(const float& distance);
 	void SetFOV(const float& fov);
 	void SetDirty();
+
+	void SetPosition(const glm::vec3& position);
+	void Translate(const glm::vec3& offset);
 
 	glm::mat4 View();
 	glm::mat4 Projection();
