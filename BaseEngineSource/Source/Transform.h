@@ -22,25 +22,32 @@ public:
 	void Rotate(const glm::vec3& axis, const float& degree);
 	//void RotateAroundPoint(const glm::vec3& point, const float& angle, const glm::vec3& axis);
 
-	void SetParent(Transform* parent);
+	void LookAt(const glm::vec3& point);
 
 	void Translate(const glm::vec3& direction);
 
 	glm::vec3 GetPosition() const;
+	glm::vec3 GetUp() const;
+	glm::vec3 GetRight() const;
+	glm::vec3 GetForward() const;
+
 	glm::mat4 ModelMatrix();
 
 	void SetDirty();
-
-private:
+	bool IsDirty() const;
+	void SetAutoUpdate(bool option);
+	
 	void UpdateTransform();
 
+private:
+
 	bool isDirty;
+	bool autoUpdate;
 
-	glm::mat4 translation;
+	glm::vec3 position;
 	glm::quat rotation;
-	glm::mat4 scale;
-	glm::mat4 model;
+	glm::vec3 scale;
 
-	Transform* parent;
+	glm::mat4 model;
 };
 

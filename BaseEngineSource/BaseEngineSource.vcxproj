@@ -138,10 +138,8 @@
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Source\AABB.cpp" />
-    <ClCompile Include="Source\BaseCamera.cpp" />
+    <ClCompile Include="Source\Camera.cpp" />
     <ClCompile Include="Source\BaseTexture.cpp" />
-    <ClCompile Include="Source\Camera2D.cpp" />
-    <ClCompile Include="Source\Camera3D.cpp" />
     <ClCompile Include="Source\Cubemap.cpp" />
     <ClCompile Include="Source\Engine.cpp" />
     <ClCompile Include="Source\Framebuffer.cpp" />
@@ -154,6 +152,7 @@
     <ClCompile Include="Source\imgui_stdlib.cpp" />
     <ClCompile Include="Source\imgui_widgets.cpp" />
     <ClCompile Include="Source\Input.cpp" />
+    <ClCompile Include="Source\Loader.cpp" />
     <ClCompile Include="Source\Mesh.cpp" />
     <ClCompile Include="Source\Object3D.cpp" />
     <ClCompile Include="Source\PostProcess.cpp" />
@@ -168,10 +167,8 @@
   <ItemGroup>
     <ClInclude Include="Application.h" />
     <ClInclude Include="Source\AABB.h" />
-    <ClInclude Include="Source\BaseCamera.h" />
+    <ClInclude Include="Source\Camera.h" />
     <ClInclude Include="Source\BaseTexture.h" />
-    <ClInclude Include="Source\Camera2D.h" />
-    <ClInclude Include="Source\Camera3D.h" />
     <ClInclude Include="Source\Cubemap.h" />
     <ClInclude Include="Source\Engine.h" />
     <ClInclude Include="Source\Framebuffer.h" />
@@ -186,6 +183,7 @@
     <ClInclude Include="Source\imstb_textedit.h" />
     <ClInclude Include="Source\imstb_truetype.h" />
     <ClInclude Include="Source\Input.h" />
+    <ClInclude Include="Source\Loader.h" />
     <ClInclude Include="Source\Mesh.h" />
     <ClInclude Include="Source\Object3D.h" />
     <ClInclude Include="Source\PostProcess.h" />

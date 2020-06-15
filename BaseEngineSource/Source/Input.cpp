@@ -62,7 +62,7 @@ void Input::DisableCursor(const bool& hideCursor) {
 		glfwSetInputMode(&Engine::GetWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 
 		// Center mouse after reactivating
-		glm::vec2 size = Engine::GetWindowSize() / 2;
+		glm::vec2 size = Engine::GetWindowSize() / 2.0f;
 		glfwSetCursorPos(&Engine::GetWindow(), size.x, size.y);
 		mousePosition = size;
 	}

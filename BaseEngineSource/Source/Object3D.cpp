@@ -13,7 +13,7 @@ Object3D::~Object3D() {
 	delete transform;
 }
 
-void Object3D::Render(BaseCamera& camera) {
+void Object3D::Render(Camera& camera) {
 	Render(camera.ProjectionView());
 }
 
@@ -194,81 +194,13 @@ Object3D* CreateObject3D::Quad(const glm::vec3& position) {
 }
 
 Object3D* CreateObject3D::FromOBJFile(const glm::vec3& position, const char* path) {
-	tinyobj::attrib_t attrib;
-	std::vector<tinyobj::shape_t> shapes;
-	std::vector<tinyobj::material_t> material;
+	std::vector<float> vertexData = std::vector<float>();
+	std::vector<unsigned int> vertexAttributes = std::vector<unsigned int>();
 
-	std::string error;
-	std::string warning;
-
-	if(!tinyobj::LoadObj(&attrib, &shapes, &material, &warning, &error, path)) {
-		printf("ERROR: Object3D - Failed to load object at (%s)\n", path);
+	if(Loader::LoadOBJ(path, vertexData, vertexAttributes))
+		return new Object3D(position, vertexData, vertexAttributes);
+	else
 		return nullptr;
-	}
-
-	if(!error.empty()) {
-		printf("ERROR: Object3D - %s\n", error.c_str());
-		return nullptr;
-	}
-
-	if(!warning.empty())
-		printf("WARNING: Object3D - %s\n", warning.c_str());
-
-	std::vector<float> vertex_data = std::vector<float>();
-	std::vector<unsigned int> vertex_attributes = std::vector<unsigned int>({ 3 });
-
-	if(!attrib.normals.empty())
-		vertex_attributes.push_back(3);
-	if(!attrib.colors.empty())
-		vertex_attributes.push_back(3);
-	if(!attrib.texcoords.empty())
-		vertex_attributes.push_back(2);
-
-	for(size_t s = 0; s < 1; s++) {
-		// Loop over faces(polygon)
-		size_t index_offset = 0;
-		for(size_t f = 0; f < shapes[s].mesh.num_face_vertices.size(); f++) {
-			int fv = shapes[s].mesh.num_face_vertices[f];
-
-			// Loop over vertices in the face.
-			for(size_t v = 0; v < fv; v++) {
-				// access to vertex
-				tinyobj::index_t idx = shapes[s].mesh.indices[index_offset + v];
-
-				// Vertex Position
-				vertex_data.push_back(attrib.vertices[3 * idx.vertex_index + 0]);
-				vertex_data.push_back(-attrib.vertices[3 * idx.vertex_index + 1]);
-				vertex_data.push_back(attrib.vertices[3 * idx.vertex_index + 2]);
-
-				// Vertex Normals
-				if(!attrib.normals.empty()) {
-					vertex_data.push_back(attrib.normals[3 * idx.normal_index + 0]);
-					vertex_data.push_back(attrib.normals[3 * idx.normal_index + 1]);
-					vertex_data.push_back(attrib.normals[3 * idx.normal_index + 2]);
-				}
-
-				// Vertex Color
-				if(!attrib.colors.empty()) {
-					vertex_data.push_back(attrib.colors[3 * idx.normal_index + 0]);
-					vertex_data.push_back(attrib.colors[3 * idx.normal_index + 1]);
-					vertex_data.push_back(attrib.colors[3 * idx.normal_index + 2]);
-				}
-
-				// Vertex Texcoords
-				if(!attrib.texcoords.empty()) {
-					vertex_data.push_back(attrib.texcoords[2 * idx.texcoord_index + 0]);
-					vertex_data.push_back(1.0 - attrib.texcoords[2 * idx.texcoord_index + 1]);
-				}
-			}
-
-			index_offset += fv;
-
-			// per-face material
-			shapes[s].mesh.material_ids[f];
-		}
-	}
-
-	return new Object3D(position, vertex_data, vertex_attributes);
 }
 
 

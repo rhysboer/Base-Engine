@@ -1,12 +1,12 @@
 #include "Transform.h"
 
-Transform::Transform() : translation(1), rotation(0,0,0,1), scale(1), model(1), isDirty(false), parent(nullptr) { }
+Transform::Transform() : position(0), rotation(glm::identity<glm::quat>()), scale(1), model(1), isDirty(false), autoUpdate(true) {
+}
 
 Transform::Transform(const Transform& other) {
-	this->translation = other.translation;
+	this->position = other.position;
 	this->rotation = other.rotation;
 	this->scale = other.scale;
-	this->parent = other.parent;
 	
 	SetDirty();
 }
@@ -16,19 +16,19 @@ Transform::~Transform() { }
 void Transform::SetPosition(const glm::vec3& position) {
 	SetDirty();
 	
-	translation = glm::translate(glm::mat4(1), position);
+	this->position = position;
 }
 
 void Transform::SetScale(const glm::vec3& scale) {
 	SetDirty();
 
-	this->scale = glm::scale(glm::mat4(1), scale);
+	this->scale = scale;
 }
 
 void Transform::SetScale(const float& scale) {
 	SetDirty();
 
-	this->scale = glm::scale(glm::mat4(1), glm::vec3(scale));
+	this->scale = glm::vec3(scale);
 }
 
 void Transform::SetRotation(const glm::vec3& euler) {
@@ -67,12 +67,16 @@ void Transform::Rotate(const glm::vec3& axis, const float& degree) {
 	rotation = glm::rotate(rotation, glm::radians(degree), axis);
 }
 
+void Transform::LookAt(const glm::vec3& point) {
+	rotation = glm::quat(glm::inverse(glm::lookAt(position, point, GetUp())));
+}
+
 //void Transform::RotateAroundPoint(const glm::vec3& point, const float& angle, const glm::vec3& axis) {
 //	SetDirty();
 //
 //	
-//	//glm::mat4 lookAt = glm::lookAt(position, glm::vec3(point.x, position.y, point.z), axis);
-//	//rotation = glm::toQuat(glm::inverse(lookAt));
+//	glm::mat4 lookAt = glm::lookAt(position, glm::vec3(point.x, position.y, point.z), axis);
+//	rotation = glm::toQuat(glm::inverse(lookAt));
 //
 //	glm::vec4 direction = glm::vec4(position - point, 1.0);
 //	glm::vec4 rot = glm::rotate(glm::quat(1,0,0,0), glm::radians(angle), axis) * direction;
@@ -88,26 +92,45 @@ void Transform::Rotate(const glm::vec3& axis, const float& degree) {
 void Transform::Translate(const glm::vec3& direction) {
 	SetDirty();
 	
-	this->translation = glm::translate(translation, direction);
+	this->position += direction;
 }
 
 void Transform::SetDirty() {
 	isDirty = true;
 }
 
+bool Transform::IsDirty() const {
+	return isDirty;
+}
+
+void Transform::SetAutoUpdate(bool option) {
+	autoUpdate = option;
+}
+
 glm::vec3 Transform::GetPosition() const {
-	return translation[3];
+	return position;
+}
+
+glm::vec3 Transform::GetUp() const {
+	return rotation * glm::vec3(0, 1, 0);
+}
+
+glm::vec3 Transform::GetRight() const {
+	return rotation * glm::vec3(1, 0, 0);
+}
+
+glm::vec3 Transform::GetForward() const {
+	return rotation * glm::vec3(0, 0, 1);
 }
 
 glm::mat4 Transform::ModelMatrix() {
-	UpdateTransform();
+	if(autoUpdate)
+		UpdateTransform();
 
 	return model;
 }
 
 void Transform::UpdateTransform() {
-	model = translation * glm::toMat4(rotation) * scale;
+	model = glm::translate(glm::mat4(1), position) * glm::toMat4(rotation) * glm::scale(glm::mat4(1), scale);
 	isDirty = false;
 }
-
-

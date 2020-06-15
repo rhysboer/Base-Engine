@@ -92,22 +92,16 @@ void Engine::Run() {
 	glfwTerminate();
 }
 
-glm::ivec2 Engine::GetWindowSize() {
-	glm::ivec2 size = glm::ivec2(0.0f);
-	if(!window) return size;
+glm::vec2 Engine::GetWindowSize() {
+	int x, y;
+	if(!window) return glm::vec2(0, 0);
 
-	glfwGetWindowSize(window, &size.x, &size.y);
-	return size;
+	glfwGetWindowSize(window, &x, &y);
+	return glm::vec2(x, y);
 }
 
 GLFWwindow& Engine::GetWindow() {
 	return *window;
-}
-
-glm::ivec2 Engine::WindowSize() const {
-	glm::ivec2 size;
-	glfwGetWindowSize(this->window, &size.x, &size.y);
-	return size;
 }
 
 void Engine::InitCallbacks() {

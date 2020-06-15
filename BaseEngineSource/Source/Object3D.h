@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
-#include "BaseCamera.h"
-#include "tiny_obj_loader.h"
+#include "Camera.h"
+#include "Loader.h"
 #include "ShaderManager.h"
 #include "Transform.h"
 #include "Mesh.h"
@@ -17,10 +17,11 @@ public:
 	};
 
 	Object3D(const glm::vec3& position, const std::vector<float>& vertex_data, const std::vector<unsigned int>& vertex_data_attributes, const std::vector<unsigned int>& indices = std::vector<unsigned int>());
+	
 	~Object3D();
 
 	void Render(const glm::mat4& projectionView);
-	void Render(BaseCamera& camera);
+	void Render(Camera& camera);
 	void RawRender();
 
 	/* Setters */

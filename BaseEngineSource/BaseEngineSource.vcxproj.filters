@@ -72,15 +72,6 @@
     <ClCompile Include="Source\imgui_widgets.cpp">
       <Filter>Source Files\Source\Imgui</Filter>
     </ClCompile>
-    <ClCompile Include="Source\BaseCamera.cpp">
-      <Filter>Source Files\Source\Camera</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Camera2D.cpp">
-      <Filter>Source Files\Source\Camera</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Camera3D.cpp">
-      <Filter>Source Files\Source\Camera</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Cubemap.cpp">
       <Filter>Source Files\Source\Textures</Filter>
     </ClCompile>
@@ -137,6 +128,12 @@
     </ClCompile>
     <ClCompile Include="Source\Object3D.cpp">
       <Filter>Source Files\Source\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Loader.cpp">
+      <Filter>Source Files\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Camera.cpp">
+      <Filter>Source Files\Source\Camera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -203,15 +200,6 @@
     <ClInclude Include="Source\imstb_truetype.h">
       <Filter>Header Files\Source\Imgui</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Camera2D.h">
-      <Filter>Header Files\Source\Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Camera3D.h">
-      <Filter>Header Files\Source\Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\BaseCamera.h">
-      <Filter>Header Files\Source\Camera</Filter>
-    </ClInclude>
     <ClInclude Include="Source\BaseTexture.h">
       <Filter>Header Files\Source\Textures</Filter>
     </ClInclude>
@@ -232,6 +220,12 @@
     </ClInclude>
     <ClInclude Include="Source\Object3D.h">
       <Filter>Header Files\Source\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Loader.h">
+      <Filter>Header Files\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Camera.h">
+      <Filter>Header Files\Source\Camera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

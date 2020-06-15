@@ -2,7 +2,7 @@
 #include "Object3D.h"
 #include "Cubemap.h"
 
-#include "BaseCamera.h"
+#include "Camera.h"
 
 class SkyBox {
 public:
@@ -10,7 +10,7 @@ public:
 	SkyBox(const char* cubemapPath, Shader* shader);
 	~SkyBox();
 
-	void Render(BaseCamera& camera);
+	void Render(Camera& camera);
 	Shader* GetShader();
 
 private:

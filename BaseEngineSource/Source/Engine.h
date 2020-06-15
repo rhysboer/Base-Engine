@@ -18,7 +18,7 @@ public:
 	void Run();
 
 	// Static Variables
-	static glm::ivec2 GetWindowSize();
+	static glm::vec2 GetWindowSize();
 	static GLFWwindow& GetWindow();
 
 protected:
@@ -30,9 +30,6 @@ protected:
 	virtual void OnEnd() = 0;
 	virtual void OnUpdate() = 0;
 	virtual void OnRender() = 0;
-
-	// Functions
-	glm::ivec2 WindowSize() const;
 
 	// Variables
     static GLFWwindow* window;

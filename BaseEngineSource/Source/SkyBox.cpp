@@ -73,7 +73,7 @@ SkyBox::~SkyBox() {
 	delete cube;
 }
 
-void SkyBox::Render(BaseCamera& camera) {
+void SkyBox::Render(Camera& camera) {
 	texture->BindTexture(0);
 
 	cube->GetShader()->SetMatrix4("projection", camera.Projection());
