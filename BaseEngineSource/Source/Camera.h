@@ -1,6 +1,7 @@
 #pragma once
 #include "Transform.h"
 #include "AABB.h"
+#include "RayCast.h"
 
 #define FRUSTUM_FACES 6
 
@@ -17,12 +18,12 @@ public:
 
 	// Change Camera Styles
 	void CreateOrthographic(const float& left, const float& right, const float& bottom, const float& top);
+	void CreateOrthographic(const float& orthoSize, const bool& autoResize = false);
 	void CreatePerspective(const float& fov);
 
 	void SetNear(const float& distance);
 	void SetFar(const float& distance);
 	void SetFOV(const float& fov);
-	void SetZoom(const float& zoom);
 	void SetDirty();
 
 	glm::mat4 View();
@@ -32,6 +33,10 @@ public:
 	Transform& GetTransform();
 	float GetNear() const;
 	float GetFar() const;
+	float GetOrthoSize() const;
+	float GetAspect() const;
+
+	bool CreateRay(RayCast::Ray& ray);
 
 	bool IsPointInFrustum(const glm::vec3& point);
 	bool IsAABBInFrustum(const AABB& aabb);
@@ -53,9 +58,10 @@ protected:
 	CameraType cameraType;
 
 	float near, far;
-	float fov; // Perspective
-	float left, right, bottom, top, zoom; // Orthographic
+	float fov, aspect; // Perspective
+	float left, right, bottom, top, size; // Orthographic
 
 	bool isDirty;
+	bool autoResizeOrtho;
 };
 

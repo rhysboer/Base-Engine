@@ -68,6 +68,8 @@ void Transform::Rotate(const glm::vec3& axis, const float& degree) {
 }
 
 void Transform::LookAt(const glm::vec3& point) {
+	SetDirty();
+
 	rotation = glm::quat(glm::inverse(glm::lookAt(position, point, GetUp())));
 }
 
@@ -120,7 +122,7 @@ glm::vec3 Transform::GetRight() const {
 }
 
 glm::vec3 Transform::GetForward() const {
-	return rotation * glm::vec3(0, 0, 1);
+	return rotation * glm::vec3(0, 0, -1);
 }
 
 glm::mat4 Transform::ModelMatrix() {

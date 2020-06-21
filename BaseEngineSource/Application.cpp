@@ -7,8 +7,9 @@ void Application::OnStart() {
 	glm::vec2 size = Engine::GetWindowSize();
 
 	//camera->CreatePerspective(60.0f);
-	camera->CreateOrthographic(-size.x / 2.0f, size.x / 2.0f, -size.y / 2.0f, size.y / 2.0f);
-	camera->SetZoom(20);
+	//camera->CreateOrthographic(-size.x / 2.0f, size.x / 2.0f, -size.y / 2.0f, size.y / 2.0f);
+	camera->CreateOrthographic(10);
+	//camera->SetZoom(20);
 	//camera->CreateOrthographic(-10, 10, -10, 10);
 
 	a = CreateObject3D::FromOBJFile(glm::vec3(0), "C:\\Users\\Rhys\\Desktop\\Tribes\\Tile.obj");
@@ -28,6 +29,8 @@ void Application::OnUpdate() {
 	if(Input::IsKeyDown(GLFW_KEY_A))
 		camera->GetTransform().RotateY(-0.1f);
 
+	Gizmos::AddCamera(camera->ProjectionView());
+	Gizmos::DrawLine(glm::vec3(-5, 1, 0), glm::vec3(5, 4, 0), glm::vec3(1.0f, 0.0f, 0.0f));
 
 	//camera->GetTransform().RotateAroundPoint(glm::vec3(0), 1.0f, glm::vec3(0, 1, 0));
 

@@ -40,10 +40,14 @@ void Object3D::RawRender() {
 
 	mesh->BindVAO();
 
-	if(!mesh->UsingEBO())
-		glDrawArrays(GL_TRIANGLES, 0, mesh->GetIndicesCount());
-	else
-		glDrawElements(GL_TRIANGLES, mesh->GetIndicesCount(), GL_UNSIGNED_INT, 0);
+	if(render == RenderType::TRIANGLES) {
+		if(!mesh->UsingEBO())
+			glDrawArrays(GL_TRIANGLES, 0, mesh->GetIndicesCount());
+		else
+			glDrawElements(GL_TRIANGLES, mesh->GetIndicesCount(), GL_UNSIGNED_INT, 0);
+	} else if(render == RenderType::LINES) {
+		glDrawArrays(GL_LINES, 0, mesh->GetIndicesCount());
+	}
 }
 
 void Object3D::SetShader(Shader* shader) {

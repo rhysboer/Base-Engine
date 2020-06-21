@@ -56,6 +56,10 @@ void Engine::Run() {
 	glDepthFunc(GL_LEQUAL);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+#ifdef DEBUG_BUILD
+	Gizmos::Init();
+#endif // DEBUG_BUILD
+
 	// Call On Start
 	OnStart();
 
@@ -75,6 +79,10 @@ void Engine::Run() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		OnRender();
+
+		#ifdef DEBUG_BUILD
+		Gizmos::Render();
+		#endif // DEBUG_BUILD
 
 		// IMGUI
 		ImGui::Render();

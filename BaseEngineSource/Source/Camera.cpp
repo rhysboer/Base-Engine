@@ -1,7 +1,7 @@
 #include "Camera.h"
 #include "Engine.h"
 
-Camera::Camera(const glm::vec3& position, const float& near, const float& far) : isDirty(true), cameraType(CameraType::PERSPECTIVE), zoom(1) {
+Camera::Camera(const glm::vec3& position, const float& near, const float& far) : isDirty(true), cameraType(CameraType::PERSPECTIVE) {
 	this->near = near;
 	this->far = far;
 
@@ -13,7 +13,7 @@ Camera::Camera(const glm::vec3& position, const float& near, const float& far) :
 }
 
 Camera::Camera(const Camera& camera) {
-	for(int i = 0; i < 6; i++)
+	for(int i = 0; i < FRUSTUM_FACES; i++)
 		this->frustumPlanes[i] = camera.frustumPlanes[i];
 
 	this->view = camera.view;
@@ -22,18 +22,20 @@ Camera::Camera(const Camera& camera) {
 	this->far = camera.far;
 
 	this->cameraType = camera.cameraType;
-	
+
 	// Orthographic
 	this->left = camera.left;
 	this->right = camera.right;
 	this->bottom = camera.bottom;
 	this->top = camera.top;
-	this->zoom = camera.zoom;
+	this->size = camera.size;
 
 	// Perspective
 	this->fov = camera.fov;
+	this->aspect = camera.aspect;
 
 	this->isDirty = camera.isDirty;
+	this->autoResizeOrtho = camera.autoResizeOrtho;
 }
 
 void Camera::UpdateCamera() {
@@ -44,13 +46,30 @@ void Camera::UpdateCamera() {
 		view = glm::inverse(transform.ModelMatrix());
 
 		switch(cameraType) {
-			case Camera::CameraType::ORTHOGRAPHIC: {
-				projection = glm::ortho(left / zoom, right / zoom, bottom / zoom, top / zoom, near, far);
+			case Camera::CameraType::ORTHOGRAPHIC:
+			{
+				if(autoResizeOrtho == true) {
+					glm::vec2 res = Engine::GetWindowSize();
+					aspect = res.y == 0 ? 0 : res.x / res.y;
+
+					float height = 2.0f * size;
+					float width = height * aspect;
+
+					this->left = -width / 2.0f;
+					this->right = width / 2.0f;
+					this->bottom = -height / 2.0f;
+					this->top = height / 2.0f;
+				}
+
+				projection = glm::ortho(left, right, bottom, top, near, far);
 				break;
 			}
-			case Camera::CameraType::PERSPECTIVE: {
+			case Camera::CameraType::PERSPECTIVE:
+			{
 				glm::vec2 res = Engine::GetWindowSize();
-				projection = glm::perspective(glm::radians(fov), (res.y == 0) ? 0 : res.x / res.y, near, far);
+
+				this->aspect = (res.y == 0) ? 0 : res.x / res.y;
+				projection = glm::perspective(glm::radians(fov), aspect, near, far);
 				break;
 			}
 		}
@@ -61,22 +80,44 @@ void Camera::UpdateCamera() {
 
 void Camera::CreateOrthographic(const float& left, const float& right, const float& bottom, const float& top) {
 	cameraType = CameraType::ORTHOGRAPHIC;
+	autoResizeOrtho = false;
 
 	this->left = left;
 	this->right = right;
 	this->bottom = bottom;
 	this->top = top;
 
-	projection = glm::ortho(left / zoom, right / zoom, bottom / zoom, top / zoom, near, far);
+	projection = glm::ortho(left, right, bottom, top, near, far);
+}
+
+void Camera::CreateOrthographic(const float& orthoSize, const bool& autoResize) {
+	cameraType = CameraType::ORTHOGRAPHIC;
+	autoResizeOrtho = autoResize;
+
+	glm::vec2 res = Engine::GetWindowSize();
+	aspect = res.y == 0 ? 0 : res.x / res.y;
+	size = orthoSize;
+
+	float height = 2.0f * orthoSize;
+	float width = height * aspect;
+
+	this->left = -width / 2.0f;
+	this->right = width / 2.0f;
+	this->bottom = -height / 2.0f;
+	this->top = height / 2.0f;
+
+	projection = glm::ortho(left, right, bottom, top, near, far);
 }
 
 void Camera::CreatePerspective(const float& fov) {
 	cameraType = CameraType::PERSPECTIVE;
-	
-	this->fov = fov;
 
 	glm::vec2 res = Engine::GetWindowSize();
-	projection = glm::perspective(glm::radians(fov), (res.y == 0) ? 0 : res.x / res.y, near, far);
+
+	this->aspect = (res.y == 0) ? 0 : res.x / res.y;
+	this->fov = fov;
+
+	projection = glm::perspective(glm::radians(fov), aspect, near, far);
 }
 
 void Camera::SetNear(const float& distance) {
@@ -94,12 +135,6 @@ void Camera::SetFar(const float& distance) {
 void Camera::SetFOV(const float& fov) {
 	this->fov = glm::radians(fov);
 
-	SetDirty();
-}
-
-void Camera::SetZoom(const float& zoom) {
-	this->zoom = zoom;
-	
 	SetDirty();
 }
 
@@ -132,6 +167,51 @@ float Camera::GetNear() const {
 
 float Camera::GetFar() const {
 	return far;
+}
+
+float Camera::GetOrthoSize() const {
+	return size;
+}
+
+float Camera::GetAspect() const {
+	return aspect;
+}
+
+bool Camera::CreateRay(RayCast::Ray& ray) {
+	UpdateCamera();
+
+	glm::vec2 screenSize = Engine::GetWindowSize();
+	glm::vec2 mousePos = Input::MousePosition();
+
+	if(screenSize.x == 0 || screenSize.y == 0)
+		return false;
+
+	// Convert cursor cordinates to normalised device coordinates. (-1, 1)
+	glm::vec3 mouseNDC = glm::vec3(
+		(2.0f * mousePos.x) / screenSize.x - 1.0f,
+		1.0f - (2.0f * mousePos.y) / screenSize.y,
+		1.0f
+	);
+
+	// Homogeneous clip coordinates
+	glm::vec4 ray_clip = glm::vec4(mouseNDC.x, mouseNDC.y, -1.0f, 1.0f);
+
+	// To Eye coordinates
+	glm::vec4 ray_eye = glm::inverse(projection) * ray_clip;
+	ray_eye = glm::vec4(ray_eye.x, ray_eye.y, -1.0f, 0.0f);
+
+	// To World Coordinates
+	glm::vec3 ray_world = glm::inverse(view) * ray_eye;
+
+	if(cameraType == CameraType::PERSPECTIVE) {
+		ray.origin = transform.GetPosition();
+		ray.direction = glm::normalize(ray_world);
+	} else {
+		ray.origin = transform.GetPosition() + ray_world;
+		ray.direction = transform.GetForward();
+	}
+
+	return true;
 }
 
 void Camera::UpdateFrustumPlanes() {

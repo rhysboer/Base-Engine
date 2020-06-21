@@ -143,6 +143,7 @@
     <ClCompile Include="Source\Cubemap.cpp" />
     <ClCompile Include="Source\Engine.cpp" />
     <ClCompile Include="Source\Framebuffer.cpp" />
+    <ClCompile Include="Source\Gizmos.cpp" />
     <ClCompile Include="Source\glad.c" />
     <ClCompile Include="Source\imgui.cpp" />
     <ClCompile Include="Source\imgui_demo.cpp" />
@@ -156,6 +157,7 @@
     <ClCompile Include="Source\Mesh.cpp" />
     <ClCompile Include="Source\Object3D.cpp" />
     <ClCompile Include="Source\PostProcess.cpp" />
+    <ClCompile Include="Source\RayCast.cpp" />
     <ClCompile Include="Source\Shader.cpp" />
     <ClCompile Include="Source\ShaderManager.cpp" />
     <ClCompile Include="Source\SkyBox.cpp" />
@@ -172,6 +174,7 @@
     <ClInclude Include="Source\Cubemap.h" />
     <ClInclude Include="Source\Engine.h" />
     <ClInclude Include="Source\Framebuffer.h" />
+    <ClInclude Include="Source\Gizmos.h" />
     <ClInclude Include="Source\imconfig.h" />
     <ClInclude Include="Source\imgui.h" />
     <ClInclude Include="Source\imgui_glm.h" />
@@ -187,6 +190,7 @@
     <ClInclude Include="Source\Mesh.h" />
     <ClInclude Include="Source\Object3D.h" />
     <ClInclude Include="Source\PostProcess.h" />
+    <ClInclude Include="Source\RayCast.h" />
     <ClInclude Include="Source\Shader.h" />
     <ClInclude Include="Source\ShaderManager.h" />
     <ClInclude Include="Source\SkyBox.h" />

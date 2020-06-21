@@ -9,6 +9,12 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 
+#define DEBUG_BUILD
+
+#ifdef DEBUG_BUILD
+#include "Gizmos.h"
+#endif // DEBUG_BUILD
+
 class Engine {
 public:
 	// Creates the engine & window

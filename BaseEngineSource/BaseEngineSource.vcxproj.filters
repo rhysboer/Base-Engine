@@ -49,6 +49,18 @@
     <Filter Include="Source Files\Source\Objects">
       <UniqueIdentifier>{efcc8eb2-16ce-4841-8194-d056553464f4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Source\Util">
+      <UniqueIdentifier>{0a5222ad-cd26-4ed9-bda8-c3f24f6050e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Source\Util">
+      <UniqueIdentifier>{41c8e4bd-8db4-4299-8b9d-c11c41095c0e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Source\Phsyics">
+      <UniqueIdentifier>{bdf726c5-890d-41d8-8b91-1cfaedd73f8b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Source\Physics">
+      <UniqueIdentifier>{af728685-0cab-4ade-8675-61f6ad192e03}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\imgui.cpp">
@@ -129,11 +141,17 @@
     <ClCompile Include="Source\Object3D.cpp">
       <Filter>Source Files\Source\Objects</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Loader.cpp">
-      <Filter>Source Files\Source</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Camera.cpp">
       <Filter>Source Files\Source\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Loader.cpp">
+      <Filter>Source Files\Source\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\RayCast.cpp">
+      <Filter>Source Files\Source\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Gizmos.cpp">
+      <Filter>Source Files\Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -221,11 +239,17 @@
     <ClInclude Include="Source\Object3D.h">
       <Filter>Header Files\Source\Objects</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Loader.h">
-      <Filter>Header Files\Source</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Camera.h">
       <Filter>Header Files\Source\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Loader.h">
+      <Filter>Header Files\Source\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\RayCast.h">
+      <Filter>Header Files\Source\Phsyics</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Gizmos.h">
+      <Filter>Header Files\Source</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

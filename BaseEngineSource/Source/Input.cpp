@@ -11,15 +11,11 @@ glm::vec2 Input::mousePosition = glm::vec2(0.0f);
 glm::vec2 Input::mouseLastPosition = glm::vec2(0.0f);
 glm::vec2 Input::mouseDelta = glm::vec2(0.0f);
 
-Input::Input() { }
-
-Input::~Input() { }
-
 glm::vec2 Input::MousePosition() {
 	return mousePosition;
 }
 
-glm::vec2 Input::MouseDeltaPosition() {
+glm::vec2 Input::MouseDelta() {
 	return mouseDelta;
 }
 
@@ -75,7 +71,7 @@ bool Input::IsCursorDisabled() {
 void Input::SetCallbacks(GLFWwindow* window) {
 	glfwSetKeyCallback(window, KeyCallback);
 	glfwSetMouseButtonCallback(window, MouseButtonCallback);
-	glfwSetCursorPosCallback(window, MousePositionCallback);
+	//glfwSetCursorPosCallback(window, MousePositionCallback);
 	glfwSetScrollCallback(window, MouseScrollCallback);
 }
 
@@ -89,12 +85,12 @@ void Input::MouseButtonCallback(GLFWwindow* window, int button, int action, int 
 	mouseButtonStates[button] = action;
 }
 
-void Input::MousePositionCallback(GLFWwindow* window, double xpos, double ypos) {
-	mouseLastPosition = mousePosition;
-	mousePosition = glm::vec2(xpos, ypos);
-
-	mouseDelta = mousePosition - mouseLastPosition;
-}
+//void Input::MousePositionCallback(GLFWwindow* window, double xpos, double ypos) {
+//	mouseLastPosition = mousePosition;
+//	mousePosition = glm::vec2(xpos, ypos);
+//
+//	mouseDelta = mousePosition - mouseLastPosition;
+//}
 
 void Input::MouseScrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
 	mouseScrollState[0] += xoffset;
@@ -103,7 +99,7 @@ void Input::MouseScrollCallback(GLFWwindow* window, double xoffset, double yoffs
 
 void Input::Update() {
 	// Update keyboard states
-	for(int i = 0; i < GLFW_KEY_LAST; i++) 
+	for(int i = 0; i < GLFW_KEY_LAST; i++)
 		keyPrevStates[i] = keyStates[i];
 
 	// Update mouse states
@@ -113,5 +109,13 @@ void Input::Update() {
 	for(int i = 0; i < 2; i++)
 		mouseScrollState[i] = 0;
 
-	mouseDelta = glm::vec2(0.0);
+	//mouseDelta = glm::vec2(0.0);
+
+	double x, y;
+	glfwGetCursorPos(&Engine::GetWindow(), &x, &y);
+	mouseLastPosition = mousePosition;
+	mousePosition.x = x;
+	mousePosition.y = y;
+
+	mouseDelta = mousePosition - mouseLastPosition;
 }
