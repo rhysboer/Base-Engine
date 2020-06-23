@@ -14,13 +14,13 @@ void AABB::Update(const glm::vec3& origin, const glm::vec3 size) {
 
 	points[(int)Corner::TOP_BACK_LEFT] = glm::vec3(min.x, max.y, min.z);
 	points[(int)Corner::TOP_BACK_RIGHT]	= glm::vec3(max.x, max.y, min.z);
-	points[(int)Corner::TOP_FRONT_LEFT]	= glm::vec3(min.x, max.y, max.z);
-	points[(int)Corner::TOP_FRONT_RIGHT] = glm::vec3(max.x, max.y, max.z);
+	points[(int)Corner::TOP_FRONT_RIGHT]	= glm::vec3(max.x, max.y, max.z); //glm::vec3(min.x, max.y, max.z);
+	points[(int)Corner::TOP_FRONT_LEFT] = glm::vec3(min.x, max.y, max.z); //glm::vec3(max.x, max.y, max.z);
 
 	points[(int)Corner::BOT_BACK_LEFT] = glm::vec3(min.x, min.y, min.z);
 	points[(int)Corner::BOT_BACK_RIGHT] = glm::vec3(max.x, min.y, min.z);
-	points[(int)Corner::BOT_FRONT_LEFT] = glm::vec3(min.x, min.y, max.z);
-	points[(int)Corner::BOT_FRONT_RIGHT] = glm::vec3(max.x, min.y, max.z);
+	points[(int)Corner::BOT_FRONT_RIGHT] = glm::vec3(max.x, min.y, max.z); //glm::vec3(min.x, min.y, max.z);
+	points[(int)Corner::BOT_FRONT_LEFT] = glm::vec3(min.x, min.y, max.z); //glm::vec3(max.x, min.y, max.z);
 }
 
 bool AABB::IsOverlapping(const glm::vec3& origin_A, const glm::vec3& size_A, const glm::vec3& origin_B, const glm::vec3& size_B) {
@@ -53,4 +53,16 @@ bool AABB::IsOverlapping(const AABB& aabb) const {
 glm::vec3 AABB::GetPoint(const unsigned int& index) const {
 	if(index >= 8) return glm::vec3(0);
 	return points[index];
+}
+
+glm::vec3 AABB::GetOrigin() const {
+	return origin;
+}
+
+glm::vec3 AABB::GetMin() const {
+	return min;
+}
+
+glm::vec3 AABB::GetMax() const {
+	return max;
 }

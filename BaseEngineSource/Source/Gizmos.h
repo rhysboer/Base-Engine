@@ -3,6 +3,10 @@
 #include "Camera.h"
 #include "Object3D.h"
 #include "RayCast.h"
+#include "Plane.h"
+#include "AABB.h"
+
+#define BASECOLOUR glm::vec3(0.5f)
 
 class Gizmos {
 public:
@@ -11,9 +15,12 @@ public:
 	static void Render();
 	static void AddCamera(const glm::mat4& cameraMatrix);
 
-	static void DrawLine(const glm::vec3& start, const glm::vec3& end, const glm::vec3& colour = glm::vec3(0.5f, 0.5f, 0.5f));
-	static void DrawRay(const RayCast::Ray& ray, const glm::vec3& colour = glm::vec3(0.5f, 0.5f, 0.5f));
-	static void DrawCube(const glm::vec3& position, const unsigned int& size, const glm::vec3& colour = glm::vec3(0.5f, 0.5f, 0.5f));
+	static void DrawLine(const glm::vec3& start, const glm::vec3& end, const glm::vec3& colour = BASECOLOUR);
+	static void DrawCube(const glm::vec3& position, const float& size, const glm::vec3& colour = BASECOLOUR);
+
+	static void DrawRay(const RayCast::Ray& ray, const glm::vec3& colour = BASECOLOUR);
+	static void DrawPlane(const Plane& plane, const glm::vec3& normalColour = BASECOLOUR, const glm::vec3& colour = BASECOLOUR);
+	static void DrawAABB(const AABB& aabb, const glm::vec3& colour = BASECOLOUR);
 
 private:
 

@@ -27,6 +27,7 @@ public:
 	void Translate(const glm::vec3& direction);
 
 	glm::vec3 GetPosition() const;
+	glm::quat GetRotation() const;
 	glm::vec3 GetUp() const;
 	glm::vec3 GetRight() const;
 	glm::vec3 GetForward() const;

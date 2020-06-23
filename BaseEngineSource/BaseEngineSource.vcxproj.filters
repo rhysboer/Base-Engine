@@ -61,6 +61,12 @@
     <Filter Include="Source Files\Source\Physics">
       <UniqueIdentifier>{af728685-0cab-4ade-8675-61f6ad192e03}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Source\Phsyics\Shapes">
+      <UniqueIdentifier>{b2f499cf-2b9d-464d-a7bc-9af3179ad26d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Source\Physics\Shapes">
+      <UniqueIdentifier>{ef517265-4f57-49a6-9762-ab362fec0104}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\imgui.cpp">
@@ -95,9 +101,6 @@
     </ClCompile>
     <ClCompile Include="Source\BaseTexture.cpp">
       <Filter>Source Files\Source\Textures</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\AABB.cpp">
-      <Filter>Source Files\Source</Filter>
     </ClCompile>
     <ClCompile Include="Source\Engine.cpp">
       <Filter>Source Files\Source</Filter>
@@ -153,11 +156,17 @@
     <ClCompile Include="Source\Gizmos.cpp">
       <Filter>Source Files\Source</Filter>
     </ClCompile>
+    <ClCompile Include="Source\AABB.cpp">
+      <Filter>Source Files\Source\Physics\Shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Plane.cpp">
+      <Filter>Source Files\Source\Physics\Shapes</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\FlyCamera.cpp">
+      <Filter>Source Files\Source\Camera</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Source\AABB.h">
-      <Filter>Header Files\Source</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Engine.h">
       <Filter>Header Files\Source</Filter>
     </ClInclude>
@@ -250,6 +259,15 @@
     </ClInclude>
     <ClInclude Include="Source\Gizmos.h">
       <Filter>Header Files\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\AABB.h">
+      <Filter>Header Files\Source\Phsyics\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Plane.h">
+      <Filter>Header Files\Source\Phsyics\Shapes</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\FlyCamera.h">
+      <Filter>Header Files\Source\Camera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

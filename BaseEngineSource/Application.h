@@ -1,6 +1,6 @@
 #pragma once
 #include "Engine.h"
-#include "Camera.h"
+#include "FlyCamera.h"
 #include "Object3D.h"
 
 #include "glm/matrix.hpp"
@@ -16,7 +16,7 @@ private:
 	virtual void OnUpdate() override;
 	virtual void OnRender() override;
 
-	Camera* camera;
+	FlyCamera* camera;
 
 	Object3D* a;
 	Object3D* b;

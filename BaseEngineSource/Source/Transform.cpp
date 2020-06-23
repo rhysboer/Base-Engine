@@ -113,6 +113,10 @@ glm::vec3 Transform::GetPosition() const {
 	return position;
 }
 
+glm::quat Transform::GetRotation() const {
+	return rotation;
+}
+
 glm::vec3 Transform::GetUp() const {
 	return rotation * glm::vec3(0, 1, 0);
 }
