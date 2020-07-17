@@ -5,7 +5,7 @@
 
 #include "glm/matrix.hpp"
 
-class Application : public Engine {
+class Application : public BaseEngine::Engine {
 public:
 
 
@@ -16,8 +16,8 @@ private:
 	virtual void OnUpdate() override;
 	virtual void OnRender() override;
 
-	FlyCamera* camera;
+	BaseEngine::FlyCamera* camera;
 
-	Object3D* a;
-	Object3D* b;
+	BaseEngine::Object3D* a;
+	BaseEngine::Object3D* b;
 };

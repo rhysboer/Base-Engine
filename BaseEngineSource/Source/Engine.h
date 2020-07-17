@@ -15,36 +15,38 @@
 #include "Gizmos.h"
 #endif // DEBUG_BUILD
 
-class Engine {
-public:
-	// Creates the engine & window
-	bool CreateEngine(const char* title, const int& width, const int& height);
+namespace BaseEngine {
+	class Engine {
+	public:
+		// Creates the engine & window
+		bool CreateEngine(const char* title, const int& width, const int& height);
 
-	// Begins the engine
-	void Run();
+		// Begins the engine
+		void Run();
 
-	// Static Variables
-	static glm::vec2 GetWindowSize();
-	static GLFWwindow& GetWindow();
+		// Static Variables
+		static glm::vec2 GetWindowSize();
+		static GLFWwindow& GetWindow();
 
-protected:
-	// Constructors
-	Engine();
+	protected:
+		// Constructors
+		Engine();
 
-	// Virtual Functions
-	virtual void OnStart() = 0;
-	virtual void OnEnd() = 0;
-	virtual void OnUpdate() = 0;
-	virtual void OnRender() = 0;
+		// Virtual Functions
+		virtual void OnStart() = 0;
+		virtual void OnEnd() = 0;
+		virtual void OnUpdate() = 0;
+		virtual void OnRender() = 0;
 
-	// Variables
-    static GLFWwindow* window;
+		// Variables
+		static GLFWwindow* window;
 
-	glm::vec3 colourBackground;
-private:
+		glm::vec3 colourBackground;
+	private:
 	
-	void InitCallbacks();
+		void InitCallbacks();
 
-	bool isInitialized;
-};
+		bool isInitialized;
+	};
+}
 

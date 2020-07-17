@@ -4,18 +4,19 @@
 
 #include "Camera.h"
 
-class SkyBox {
-public:
-	
-	SkyBox(const char* cubemapPath, Shader* shader);
-	~SkyBox();
+namespace BaseEngine {
+	class SkyBox {
+	public:
 
-	void Render(Camera& camera);
-	Shader* GetShader();
+		SkyBox(const char* cubemapPath, Shader* shader);
+		~SkyBox();
 
-private:
+		void Render(Camera& camera);
+		Shader* GetShader();
 
-	Cubemap* texture;
-	Object3D* cube;
-};
+	private:
 
+		Cubemap* texture;
+		Object3D* cube;
+	};
+}

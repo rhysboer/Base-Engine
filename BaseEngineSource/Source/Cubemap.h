@@ -2,15 +2,17 @@
 #include <string>
 #include "BaseTexture.h"
 
-class Cubemap : public BaseTexture {
-public:
-	Cubemap(const char* path);
-	~Cubemap();
+namespace BaseEngine {
+	class Cubemap : public BaseTexture {
+	public:
+		Cubemap(const char* path);
+		~Cubemap();
 
-	void BindTexture(const unsigned int& index = 0) const override;
+		void BindTexture(const unsigned int& index = 0) const override;
 
-private:
+	private:
 
-	void LoadCubemap(const char* path);
-};
+		void LoadCubemap(const char* path);
+	};
+}
 

@@ -150,9 +150,6 @@
     <ClCompile Include="Source\Loader.cpp">
       <Filter>Source Files\Source\Util</Filter>
     </ClCompile>
-    <ClCompile Include="Source\RayCast.cpp">
-      <Filter>Source Files\Source\Physics</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Gizmos.cpp">
       <Filter>Source Files\Source</Filter>
     </ClCompile>
@@ -164,6 +161,9 @@
     </ClCompile>
     <ClCompile Include="Source\FlyCamera.cpp">
       <Filter>Source Files\Source\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Raycast.cpp">
+      <Filter>Source Files\Source\Physics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -254,9 +254,6 @@
     <ClInclude Include="Source\Loader.h">
       <Filter>Header Files\Source\Util</Filter>
     </ClInclude>
-    <ClInclude Include="Source\RayCast.h">
-      <Filter>Header Files\Source\Phsyics</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Gizmos.h">
       <Filter>Header Files\Source</Filter>
     </ClInclude>
@@ -268,6 +265,9 @@
     </ClInclude>
     <ClInclude Include="Source\FlyCamera.h">
       <Filter>Header Files\Source\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Raycast.h">
+      <Filter>Header Files\Source\Phsyics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

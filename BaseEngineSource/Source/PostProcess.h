@@ -2,26 +2,29 @@
 #include "Framebuffer.h"
 #include "ShaderManager.h"
 
-class PostProcess {
-public:
+namespace BaseEngine {
 
-	PostProcess(Shader* shader, const float& sizeX, const float& sizeY, const FramebufferType& type, const unsigned int& colourAttachments = 1);
-	~PostProcess();
+	class PostProcess {
+	public:
 
-	Shader& GetShader() const;
-	Framebuffer& GetBuffer() const;
+		PostProcess(Shader* shader, const float& sizeX, const float& sizeY, const FramebufferType& type, const unsigned int& colourAttachments = 1);
+		~PostProcess();
 
-	void Begin();
-	void End();
+		Shader& GetShader() const;
+		Framebuffer& GetBuffer() const;
 
-	void Render();
+		void Begin();
+		void End();
 
-private:
+		void Render();
 
-	Framebuffer* framebuffer;
-	Shader* shader;
+	private:
 
-	unsigned int vao;
-	unsigned int vbo;
-};
+		Framebuffer* framebuffer;
+		Shader* shader;
+
+		unsigned int vao;
+		unsigned int vbo;
+	};
+}
 

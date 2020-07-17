@@ -2,21 +2,23 @@
 #include "Camera.h"
 #include "glm/gtx/quaternion.hpp"
 
-class FlyCamera : public Camera {
-public:
+namespace BaseEngine {
 
-	FlyCamera(const glm::vec3& position, const float& near = 0.1f, const float& far = 1000.0f);
-	~FlyCamera();
+	class FlyCamera : public Camera {
+	public:
 
-	void Update();
+		FlyCamera(const glm::vec3& position, const float& near = 0.1f, const float& far = 1000.0f);
+		~FlyCamera();
 
-	void SetSpeed(const float& speed);
+		void Update();
 
-private:
+		void SetSpeed(const float& speed);
 
-	glm::vec3 euler;
+	private:
 
-	float rotationSpeed;
-	float speed;
-};
+		glm::vec3 euler;
 
+		float rotationSpeed;
+		float speed;
+	};
+}

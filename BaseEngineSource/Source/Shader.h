@@ -8,37 +8,40 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
 
-class ShaderManager;
+namespace BaseEngine {
 
-class Shader {
-public:
-	Shader();
-	~Shader();
+	class ShaderManager;
 
-	void UseProgram();
+	class Shader {
+	public:
+		Shader();
+		~Shader();
 
-	void SetFloat(const char* name, float value);
-	void SetFloatArray(const char* name, const unsigned int& size, const float& value);
-	void SetInt(const char* name, int value);
-	void SetMatrix4(const char* name, const glm::mat4& value);
-	void SetMatrix3(const char* name, const glm::mat3& value);
-	void SetVector2(const char* name, const glm::vec2& value);
-	void SetVector2Array(const char* name, const unsigned int& size, const glm::vec2& value);
-	void SetVector3(const char* name, const glm::vec3& value);
-	void SetVector4(const char* name, const glm::vec4& value);
+		void UseProgram();
 
-	void SetTextureUnit(const char* name, const unsigned int& textureUnit);
+		void SetFloat(const char* name, float value);
+		void SetFloatArray(const char* name, const unsigned int& size, const float& value);
+		void SetInt(const char* name, int value);
+		void SetMatrix4(const char* name, const glm::mat4& value);
+		void SetMatrix3(const char* name, const glm::mat3& value);
+		void SetVector2(const char* name, const glm::vec2& value);
+		void SetVector2Array(const char* name, const unsigned int& size, const glm::vec2& value);
+		void SetVector3(const char* name, const glm::vec3& value);
+		void SetVector4(const char* name, const glm::vec4& value);
 
-protected:
-	friend ShaderManager;
+		void SetTextureUnit(const char* name, const unsigned int& textureUnit);
 
-	bool LoadShader(std::string vertSource, std::string fragSource, std::string geomShader = ""); // Graphics Shader
-	bool LoadShader(const std::string& computeSource); // Compute Shader
+	protected:
+		friend ShaderManager;
 
-private:
+		bool LoadShader(std::string vertSource, std::string fragSource, std::string geomShader = ""); // Graphics Shader
+		bool LoadShader(const std::string& computeSource); // Compute Shader
 
-	bool ErrorHandler(unsigned int toTest, unsigned int statusType);
+	private:
 
-	int shaderProgram;
-};
+		bool ErrorHandler(unsigned int toTest, unsigned int statusType);
 
+		int shaderProgram;
+	};
+
+}

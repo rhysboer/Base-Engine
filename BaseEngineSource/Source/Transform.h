@@ -3,52 +3,54 @@
 #include "glm/gtx/quaternion.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
-class Transform {
-public:
-	Transform();
-	Transform(const Transform& other);
-	~Transform();
+namespace BaseEngine {
 
-	void SetPosition(const glm::vec3& position);
-	void SetScale(const glm::vec3& scale);
-	void SetScale(const float& scale);
-	void SetRotation(const glm::vec3& euler);
-	void SetRotation(const glm::quat& rotation);
+	class Transform {
+	public:
+		Transform();
+		Transform(const Transform& other);
+		~Transform();
 
-	// Rotate
-	void RotateX(const float& degree);
-	void RotateY(const float& degree);
-	void RotateZ(const float& degree);
-	void Rotate(const glm::vec3& axis, const float& degree);
-	//void RotateAroundPoint(const glm::vec3& point, const float& angle, const glm::vec3& axis);
+		void SetPosition(const glm::vec3& position);
+		void SetScale(const glm::vec3& scale);
+		void SetScale(const float& scale);
+		void SetRotation(const glm::vec3& euler);
+		void SetRotation(const glm::quat& rotation);
 
-	void LookAt(const glm::vec3& point);
+		// Rotate
+		void RotateX(const float& degree);
+		void RotateY(const float& degree);
+		void RotateZ(const float& degree);
+		void Rotate(const glm::vec3& axis, const float& degree);
+		//void RotateAroundPoint(const glm::vec3& point, const float& angle, const glm::vec3& axis);
 
-	void Translate(const glm::vec3& direction);
+		void LookAt(const glm::vec3& point);
 
-	glm::vec3 GetPosition() const;
-	glm::quat GetRotation() const;
-	glm::vec3 GetUp() const;
-	glm::vec3 GetRight() const;
-	glm::vec3 GetForward() const;
+		void Translate(const glm::vec3& direction);
 
-	glm::mat4 ModelMatrix();
+		glm::vec3 GetPosition() const;
+		glm::quat GetRotation() const;
+		glm::vec3 GetUp() const;
+		glm::vec3 GetRight() const;
+		glm::vec3 GetForward() const;
 
-	void SetDirty();
-	bool IsDirty() const;
-	void SetAutoUpdate(bool option);
-	
-	void UpdateTransform();
+		glm::mat4 ModelMatrix();
 
-private:
+		void SetDirty();
+		bool IsDirty() const;
+		void SetAutoUpdate(bool option);
 
-	bool isDirty;
-	bool autoUpdate;
+		void UpdateTransform();
 
-	glm::vec3 position;
-	glm::quat rotation;
-	glm::vec3 scale;
+	private:
 
-	glm::mat4 model;
-};
+		bool isDirty;
+		bool autoUpdate;
 
+		glm::vec3 position;
+		glm::quat rotation;
+		glm::vec3 scale;
+
+		glm::mat4 model;
+	};
+}

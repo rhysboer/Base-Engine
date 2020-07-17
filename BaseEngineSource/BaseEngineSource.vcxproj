@@ -77,6 +77,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)include;$(ProjectDir)source</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -91,6 +92,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)include;$(ProjectDir)source</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -107,6 +109,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)include;$(ProjectDir)source</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -125,6 +128,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)include;$(ProjectDir)source</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -159,7 +163,7 @@
     <ClCompile Include="Source\Object3D.cpp" />
     <ClCompile Include="Source\Plane.cpp" />
     <ClCompile Include="Source\PostProcess.cpp" />
-    <ClCompile Include="Source\RayCast.cpp" />
+    <ClCompile Include="Source\Raycast.cpp" />
     <ClCompile Include="Source\Shader.cpp" />
     <ClCompile Include="Source\ShaderManager.cpp" />
     <ClCompile Include="Source\SkyBox.cpp" />
@@ -194,7 +198,7 @@
     <ClInclude Include="Source\Object3D.h" />
     <ClInclude Include="Source\Plane.h" />
     <ClInclude Include="Source\PostProcess.h" />
-    <ClInclude Include="Source\RayCast.h" />
+    <ClInclude Include="Source\Raycast.h" />
     <ClInclude Include="Source\Shader.h" />
     <ClInclude Include="Source\ShaderManager.h" />
     <ClInclude Include="Source\SkyBox.h" />

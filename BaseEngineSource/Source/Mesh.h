@@ -3,26 +3,29 @@
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 
-class Mesh {
-public:
+namespace BaseEngine {
 
-	Mesh(const std::vector<float>& vertexData, const std::vector<unsigned int>& attributes, const std::vector<unsigned int>& indices = std::vector<unsigned int>());
-	~Mesh();
+	class Mesh {
+	public:
 
-	void Destroy();
-	void BindVAO();
+		Mesh(const std::vector<float>& vertexData, const std::vector<unsigned int>& attributes, const std::vector<unsigned int>& indices = std::vector<unsigned int>());
+		~Mesh();
 
-	bool UsingEBO() const;
-	unsigned int GetIndicesCount() const;
+		void Destroy();
+		void BindVAO();
 
-private:
+		bool UsingEBO() const;
+		unsigned int GetIndicesCount() const;
 
-	Mesh(Mesh const & mesh) = delete;
-	 
-	unsigned int vao;
-	unsigned int vbo;
-	unsigned int ebo;
+	private:
 
-	unsigned int indicesCount;
-};
+		Mesh(Mesh const& mesh) = delete;
+
+		unsigned int vao;
+		unsigned int vbo;
+		unsigned int ebo;
+
+		unsigned int indicesCount;
+	};
+}
 

@@ -5,43 +5,46 @@
 #include "glm/glm.hpp"
 #include "Engine.h"
 
-enum class FramebufferType {
-	DEPTH_TEX, // Depth texture
-	COLOUR_TEX, // Colour texture with NO renderbuffer
-	COLOUR_TEX_DEPTH, // Colour texture with renderbuffer depth
-	COLOUR_TEX_DEPTH_TEX, // Colour and depth texture
-};
+namespace BaseEngine {
 
-class Framebuffer {
-public:
-	Framebuffer(const glm::vec2& size, const FramebufferType& type, unsigned int colourAttachments = 1);
-	~Framebuffer();
+	enum class FramebufferType {
+		DEPTH_TEX, // Depth texture
+		COLOUR_TEX, // Colour texture with NO renderbuffer
+		COLOUR_TEX_DEPTH, // Colour texture with renderbuffer depth
+		COLOUR_TEX_DEPTH_TEX, // Colour and depth texture
+	};
 
-	void Render_Begin();
-	void Render_End();
-	void Bind();
+	class Framebuffer {
+	public:
+		Framebuffer(const glm::vec2& size, const FramebufferType& type, unsigned int colourAttachments = 1);
+		~Framebuffer();
 
-	void SetSize(const glm::vec2& size);
+		void Render_Begin();
+		void Render_End();
+		void Bind();
 
-	void BindTextureColour(const unsigned int& texture, const unsigned int& index) const;
-	void BindTextureDepth(const unsigned int& index) const;
+		void SetSize(const glm::vec2& size);
 
-	unsigned int GetTexture(unsigned int index) const;
+		void BindTextureColour(const unsigned int& texture, const unsigned int& index) const;
+		void BindTextureDepth(const unsigned int& index) const;
 
-private:
+		unsigned int GetTexture(unsigned int index) const;
 
-	void CreateFramebuffer(const unsigned int& colourAttachments = 1);
+	private:
 
-	glm::vec2 framebufferSize;
-	glm::vec2 viewportSize; // Viewport size before resizing
+		void CreateFramebuffer(const unsigned int& colourAttachments = 1);
 
-	FramebufferType type;
+		glm::vec2 framebufferSize;
+		glm::vec2 viewportSize; // Viewport size before resizing
 
-	unsigned int fbo; // Framebuffer
-	unsigned int rbo; // Renderbuffer
+		FramebufferType type;
 
-	unsigned int totalColourAttachments;
-	std::vector<unsigned int> colourTexture = std::vector<unsigned int>();
-	unsigned int depthTexture;
-};
+		unsigned int fbo; // Framebuffer
+		unsigned int rbo; // Renderbuffer
+
+		unsigned int totalColourAttachments;
+		std::vector<unsigned int> colourTexture = std::vector<unsigned int>();
+		unsigned int depthTexture;
+	};
+}
 

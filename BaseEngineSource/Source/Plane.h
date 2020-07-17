@@ -1,32 +1,34 @@
 #pragma once
 #include "glm/glm.hpp"
 
-class Plane {
-public:
 
-	Plane(const glm::vec3& point0, const glm::vec3& point1, const glm::vec3& point2);
-	Plane(const Plane& plane);
-	~Plane();
+namespace BaseEngine {
+	class Plane {
+	public:
 
-	void SetNormal(const glm::vec3& normal);
-	void SetPosition(const glm::vec3& position);
+		Plane(const glm::vec3& point0, const glm::vec3& point1, const glm::vec3& point2);
+		Plane(const Plane& plane);
+		~Plane();
 
-	inline glm::vec3 GetPosition() const {
-		return center;
-	}
-	inline glm::vec3 GetNormal() const {
-		return normal;
-	}
-	inline glm::vec3 GetRight() const {
-		return right;
-	}
+		void SetNormal(const glm::vec3& normal);
+		void SetPosition(const glm::vec3& position);
 
-protected:
+		inline glm::vec3 GetPosition() const {
+			return center;
+		}
+		inline glm::vec3 GetNormal() const {
+			return normal;
+		}
+		inline glm::vec3 GetRight() const {
+			return right;
+		}
 
-	glm::vec3 center;
-	glm::vec3 normal;
-	glm::vec3 right;
+	protected:
 
-	float distance;
-};
+		glm::vec3 center;
+		glm::vec3 normal;
+		glm::vec3 right;
 
+		float distance;
+	};
+}
