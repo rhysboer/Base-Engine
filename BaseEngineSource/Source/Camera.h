@@ -5,7 +5,7 @@
 
 #define FRUSTUM_FACES 6
 
-namespace BaseEngine {
+namespace BE {
 
 	class Camera {
 	public:

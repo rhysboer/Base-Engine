@@ -1,6 +1,6 @@
 #include "Time.h"
 
-namespace BaseEngine {
+namespace BE {
 	float Time::deltaTime = 0.0f;
 	float Time::sinceLastUpdate = 0.0f;
 	float Time::totalTime = 0.0f;

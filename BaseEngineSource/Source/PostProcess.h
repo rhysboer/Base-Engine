@@ -2,7 +2,7 @@
 #include "Framebuffer.h"
 #include "ShaderManager.h"
 
-namespace BaseEngine {
+namespace BE {
 
 	class PostProcess {
 	public:

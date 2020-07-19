@@ -3,7 +3,7 @@
 #include <GLFW/glfw3.h>
 #include "glm/glm.hpp"
 
-namespace BaseEngine {
+namespace BE {
 
 	class Engine;
 

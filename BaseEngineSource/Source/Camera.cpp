@@ -1,7 +1,7 @@
 #include "Camera.h"
 #include "Engine.h"
 
-namespace BaseEngine {
+namespace BE {
 
 	Camera::Camera(const glm::vec3& position, const float& near, const float& far) : isDirty(true), cameraType(CameraType::PERSPECTIVE) {
 		this->near = near;

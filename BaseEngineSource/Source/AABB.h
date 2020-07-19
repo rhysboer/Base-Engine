@@ -1,7 +1,7 @@
 #pragma once
 #include "glm/glm.hpp"
 
-namespace BaseEngine {
+namespace BE {
 
 	class AABB {
 	public:

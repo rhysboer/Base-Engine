@@ -1,6 +1,6 @@
 #include "Transform.h"
 
-namespace BaseEngine {
+namespace BE {
 	Transform::Transform() : position(0), rotation(glm::identity<glm::quat>()), scale(1), model(1), isDirty(false), autoUpdate(true) {
 	}
 

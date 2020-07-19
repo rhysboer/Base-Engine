@@ -1,6 +1,6 @@
 #include "Framebuffer.h"
 
-namespace BaseEngine {
+namespace BE {
 	Framebuffer::Framebuffer(const glm::vec2& size, const FramebufferType& type, unsigned int colourAttachments)
 		: framebufferSize(size), viewportSize(0), fbo(0), rbo(0), colourTexture(0), depthTexture(0), totalColourAttachments(colourAttachments) {
 		/*

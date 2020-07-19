@@ -1,7 +1,7 @@
 #include "Input.h"
 #include "Engine.h"
 
-namespace BaseEngine {
+namespace BE {
 	unsigned int Input::keyStates[GLFW_KEY_LAST];
 	unsigned int Input::keyPrevStates[GLFW_KEY_LAST];
 	unsigned int Input::mouseButtonStates[GLFW_MOUSE_BUTTON_LAST];

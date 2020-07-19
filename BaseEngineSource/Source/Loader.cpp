@@ -1,6 +1,6 @@
 #include "Loader.h"
 
-namespace BaseEngine {
+namespace BE {
 	bool FileLoader::LoadOBJ(const char* path, std::vector<float>& vertexData, std::vector<unsigned int>& vertexAttributes) {
 		tinyobj::attrib_t attrib;
 		std::vector<tinyobj::shape_t> shapes;

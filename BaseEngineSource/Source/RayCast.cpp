@@ -1,6 +1,6 @@
 #include "RayCast.h"
 
-namespace BaseEngine {
+namespace BE {
 	Raycast::RayHit Raycast::RayCastPlane(const Ray& ray, const Plane& plane) {
 		float denom = glm::dot(plane.GetNormal(), ray.direction);
 		if(glm::abs(denom) > 0.0001f) {

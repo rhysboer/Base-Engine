@@ -1,6 +1,6 @@
 #include "AABB.h"
 
-namespace BaseEngine {
+namespace BE {
 
 	AABB::AABB(const glm::vec3& origin, const glm::vec3& size) {
 		Update(origin, size);

@@ -1,6 +1,6 @@
 #include "Sprite.h"
 
-namespace BaseEngine {
+namespace BE {
 
 	Sprite::Sprite() {}
 

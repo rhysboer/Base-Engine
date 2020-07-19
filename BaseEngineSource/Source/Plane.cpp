@@ -1,6 +1,6 @@
 #include "Plane.h"
 
-namespace BaseEngine {
+namespace BE {
 	Plane::Plane(const glm::vec3& point0, const glm::vec3& point1, const glm::vec3& point2) {
 		glm::vec3 u = point1 - point0;
 		glm::vec3 v = point2 - point0;

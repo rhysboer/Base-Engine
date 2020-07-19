@@ -3,7 +3,7 @@
 #include "glm/gtx/quaternion.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
-namespace BaseEngine {
+namespace BE {
 
 	class Transform {
 	public:

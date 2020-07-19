@@ -1,6 +1,6 @@
 #include "Gizmos.h"
 
-namespace BaseEngine {
+namespace BE {
 	std::vector<Object3D*> Gizmos::gizmos = std::vector<Object3D*>();
 	glm::mat4 Gizmos::projectionView = glm::mat4(1);
 	Shader* Gizmos::shader = nullptr;

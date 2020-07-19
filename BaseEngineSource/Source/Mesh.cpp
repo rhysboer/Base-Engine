@@ -1,6 +1,6 @@
 #include "Mesh.h"
 
-namespace BaseEngine {
+namespace BE {
 	Mesh::Mesh(const std::vector<float>& vertexData, const std::vector<unsigned int>& attributes, const std::vector<unsigned int>& indices) : ebo(0) {
 
 		// Generate Buffers

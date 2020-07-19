@@ -2,7 +2,7 @@
 #include <string>
 #include "BaseTexture.h"
 
-namespace BaseEngine {
+namespace BE {
 	class Cubemap : public BaseTexture {
 	public:
 		Cubemap(const char* path);

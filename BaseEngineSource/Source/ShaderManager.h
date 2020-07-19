@@ -4,7 +4,7 @@
 #include <string>
 #include "Shader.h"
 
-namespace BaseEngine {
+namespace BE {
 
 	class ShaderManager {
 	public:

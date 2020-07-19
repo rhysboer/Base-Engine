@@ -1,6 +1,6 @@
 #include "PostProcess.h"
 
-namespace BaseEngine {
+namespace BE {
 	PostProcess::PostProcess(Shader* shader, const float& sizeX, const float& sizeY, const FramebufferType& type, const unsigned int& colourAttachments) {
 		framebuffer = new Framebuffer(glm::vec2(sizeX, sizeY), type, colourAttachments);
 

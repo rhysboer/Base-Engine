@@ -15,7 +15,7 @@
 #include "Gizmos.h"
 #endif // DEBUG_BUILD
 
-namespace BaseEngine {
+namespace BE {
 	class Engine {
 	public:
 		// Creates the engine & window

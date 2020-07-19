@@ -1,7 +1,7 @@
 #include "FlyCamera.h"
 #include "Engine.h"
 
-namespace BaseEngine {
+namespace BE {
 
 	FlyCamera::FlyCamera(const glm::vec3& position, const float& near, const float& far) : Camera(position, near, far), euler(0.0f), speed(10.0f), rotationSpeed(0.005f) {
 	}

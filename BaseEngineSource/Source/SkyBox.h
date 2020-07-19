@@ -4,7 +4,7 @@
 
 #include "Camera.h"
 
-namespace BaseEngine {
+namespace BE {
 	class SkyBox {
 	public:
 

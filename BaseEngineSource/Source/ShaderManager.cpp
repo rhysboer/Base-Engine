@@ -1,6 +1,6 @@
 #include "ShaderManager.h"
 
-namespace BaseEngine {
+namespace BE {
 	std::map<std::string, Shader*> ShaderManager::graphicShaders = std::map<std::string, Shader*>();
 	std::map<std::string, Shader*> ShaderManager::computeShaders = std::map<std::string, Shader*>();
 

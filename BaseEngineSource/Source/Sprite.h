@@ -1,7 +1,7 @@
 #pragma once
 #include "BaseTexture.h"
 
-namespace BaseEngine {
+namespace BE {
 	class Sprite : public BaseTexture {
 	public:
 

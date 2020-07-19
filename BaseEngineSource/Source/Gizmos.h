@@ -8,7 +8,7 @@
 
 #define BASECOLOUR glm::vec3(0.5f)
 
-namespace BaseEngine {
+namespace BE {
 
 	class Gizmos {
 	public:

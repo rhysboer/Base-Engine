@@ -1,6 +1,6 @@
 #include "Cubemap.h"
 
-namespace BaseEngine {
+namespace BE {
 	Cubemap::Cubemap(const char* path) {
 		LoadCubemap(path);
 	}

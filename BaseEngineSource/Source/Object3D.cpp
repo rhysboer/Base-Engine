@@ -1,6 +1,6 @@
 #include "Object3D.h"
 
-namespace BaseEngine {
+namespace BE {
 	Object3D::Object3D(const glm::vec3& position, const std::vector<float>& vertex_data, const std::vector<unsigned int>& vertex_data_attributes, const std::vector<unsigned int>& indices)
 		: render(RenderType::TRIANGLES), shader(nullptr) {
 

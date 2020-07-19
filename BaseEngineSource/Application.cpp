@@ -1,14 +1,14 @@
 #include "Application.h"
 
 void Application::OnStart() {
-	camera = new BaseEngine::FlyCamera(glm::vec3(0, 0, 20));
+	camera = new BE::FlyCamera(glm::vec3(0, 0, 20));
 
 	glm::vec2 size = Engine::GetWindowSize();
 	camera->CreatePerspective(60.0f);
 
 
-	a = BaseEngine::Object3D::CreateFromOBJFile(glm::vec3(0), "./data/bunny.obj");
-	a->SetShader(BaseEngine::ShaderManager::AddShader("default", "./data/shaders/default/default"));
+	a = BE::Object3D::CreateFromOBJFile(glm::vec3(0), "./data/bunny.obj");
+	a->SetShader(BE::ShaderManager::AddShader("default", "./data/shaders/default/default"));
 	a->GetTransform().SetScale(2.5f);
 }
 
@@ -25,7 +25,7 @@ void Application::OnUpdate() {
 	//AABB aabb = AABB(glm::vec3(0), glm::vec3(5));
 	//Gizmos::DrawAABB(aabb, glm::vec3(0, 1, 0));
 	//
-	//RayCast::Ray ray;
+	BE::Raycast::Ray ray;
 	//camera->CreateRay(ray);
 	//
 	//RayCast::RayHit hit = RayCast::RayCastAABB(ray, aabb);

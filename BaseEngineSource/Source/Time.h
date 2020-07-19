@@ -2,7 +2,7 @@
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 
-namespace BaseEngine {
+namespace BE {
 	class Time {
 	public:
 		static void Update();

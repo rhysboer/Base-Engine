@@ -2,7 +2,7 @@
 #include "Camera.h"
 #include "glm/gtx/quaternion.hpp"
 
-namespace BaseEngine {
+namespace BE {
 
 	class FlyCamera : public Camera {
 	public:

@@ -3,7 +3,7 @@
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 
-namespace BaseEngine {
+namespace BE {
 	struct TextureData {
 		unsigned char* data;
 		int width;

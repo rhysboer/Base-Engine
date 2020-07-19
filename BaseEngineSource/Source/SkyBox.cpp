@@ -1,6 +1,6 @@
 #include "SkyBox.h"
 
-namespace BaseEngine {
+namespace BE {
 	SkyBox::SkyBox(const char* cubemapPath, Shader* shader) {
 		// Vertices & attributes
 		std::vector<float> vertices = std::vector<float>({

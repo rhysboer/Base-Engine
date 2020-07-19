@@ -1,7 +1,7 @@
 #include "Engine.h"
 #include <string>
 
-namespace BaseEngine {
+namespace BE {
 	GLFWwindow* Engine::window = nullptr;
 
 	void _CallbackFrameBufferResize(GLFWwindow* window, int width, int height) {

@@ -2,7 +2,7 @@
 #include "glm/glm.hpp"
 
 
-namespace BaseEngine {
+namespace BE {
 	class Plane {
 	public:
 

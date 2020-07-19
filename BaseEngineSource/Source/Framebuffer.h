@@ -5,7 +5,7 @@
 #include "glm/glm.hpp"
 #include "Engine.h"
 
-namespace BaseEngine {
+namespace BE {
 
 	enum class FramebufferType {
 		DEPTH_TEX, // Depth texture

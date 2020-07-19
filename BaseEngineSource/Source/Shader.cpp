@@ -1,5 +1,5 @@
 #include "Shader.h"
-namespace BaseEngine {
+namespace BE {
 	Shader::Shader() {
 		this->shaderProgram = -1;
 	}

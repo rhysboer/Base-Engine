@@ -3,12 +3,13 @@
 #include "Plane.h"
 #include "AABB.h"
 
-namespace BaseEngine::Raycast {
+namespace BE::Raycast {
 	struct Ray {
-		glm::vec3 origin;
-		glm::vec3 direction;
-		float distance;
+		glm::vec3 origin = glm::vec3(0);
+		glm::vec3 direction = glm::vec3(0);
+		float distance = 0;
 
+		Ray() {}
 		Ray(glm::vec3& origin, glm::vec3& direction, float& distance) : origin(origin), direction(direction), distance(distance) { }
 	};
 

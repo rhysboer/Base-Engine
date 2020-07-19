@@ -4,7 +4,7 @@
 #include "stb_image.h"
 #include "BaseTexture.h"
 
-namespace BaseEngine {
+namespace BE {
 	BaseTexture::BaseTexture() : texture(0) {}
 
 	BaseTexture::~BaseTexture() {

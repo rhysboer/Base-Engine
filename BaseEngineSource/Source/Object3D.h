@@ -9,7 +9,7 @@
 #define SHADER_MODEL "model"
 #define SHADER_PROJECTIONVIEW "projectionView"
 
-namespace BaseEngine {
+namespace BE {
 	class Object3D {
 
 	// Static Functions
