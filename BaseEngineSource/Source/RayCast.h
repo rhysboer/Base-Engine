@@ -1,26 +1,52 @@
 #pragma once
 #include "glm/vec3.hpp"
-#include "Plane.h"
-#include "AABB.h"
+#include "glm/vec2.hpp"
 
-namespace BE::Raycast {
-	struct Ray {
-		glm::vec3 origin = glm::vec3(0);
-		glm::vec3 direction = glm::vec3(0);
-		float distance = 0;
+namespace BE {
+	class ICollider;
+	class Camera;
+	class Scene;
+	class RayHit;
 
-		Ray() {}
-		Ray(glm::vec3& origin, glm::vec3& direction, float& distance) : origin(origin), direction(direction), distance(distance) { }
+	class Ray {
+	public:
+		static Ray* CreateRayFromMousePosition(Camera& camera, const glm::vec2& mousePosition, const float& distance = 100.0f);
+		static Ray* CreateRayFromPosition(const glm::vec3& origin, const glm::vec3& direction, const float& distance = 100.0f);
+
+		~Ray() { };
+
+		void Fire(Scene * const scene, RayHit& output) const;
+
+		inline void SetDistance(const float& newDistance) { distance = newDistance; }
+
+		inline glm::vec3 GetOrigin() const { return origin; }
+		inline glm::vec3 GetDirection() const { return direction; }
+		inline glm::vec3 GetEnd() const { return origin + (direction * distance); }
+		inline float GetDistance() const { return distance; }
+
+	private:
+		Ray(const glm::vec3& origin, const glm::vec3& direction, const float& distance = 100.0f);
+
+		glm::vec3 origin;
+		glm::vec3 direction;
+		float distance;
 	};
 
-	struct RayHit {
-		bool hit;
-		glm::vec3 hitPosition;
+	class RayHit {
+	public:
+		RayHit();
+		~RayHit() {};
 
-		RayHit(const bool& hit, const glm::vec3& hitPos) : hit(hit), hitPosition(hitPos) { }
+		void SetResults(bool wasHit, const glm::vec3& point = glm::vec3(0), const ICollider* collider = nullptr);
+
+		inline bool Hit() const { return wasHit; }
+		inline glm::vec3 CollidPoint() const { return point; }
+		inline ICollider const* Collider() const { return collider; }
+
+	private:
+
+		bool wasHit;
+		glm::vec3 point;
+		ICollider const* collider = nullptr;
 	};
-
-	// Functions
-	RayHit RayCastPlane(const Ray& ray, const Plane& plane);
-	RayHit RayCastAABB(const Ray& ray, const AABB& aabb);
 }

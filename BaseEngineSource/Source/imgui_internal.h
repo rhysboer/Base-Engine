@@ -1361,9 +1361,9 @@ public:
     ImGuiWindow(ImGuiContext* context, const char* name);
     ~ImGuiWindow();
 
-    ImGuiID     GetID(const char* str, const char* str_end = NULL);
-    ImGuiID     GetID(const void* ptr);
-    ImGuiID     GetID(int n);
+    ImGuiID     GetEntityID(const char* str, const char* str_end = NULL);
+    ImGuiID     GetEntityID(const void* ptr);
+    ImGuiID     GetEntityID(int n);
     ImGuiID     GetIDNoKeepAlive(const char* str, const char* str_end = NULL);
     ImGuiID     GetIDNoKeepAlive(const void* ptr);
     ImGuiID     GetIDNoKeepAlive(int n);

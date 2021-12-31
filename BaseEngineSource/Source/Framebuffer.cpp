@@ -25,7 +25,10 @@ namespace BE {
 
 	void Framebuffer::Render_Begin() {
 		// Get current screen size
-		this->viewportSize = Engine::GetWindowSize();
+
+		int x, y;
+		BaseEngine::GetWindowSize(x, y);
+		this->viewportSize = glm::vec2(x, y);
 
 		glViewport(0, 0, framebufferSize.x, framebufferSize.y);
 		glBindFramebuffer(GL_FRAMEBUFFER, fbo);

@@ -2,7 +2,7 @@
 #include "BaseTexture.h"
 
 namespace BE {
-	class Sprite : public BaseTexture {
+	class Sprite {//: public BaseTexture {
 	public:
 
 		Sprite();

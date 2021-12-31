@@ -1,74 +1,62 @@
 #include "Camera.h"
-#include "Engine.h"
+#include "BaseEngine.h"
+#include "Raycast.h"
+#include "Input.h"
+#include "Entity.h"
+#include "Scene.h"
 
 namespace BE {
+	Camera::Camera() : cameraType(CameraType::PERSPECTIVE), fov(45.0f), size(fov/2.0f) 
+	{ }
 
-	Camera::Camera(const glm::vec3& position, const float& near, const float& far) : isDirty(true), cameraType(CameraType::PERSPECTIVE) {
-		this->near = near;
-		this->far = far;
+	Camera::Camera(const CameraType& cameraType, float fovSize) : cameraType(cameraType), fov(fovSize), size(fovSize / 2.0f) 
+	{ }
 
-		transform = Transform();
-		transform.SetPosition(position);
-		transform.SetAutoUpdate(false);
+	Camera::~Camera() 
+	{ }
 
+	void Camera::OnStart() {
 		UpdateCamera();
 	}
 
-	Camera::Camera(const Camera& camera) {
-		for(int i = 0; i < FRUSTUM_FACES; i++)
-			this->frustumPlanes[i] = camera.frustumPlanes[i];
+	void Camera::OnProcess() {
+	}
 
-		this->view = camera.view;
-		this->projection = camera.projection;
-		this->near = camera.near;
-		this->far = camera.far;
-
-		this->cameraType = camera.cameraType;
-
-		// Orthographic
-		this->left = camera.left;
-		this->right = camera.right;
-		this->bottom = camera.bottom;
-		this->top = camera.top;
-		this->size = camera.size;
-
-		// Perspective
-		this->fov = camera.fov;
-		this->aspect = camera.aspect;
-
-		this->isDirty = camera.isDirty;
-		this->autoResizeOrtho = camera.autoResizeOrtho;
+	void Camera::OnDestroy() {
 	}
 
 	void Camera::UpdateCamera() {
-		if(isDirty || transform.IsDirty()) {
-			transform.UpdateTransform();
+		if(isDirty) {
 			isDirty = false;
 
-			view = glm::inverse(transform.ModelMatrix());
+			//view = glm::inverse(GetEntity()->transform.ModelMatrix());
 
 			switch(cameraType) {
 				case Camera::CameraType::ORTHOGRAPHIC:
 				{
-					if(autoResizeOrtho == true) {
-						glm::vec2 res = Engine::GetWindowSize();
-						aspect = res.y == 0 ? 0 : res.x / res.y;
+					int x, y;
+					BaseEngine::GetWindowSize(x, y);
 
-						float height = 2.0f * size;
-						float width = height * aspect;
+					glm::vec2 res = glm::vec2(x, y);
 
-						this->left = -width / 2.0f;
-						this->right = width / 2.0f;
-						this->bottom = -height / 2.0f;
-						this->top = height / 2.0f;
-					}
+					aspect = res.y == 0 ? 0 : res.x / res.y;
+
+					float height = 2.0f * size;
+					float width = height * aspect;
+
+					this->left = -width / 2.0f;
+					this->right = width / 2.0f;
+					this->bottom = -height / 2.0f;
+					this->top = height / 2.0f;
 
 					projection = glm::ortho(left, right, bottom, top, near, far);
 					break;
 				}
 				case Camera::CameraType::PERSPECTIVE:
 				{
-					glm::vec2 res = Engine::GetWindowSize();
+					int x, y;
+					BaseEngine::GetWindowSize(x, y);
+					glm::vec2 res = glm::vec2(x, y);
 
 					this->aspect = (res.y == 0) ? 0 : res.x / res.y;
 					projection = glm::perspective(glm::radians(fov), aspect, near, far);
@@ -80,7 +68,7 @@ namespace BE {
 		}
 	}
 
-	void Camera::CreateOrthographic(const float& left, const float& right, const float& bottom, const float& top) {
+	void Camera::SetOrthographic(const float& left, const float& right, const float& bottom, const float& top) {
 		cameraType = CameraType::ORTHOGRAPHIC;
 		autoResizeOrtho = false;
 
@@ -92,11 +80,14 @@ namespace BE {
 		projection = glm::ortho(left, right, bottom, top, near, far);
 	}
 
-	void Camera::CreateOrthographic(const float& orthoSize, const bool& autoResize) {
+	void Camera::SetOrthographic(const float& orthoSize, const bool& autoResize) {
 		cameraType = CameraType::ORTHOGRAPHIC;
 		autoResizeOrtho = autoResize;
 
-		glm::vec2 res = Engine::GetWindowSize();
+		int x, y;
+		BaseEngine::GetWindowSize(x, y);
+		glm::vec2 res = glm::vec2(x, y);
+
 		aspect = res.y == 0 ? 0 : res.x / res.y;
 		size = orthoSize;
 
@@ -111,10 +102,12 @@ namespace BE {
 		projection = glm::ortho(left, right, bottom, top, near, far);
 	}
 
-	void Camera::CreatePerspective(const float& fov) {
+	void Camera::SetPerspective(const float& fov) {
 		cameraType = CameraType::PERSPECTIVE;
 
-		glm::vec2 res = Engine::GetWindowSize();
+		int x, y;
+		BaseEngine::GetWindowSize(x, y);
+		glm::vec2 res = glm::vec2(x, y);
 
 		this->aspect = (res.y == 0) ? 0 : res.x / res.y;
 		this->fov = fov;
@@ -122,102 +115,84 @@ namespace BE {
 		projection = glm::perspective(glm::radians(fov), aspect, near, far);
 	}
 
-	void Camera::SetNear(const float& distance) {
-		near = distance;
-
-		SetDirty();
+	glm::mat4 Camera::GetView() {
+		return glm::inverse(GetEntity()->transform.ModelMatrix());
 	}
 
-	void Camera::SetFar(const float& distance) {
-		far = distance;
-
-		SetDirty();
-	}
-
-	void Camera::SetFOV(const float& fov) {
-		this->fov = glm::radians(fov);
-
-		SetDirty();
-	}
-
-	void Camera::SetDirty() {
-		isDirty = true;
-	}
-
-	glm::mat4 Camera::View() {
+	glm::vec3 Camera::ScreenSpaceToWorldSpace(const glm::vec2& screenCoord) {
 		UpdateCamera();
-		return view;
-	}
-
-	glm::mat4 Camera::Projection() {
-		UpdateCamera();
-		return projection;
-	}
-
-	glm::mat4 Camera::ProjectionView() {
-		UpdateCamera();
-		return projection * view;
-	}
-
-	Transform& Camera::GetTransform() {
-		return transform;
-	}
-
-	float Camera::GetNear() const {
-		return near;
-	}
-
-	float Camera::GetFar() const {
-		return far;
-	}
-
-	float Camera::GetOrthoSize() const {
-		return size;
-	}
-
-	float Camera::GetAspect() const {
-		return aspect;
-	}
-
-	bool Camera::CreateRay(Raycast::Ray& ray) {
-		UpdateCamera();
-
-		glm::vec2 screenSize = Engine::GetWindowSize();
-		glm::vec2 mousePos = Input::MousePosition();
-
+	
+		int x, y;
+		BaseEngine::GetWindowSize(x, y);
+		glm::vec2 screenSize = glm::vec2(x, y);
+		
 		if(screenSize.x == 0 || screenSize.y == 0)
-			return false;
-
-		// Convert cursor cordinates to normalised device coordinates. (-1, 1)
+			return glm::vec3(0);
+	
+		//// Convert cursor cordinates to normalised device coordinates. (-1, 1)
 		glm::vec3 mouseNDC = glm::vec3(
-			(2.0f * mousePos.x) / screenSize.x - 1.0f,
-			1.0f - (2.0f * mousePos.y) / screenSize.y,
-			1.0f
+			(2.0f * screenCoord.x) / screenSize.x - 1.0f,
+			1.0f - (2.0f * screenCoord.y) / screenSize.y,
+			-1.0f
 		);
-
-		// Homogeneous clip coordinates
-		glm::vec4 ray_clip = glm::vec4(mouseNDC.x, mouseNDC.y, -1.0f, 1.0f);
-
-		// To Eye coordinates
-		glm::vec4 ray_eye = glm::inverse(projection) * ray_clip;
-		ray_eye = glm::vec4(ray_eye.x, ray_eye.y, -1.0f, 0.0f);
-
-		// To World Coordinates
-		glm::vec3 ray_world = glm::inverse(view) * ray_eye;
-
-		if(cameraType == CameraType::PERSPECTIVE) {
-			ray.origin = transform.GetPosition();
-			ray.direction = glm::normalize(ray_world);
-		} else {
-			ray.origin = transform.GetPosition() + ray_world;
-			ray.direction = transform.GetForward();
+	
+		Entity* entity = GetEntity();
+	
+		switch(cameraType) {
+			case BE::Camera::CameraType::ORTHOGRAPHIC:
+				return entity->transform.GetPosition() + (mouseNDC * glm::vec3(right, top, 1));
+			case BE::Camera::CameraType::PERSPECTIVE:
+				glm::mat4 inverse = glm::inverse(projection * GetView());
+				glm::vec4 result = inverse * glm::vec4(mouseNDC.x, mouseNDC.y, 1.0f, 1.0f);
+				return result / result.w;
+			default:
+				return glm::vec3(0);
 		}
-
-		return true;
 	}
+
+	//Ray Camera::CreateRayFromMouse() {
+	//	UpdateCamera();
+	//
+	//	glm::vec3 world = ScreenSpaceToWorldSpace(Input::MousePosition());
+	//	return Ray(GetEntity()->transform.GetPosition(), glm::normalize(world));
+	//
+	//
+	//	//int x, y;
+	//	//BaseEngine::GetWindowSize(x, y);
+	//	//glm::vec2 screenSize = glm::vec2(x, y);
+	//	//glm::vec2 mousePos = Input::MousePosition();
+	//	//
+	//	//screenSize.x = glm::max(1.0f, screenSize.x);
+	//	//screenSize.y = glm::max(1.0f, screenSize.y);
+	//	//
+	//	//// Convert cursor cordinates to normalised device coordinates. (-1, 1)
+	//	//glm::vec3 mouseNDC = glm::vec3(
+	//	//	(2.0f * mousePos.x) / screenSize.x - 1.0f,
+	//	//	1.0f - (2.0f * mousePos.y) / screenSize.y,
+	//	//	1.0f
+	//	//);
+	//	//
+	//	//// Homogeneous clip coordinates
+	//	//glm::vec4 ray_clip = glm::vec4(mouseNDC.x, mouseNDC.y, -1.0f, 1.0f);
+	//	//
+	//	//// To Eye coordinates
+	//	//glm::vec4 ray_eye = glm::inverse(projection) * ray_clip;
+	//	//ray_eye = glm::vec4(ray_eye.x, ray_eye.y, -1.0f, 0.0f);
+	//	//
+	//	//// To World Coordinates
+	//	//glm::vec3 ray_world = glm::inverse(view) * ray_eye;
+	//	//
+	//	//if(cameraType == CameraType::PERSPECTIVE) {
+	//	//	ray.origin = transform.GetPosition();
+	//	//	ray.direction = glm::normalize(ray_world);
+	//	//} else {
+	//	//	ray.origin = transform.GetPosition() + ray_world;
+	//	//	ray.direction = transform.GetForward();
+	//	//}
+	//}
 
 	void Camera::UpdateFrustumPlanes() {
-		glm::mat4 projView = projection * view;
+		glm::mat4 projView = projection * GetView();
 
 		// right side
 		frustumPlanes[0] = glm::vec4(projView[0][3] - projView[0][0],
@@ -261,40 +236,41 @@ namespace BE {
 		}
 	}
 
-	bool Camera::IsPointInFrustum(const glm::vec3& point) {
-		UpdateCamera();
 
-		for(int i = 0; i < FRUSTUM_FACES; i++) {
-			if(glm::dot(glm::vec3(frustumPlanes[i]), point) + frustumPlanes[i].w < 0.0f)
-				return false;
-		}
+	//bool Camera::IsPointInFrustum(const glm::vec3& point) {
+	//	UpdateCamera();
+	//
+	//	for(int i = 0; i < FRUSTUM_FACES; i++) {
+	//		if(glm::dot(glm::vec3(frustumPlanes[i]), point) + frustumPlanes[i].w < 0.0f)
+	//			return false;
+	//	}
+	//
+	//	return true;
+	//}
 
-		return true;
-	}
-
-	bool Camera::IsAABBInFrustum(const AABB& aabb) {
-		UpdateCamera();
-
-		int out = 0;
-		int in = 0;
-
-		for(int i = 0; i < FRUSTUM_FACES; i++) {
-
-			out = 0;
-			in = 0;
-
-			for(int v = 0; v < 8; v++) {
-				if(glm::dot(glm::vec3(frustumPlanes[i]), aabb.GetPoint(v)) + frustumPlanes[i].w < 0.0f) {
-					out++;
-				} else {
-					in++;
-				}
-			}
-
-			if(in == 0)
-				return false;
-		}
-
-		return true;
-	}
+	//bool Camera::IsAABBInFrustum(const AABB& aabb) {
+	//	UpdateCamera();
+	//
+	//	int out = 0;
+	//	int in = 0;
+	//
+	//	for(int i = 0; i < FRUSTUM_FACES; i++) {
+	//
+	//		out = 0;
+	//		in = 0;
+	//
+	//		for(int v = 0; v < 8; v++) {
+	//			if(glm::dot(glm::vec3(frustumPlanes[i]), aabb.GetPoint(v)) + frustumPlanes[i].w < 0.0f) {
+	//				out++;
+	//			} else {
+	//				in++;
+	//			}
+	//		}
+	//
+	//		if(in == 0)
+	//			return false;
+	//	}
+	//
+	//	return true;
+	//}
 }

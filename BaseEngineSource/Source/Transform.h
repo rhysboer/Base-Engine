@@ -3,17 +3,21 @@
 #include "glm/gtx/quaternion.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
-namespace BE {
+#define CHECK_DIRTY if(isDirty) UpdateTransform(); 
 
+namespace BE {
 	class Transform {
 	public:
 		Transform();
+		Transform(const glm::vec3& position);
 		Transform(const Transform& other);
 		~Transform();
 
-		void SetPosition(const glm::vec3& position);
-		void SetScale(const glm::vec3& scale);
-		void SetScale(const float& scale);
+		inline void SetPosition(const float& x, const float& y, const float& z) { SetDirty(); position.x = x; position.y = y; position.z = z; }
+		inline void SetPosition(const glm::vec3& position) { SetPosition(position.x, position.y, position.z); }
+		inline void SetScale(const float& x, const float& y, const float& z) { SetDirty(); scale.x = x; scale.y = y; scale.z = z; }
+		inline void SetScale(const glm::vec3& scale) { SetScale(scale.x, scale.y, scale.z); }
+		inline void SetScale(const float& scale) { SetScale(scale, scale, scale); };
 		void SetRotation(const glm::vec3& euler);
 		void SetRotation(const glm::quat& rotation);
 
@@ -26,31 +30,29 @@ namespace BE {
 
 		void LookAt(const glm::vec3& point);
 
-		void Translate(const glm::vec3& direction);
+		void Translate(const float& x, const float& y, const float& z);
+		void Translate(const glm::vec3& offset);
 
-		glm::vec3 GetPosition() const;
-		glm::quat GetRotation() const;
-		glm::vec3 GetUp() const;
-		glm::vec3 GetRight() const;
-		glm::vec3 GetForward() const;
+		inline glm::vec3 GetPosition() const { return position; };
+		inline glm::quat GetRotation() const { return rotation; }
+		inline glm::vec3 GetUp() const { return rotation * glm::vec3(0, 1, 0); };
+		inline glm::vec3 GetRight() const { return rotation * glm::vec3(1, 0, 0); };
+		inline glm::vec3 GetForward() const { return rotation * glm::vec3(0, 0, -1); };
 
 		glm::mat4 ModelMatrix();
 
 		void SetDirty();
 		bool IsDirty() const;
-		void SetAutoUpdate(bool option);
-
-		void UpdateTransform();
 
 	private:
+		void UpdateTransform() const;
 
-		bool isDirty;
-		bool autoUpdate;
+		mutable bool isDirty;
 
 		glm::vec3 position;
 		glm::quat rotation;
 		glm::vec3 scale;
 
-		glm::mat4 model;
+		mutable glm::mat4 model;
 	};
 }

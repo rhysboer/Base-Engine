@@ -65,8 +65,8 @@ namespace BE {
 		texture = new Cubemap(cubemapPath);
 		cube = new Object3D(glm::vec3(0), vertices, attributes);
 
-		cube->SetShader(shader);
-		cube->GetShader()->SetTextureUnit("cubemap", 0);
+		cube->shader = shader;
+		cube->shader->SetTextureUnit("cubemap", 0);
 	}
 
 	SkyBox::~SkyBox() {
@@ -75,17 +75,17 @@ namespace BE {
 	}
 
 	void SkyBox::Render(Camera& camera) {
-		texture->BindTexture(0);
-
-		cube->GetShader()->SetMatrix4("projection", camera.Projection());
-		cube->GetShader()->SetMatrix4("view", glm::mat4(glm::mat3(camera.View())));
-
-		glDepthMask(GL_FALSE);
-		cube->RawRender();
-		glDepthMask(GL_TRUE);
+		//texture->BindTexture(0);
+		//
+		//cube->shader->SetMatrix4("projection", camera.Projection());
+		//cube->shader->SetMatrix4("view", glm::mat4(glm::mat3(camera.View())));
+		//
+		//glDepthMask(GL_FALSE);
+		//cube->RawRender();
+		//glDepthMask(GL_TRUE);
 	}
 
 	Shader* SkyBox::GetShader() {
-		return cube->GetShader();
+		return cube->shader;
 	}
 }

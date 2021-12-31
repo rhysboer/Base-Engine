@@ -1,69 +1,84 @@
 #pragma once
-#include "Transform.h"
-#include "AABB.h"
-#include "RayCast.h"
+#include "IComponent.h"
+#include "glm/glm.hpp"
 
 #define FRUSTUM_FACES 6
 
 namespace BE {
-
-	class Camera {
+	class Ray;
+	class Camera : public IComponent {
 	public:
 		enum class CameraType {
 			ORTHOGRAPHIC,
 			PERSPECTIVE
 		};
-
-		Camera(const glm::vec3& position, const float& near = 0.1f, const float& far = 1000.0f);
-		Camera(const Camera& camera);
-		~Camera() {};
+		
+		Camera();
+		Camera(const CameraType& cameraType, float fovSize = 45.0f);
+		~Camera();
 
 		// Change Camera Styles
-		void CreateOrthographic(const float& left, const float& right, const float& bottom, const float& top);
-		void CreateOrthographic(const float& orthoSize, const bool& autoResize = false);
-		void CreatePerspective(const float& fov);
+		void SetOrthographic(const float& left, const float& right, const float& bottom, const float& top);
+		void SetOrthographic(const float& orthoSize, const bool& autoResize = false);
+		void SetPerspective(const float& fov);
 
-		void SetNear(const float& distance);
-		void SetFar(const float& distance);
-		void SetFOV(const float& fov);
-		void SetDirty();
+		inline void SetNear(const float& distance) { near = distance; SetDirty(); }
+		inline void SetFar(const float& distance) { far = distance; SetDirty(); }
+		inline void SetFOV(const float& fov) { this->fov = fov; SetDirty(); }
+		inline void SetOrthoSize(const float& size) { this->size = size / 2.0f; SetDirty(); }
+		inline void SetDirty() { this->isDirty = true; }
+		inline void SetActive(bool toggle) { isActive = toggle; }
+		//inline void LookAt(const glm::vec3& point) { transform.LookAt(point); SetDirty(); }
 
-		glm::mat4 View();
-		glm::mat4 Projection();
-		glm::mat4 ProjectionView();
+		glm::mat4 GetView();
+		inline glm::mat4 GetProjection() { UpdateCamera(); return projection; }
+		inline glm::mat4 GetProjectionView() { UpdateCamera(); return projection * GetView(); }
 
-		Transform& GetTransform();
-		float GetNear() const;
-		float GetFar() const;
-		float GetOrthoSize() const;
-		float GetAspect() const;
+		inline bool IsActive() const { return isActive; }
+		inline float GetNear() const { return near; }
+		inline float GetFar() const { return far; }
+		inline float GetOrthoSize() const { return size; }
+		inline float GetAspect() const { return aspect; }
+		inline unsigned int GetCameraIndex() const { return cameraIndex; }
+		inline CameraType GetType() const { return cameraType; }
 
-		bool CreateRay(Raycast::Ray& ray);
+		glm::vec3 ScreenSpaceToWorldSpace(const glm::vec2& screenCoord);
+
+		//Ray CreateRayFromMouse();
 
 		bool IsPointInFrustum(const glm::vec3& point);
-		bool IsAABBInFrustum(const AABB& aabb);
+		//bool IsAABBInFrustum(const AABB& aabb);
 		bool IsSphereInFrustum(const glm::vec3& point, const float radius);
 
 	protected:
+
+		// Inherited via IComponent
+		virtual void OnStart() override;
+		virtual void OnProcess() override;
+		virtual void OnDestroy() override;
+		inline virtual size_t GetID() const override { return IComponent::GetComponentID<Camera>(); }
 
 		// Update camera
 		void UpdateCamera();
 		void UpdateFrustumPlanes();
 
-		Transform transform;
+		//Transform transform;
 
 		glm::vec4 frustumPlanes[6];
 
-		glm::mat4 view;
+		//glm::mat4 view;
 		glm::mat4 projection;
 
 		CameraType cameraType;
 
-		float near, far;
+		bool isActive = true;
+		float near = 0.1f;
+		float far = 1000.0f;
 		float fov, aspect; // Perspective
 		float left, right, bottom, top, size; // Orthographic
+		unsigned int cameraIndex;
 
-		bool isDirty;
+		bool isDirty = true;
 		bool autoResizeOrtho;
 	};
 }

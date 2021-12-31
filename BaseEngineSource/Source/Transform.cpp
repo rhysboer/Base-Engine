@@ -1,8 +1,12 @@
 #include "Transform.h"
 
 namespace BE {
-	Transform::Transform() : position(0), rotation(glm::identity<glm::quat>()), scale(1), model(1), isDirty(false), autoUpdate(true) {
+	Transform::Transform() : position(0), rotation(glm::identity<glm::quat>()), scale(1), model(1), isDirty(false) {
 	}
+
+	Transform::Transform(const glm::vec3& position) :
+		position(position), rotation(glm::identity<glm::quat>()), scale(1), model(1), isDirty(false)
+	{}
 
 	Transform::Transform(const Transform& other) {
 		this->position = other.position;
@@ -13,24 +17,6 @@ namespace BE {
 	}
 
 	Transform::~Transform() {}
-
-	void Transform::SetPosition(const glm::vec3& position) {
-		SetDirty();
-
-		this->position = position;
-	}
-
-	void Transform::SetScale(const glm::vec3& scale) {
-		SetDirty();
-
-		this->scale = scale;
-	}
-
-	void Transform::SetScale(const float& scale) {
-		SetDirty();
-
-		this->scale = glm::vec3(scale);
-	}
 
 	void Transform::SetRotation(const glm::vec3& euler) {
 		SetDirty();
@@ -44,10 +30,10 @@ namespace BE {
 		this->rotation = rotation;
 	}
 
-	void Transform::RotateX(const float& degree) {
+	void Transform::RotateX(const float& angle) {
 		SetDirty();
 
-		this->rotation = glm::rotate(this->rotation, glm::radians(degree), glm::vec3(1, 0, 0));
+		this->rotation = glm::rotate(this->rotation, glm::radians(angle), glm::vec3(1, 0, 0));
 	}
 
 	void Transform::RotateY(const float& angle) {
@@ -92,10 +78,16 @@ namespace BE {
 	//	this->parent = parent;
 	//}
 
-	void Transform::Translate(const glm::vec3& direction) {
+    void Transform::Translate(const float& x, const float& y, const float& z) {
 		SetDirty();
 
-		this->position += direction;
+		this->position.x += x;
+		this->position.y += y;
+		this->position.z += z;
+    }
+
+    void Transform::Translate(const glm::vec3& offset) {
+		Translate(offset.x, offset.y, offset.z);
 	}
 
 	void Transform::SetDirty() {
@@ -106,38 +98,12 @@ namespace BE {
 		return isDirty;
 	}
 
-	void Transform::SetAutoUpdate(bool option) {
-		autoUpdate = option;
-	}
-
-	glm::vec3 Transform::GetPosition() const {
-		return position;
-	}
-
-	glm::quat Transform::GetRotation() const {
-		return rotation;
-	}
-
-	glm::vec3 Transform::GetUp() const {
-		return rotation * glm::vec3(0, 1, 0);
-	}
-
-	glm::vec3 Transform::GetRight() const {
-		return rotation * glm::vec3(1, 0, 0);
-	}
-
-	glm::vec3 Transform::GetForward() const {
-		return rotation * glm::vec3(0, 0, -1);
-	}
-
 	glm::mat4 Transform::ModelMatrix() {
-		if(autoUpdate)
-			UpdateTransform();
-
+		UpdateTransform();
 		return model;
 	}
 
-	void Transform::UpdateTransform() {
+	void Transform::UpdateTransform() const {
 		model = glm::translate(glm::mat4(1), position) * glm::toMat4(rotation) * glm::scale(glm::mat4(1), scale);
 		isDirty = false;
 	}

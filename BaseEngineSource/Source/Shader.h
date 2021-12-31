@@ -1,46 +1,40 @@
 #pragma once
-#include <string>
-#include <iostream>
-#include <fstream>
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
 #include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp"
-#include "glm/gtc/type_ptr.hpp"
 
 namespace BE {
-
+	class Uniform;
 	class ShaderManager;
-
 	class Shader {
+		friend ShaderManager;
 	public:
 		Shader();
 		~Shader();
 
-		void UseProgram();
+		void UseProgram() const;
+		inline int ProgramID() const { return shaderProgram; }
 
-		void SetFloat(const char* name, float value);
-		void SetFloatArray(const char* name, const unsigned int& size, const float& value);
-		void SetInt(const char* name, int value);
-		void SetMatrix4(const char* name, const glm::mat4& value);
-		void SetMatrix3(const char* name, const glm::mat3& value);
-		void SetVector2(const char* name, const glm::vec2& value);
-		void SetVector2Array(const char* name, const unsigned int& size, const glm::vec2& value);
-		void SetVector3(const char* name, const glm::vec3& value);
-		void SetVector4(const char* name, const glm::vec4& value);
-
-		void SetTextureUnit(const char* name, const unsigned int& textureUnit);
+		void SetFloat(const char* name, const float& value) const;
+		void SetFloatArray(const char* name, const unsigned int& size, const float& value)const;
+		void SetInt(const char* name, const int& value) const;
+		void SetIntArray(const char* name, const unsigned int& size, const int& value) const;
+		void SetMatrix4(const char* name, const glm::mat4& value) const;
+		void SetMatrix3(const char* name, const glm::mat3& value) const;
+		void SetVector2(const char* name, const glm::vec2& value) const;
+		void SetVector2Array(const char* name, const unsigned int& size, const glm::vec2& value) const;
+		void SetVector3(const char* name, const glm::vec3& value) const;
+		void SetVector4(const char* name, const glm::vec4& value) const;
+		void SetTextureUnit(const char* name, const unsigned int& textureUnit) const;
+		void SetUniform(const Uniform& uniform) const;
 
 	protected:
-		friend ShaderManager;
 
-		bool LoadShader(std::string vertSource, std::string fragSource, std::string geomShader = ""); // Graphics Shader
-		bool LoadShader(const std::string& computeSource); // Compute Shader
+		bool LoadShader(const char* vertSource, const char* fragSource, const char* geomShader = nullptr); // Graphics Shader
+		bool LoadShader(const char* computeSource); // Compute Shader
 
 	private:
 
 		bool ErrorHandler(unsigned int toTest, unsigned int statusType);
-
+		
 		int shaderProgram;
 	};
 

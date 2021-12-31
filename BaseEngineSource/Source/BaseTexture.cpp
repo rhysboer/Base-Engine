@@ -1,3 +1,4 @@
+/*
 #ifndef STB_IMAGE_IMPLEMENTATION
 #define STB_IMAGE_IMPLEMENTATION
 #endif
@@ -48,3 +49,4 @@ namespace BE {
 			stbi_image_free(data->data);
 	}
 }
+*/

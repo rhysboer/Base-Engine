@@ -13,6 +13,6 @@ void main()
 {
 	_texCoords = textureCoords;
 	_normals = normals;
-	
+
 	gl_Position = projectionView * model * vec4(vertex, 1);
 }

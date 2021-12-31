@@ -1,3 +1,4 @@
+/*
 #pragma once
 #include <stdio.h>
 #include "glad/glad.h"
@@ -32,4 +33,4 @@ namespace BE {
 		unsigned int texture;
 	};
 }
-
+*/

@@ -3,12 +3,12 @@
 #include "BaseTexture.h"
 
 namespace BE {
-	class Cubemap : public BaseTexture {
+	class Cubemap { //: public BaseTexture {
 	public:
 		Cubemap(const char* path);
 		~Cubemap();
 
-		void BindTexture(const unsigned int& index = 0) const override;
+		//void BindTexture(const unsigned int& index = 0) const override;
 
 	private:
 

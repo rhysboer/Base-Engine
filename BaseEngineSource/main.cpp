@@ -1,9 +1,11 @@
 #include "Application.h"
+#include "BaseEngine.h"
 
 int main() {
+
 	Application* app = new Application();
-	app->CreateEngine("Base Engine", 1280, 720);
-	app->Run();
+	app->CreateEngine("New Title", 1280, 720);
+	app->StartEngine();
 
 	delete app;
 

@@ -16,14 +16,8 @@
     <Filter Include="Source Files\Source">
       <UniqueIdentifier>{f66cc0d7-e66d-4ba8-8703-a0d9b281b7f7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Example">
-      <UniqueIdentifier>{aedae6e3-3b30-4f53-9129-7e049092d4ba}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Source">
       <UniqueIdentifier>{c238c4b0-2241-49c2-9e39-f2d90dc5780b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Example">
-      <UniqueIdentifier>{6a5435a9-3b87-4eca-8862-ca9a36edd055}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Source\Imgui">
       <UniqueIdentifier>{f396f59a-0f7b-4db0-b416-41b0e5cdb2cd}</UniqueIdentifier>
@@ -55,17 +49,53 @@
     <Filter Include="Source Files\Source\Util">
       <UniqueIdentifier>{41c8e4bd-8db4-4299-8b9d-c11c41095c0e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Source\Phsyics">
-      <UniqueIdentifier>{bdf726c5-890d-41d8-8b91-1cfaedd73f8b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Source\Physics">
       <UniqueIdentifier>{af728685-0cab-4ade-8675-61f6ad192e03}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Source\Phsyics\Shapes">
-      <UniqueIdentifier>{b2f499cf-2b9d-464d-a7bc-9af3179ad26d}</UniqueIdentifier>
+    <Filter Include="Header Files\Source\Physics">
+      <UniqueIdentifier>{bdf726c5-890d-41d8-8b91-1cfaedd73f8b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Source\Physics\Shapes">
-      <UniqueIdentifier>{ef517265-4f57-49a6-9762-ab362fec0104}</UniqueIdentifier>
+    <Filter Include="Source Files\Source\Core">
+      <UniqueIdentifier>{3ed9177e-eef2-43b4-9857-260e5c10e7ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Source\Core">
+      <UniqueIdentifier>{feaadc7f-5b42-458d-8e41-73f80b2787cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Source\Shaders">
+      <UniqueIdentifier>{f75a5c5c-5806-444d-b5e0-85be82c35ed7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Example">
+      <UniqueIdentifier>{ec636f52-fc16-4c0f-9158-9101114ae78b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Example">
+      <UniqueIdentifier>{a7175762-1c3f-41bd-8523-95559b1ca964}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Source\Shaders">
+      <UniqueIdentifier>{9a8c6bbb-52c7-447a-91c0-f52fb2d7667f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Source\Physics\Colliders">
+      <UniqueIdentifier>{446edd88-18f7-4f9c-9619-c7e2f62abc06}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Source\Physics\Colliders">
+      <UniqueIdentifier>{cd2c5093-9c22-4192-9cdb-54635d6b48c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Source\Components">
+      <UniqueIdentifier>{3bd28ff2-2825-4189-94ef-ab0662cbd057}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Source\Components\Base">
+      <UniqueIdentifier>{4b15438a-9b1b-488e-92b0-4a485ea22f52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Source\Components">
+      <UniqueIdentifier>{61f1e95e-c975-47b1-88cc-fb7157ac85d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Source\Components\Base">
+      <UniqueIdentifier>{a5e54ea7-4778-402d-b949-41fbeb37765e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Source\ECS">
+      <UniqueIdentifier>{bb215108-74f2-4470-aa99-5619857d5b8a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Source\ECS">
+      <UniqueIdentifier>{fdf144bf-3206-462e-a3d2-0e644a7f67dd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -102,9 +132,6 @@
     <ClCompile Include="Source\BaseTexture.cpp">
       <Filter>Source Files\Source\Textures</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine.cpp">
-      <Filter>Source Files\Source</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Framebuffer.cpp">
       <Filter>Source Files\Source</Filter>
     </ClCompile>
@@ -117,13 +144,7 @@
     <ClCompile Include="Source\PostProcess.cpp">
       <Filter>Source Files\Source</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Shader.cpp">
-      <Filter>Source Files\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\ShaderManager.cpp">
-      <Filter>Source Files\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Time.cpp">
+    <ClCompile Include="Source\TimeManager.cpp">
       <Filter>Source Files\Source</Filter>
     </ClCompile>
     <ClCompile Include="Source\tiny_obj_loader.cc">
@@ -131,12 +152,6 @@
     </ClCompile>
     <ClCompile Include="Source\Transform.cpp">
       <Filter>Source Files\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Application.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Mesh.cpp">
       <Filter>Source Files\Source\Objects</Filter>
@@ -153,23 +168,98 @@
     <ClCompile Include="Source\Gizmos.cpp">
       <Filter>Source Files\Source</Filter>
     </ClCompile>
-    <ClCompile Include="Source\AABB.cpp">
-      <Filter>Source Files\Source\Physics\Shapes</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Plane.cpp">
-      <Filter>Source Files\Source\Physics\Shapes</Filter>
-    </ClCompile>
     <ClCompile Include="Source\FlyCamera.cpp">
       <Filter>Source Files\Source\Camera</Filter>
     </ClCompile>
     <ClCompile Include="Source\Raycast.cpp">
       <Filter>Source Files\Source\Physics</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Util.cpp">
+      <Filter>Source Files\Source\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Logger.cpp">
+      <Filter>Source Files\Source\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Drawable.cpp">
+      <Filter>Source Files\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\TextureManager.cpp">
+      <Filter>Source Files\Source\Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\BaseEngine.cpp">
+      <Filter>Source Files\Source\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Main.cpp">
+      <Filter>Source Files\Example</Filter>
+    </ClCompile>
+    <ClCompile Include="Application.cpp">
+      <Filter>Source Files\Example</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Entity.cpp">
+      <Filter>Source Files\Source\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ECSManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Shader.cpp">
+      <Filter>Source Files\Source\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ShaderManager.cpp">
+      <Filter>Source Files\Source\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Material.cpp">
+      <Filter>Source Files\Source\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\MeshUtil.cpp">
+      <Filter>Source Files\Source\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Uniform.cpp">
+      <Filter>Source Files\Source\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UniformBuffer.cpp">
+      <Filter>Source Files\Source\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Debugger.cpp">
+      <Filter>Source Files\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\PlaneCollider.cpp">
+      <Filter>Source Files\Source\Physics\Colliders</Filter>
+    </ClCompile>
+    <ClCompile Include="ExampleComponent.cpp">
+      <Filter>Source Files\Example</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\IComponent.cpp">
+      <Filter>Source Files\Source\Components\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\IRender.cpp">
+      <Filter>Source Files\Source\Components\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\MeshRenderer.cpp">
+      <Filter>Source Files\Source\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\EntityManager.cpp">
+      <Filter>Source Files\Source\ECS</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ComponentArray.cpp">
+      <Filter>Source Files\Source\ECS</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Scene.cpp">
+      <Filter>Source Files\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\EventSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\DebugMovement.cpp">
+      <Filter>Source Files\Source\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="ExampleRaycast.cpp">
+      <Filter>Source Files\Example</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ICollider.cpp">
+      <Filter>Source Files\Source\Components\Base</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Source\Engine.h">
-      <Filter>Header Files\Source</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Framebuffer.h">
       <Filter>Header Files\Source</Filter>
     </ClInclude>
@@ -179,22 +269,13 @@
     <ClInclude Include="Source\PostProcess.h">
       <Filter>Header Files\Source</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Shader.h">
-      <Filter>Header Files\Source</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\ShaderManager.h">
-      <Filter>Header Files\Source</Filter>
-    </ClInclude>
     <ClInclude Include="Source\stb_image.h">
       <Filter>Header Files\Source</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Time.h">
+    <ClInclude Include="Source\TimeManager.h">
       <Filter>Header Files\Source</Filter>
     </ClInclude>
     <ClInclude Include="Source\tiny_obj_loader.h">
-      <Filter>Header Files\Source</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Transform.h">
       <Filter>Header Files\Source</Filter>
     </ClInclude>
     <ClInclude Include="Source\imconfig.h">
@@ -239,9 +320,6 @@
     <ClInclude Include="Source\SkyBox.h">
       <Filter>Header Files\Source\Textures</Filter>
     </ClInclude>
-    <ClInclude Include="Application.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Mesh.h">
       <Filter>Header Files\Source\Objects</Filter>
     </ClInclude>
@@ -257,22 +335,104 @@
     <ClInclude Include="Source\Gizmos.h">
       <Filter>Header Files\Source</Filter>
     </ClInclude>
-    <ClInclude Include="Source\AABB.h">
-      <Filter>Header Files\Source\Phsyics\Shapes</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Plane.h">
-      <Filter>Header Files\Source\Phsyics\Shapes</Filter>
-    </ClInclude>
     <ClInclude Include="Source\FlyCamera.h">
       <Filter>Header Files\Source\Camera</Filter>
     </ClInclude>
     <ClInclude Include="Source\Raycast.h">
-      <Filter>Header Files\Source\Phsyics</Filter>
+      <Filter>Header Files\Source\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Drawable.h">
+      <Filter>Header Files\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Common.h">
+      <Filter>Header Files\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Util.h">
+      <Filter>Header Files\Source\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Logger.h">
+      <Filter>Header Files\Source\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Transform.h">
+      <Filter>Header Files\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Shader.h">
+      <Filter>Header Files\Source\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\TextureManager.h">
+      <Filter>Header Files\Source\Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\BaseEngine.h">
+      <Filter>Header Files\Source\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ShaderManager.h">
+      <Filter>Header Files\Source\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Application.h">
+      <Filter>Header Files\Example</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Entity.h">
+      <Filter>Header Files\Source\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECSManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Material.h">
+      <Filter>Header Files\Source\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\MeshUtil.h">
+      <Filter>Header Files\Source\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Uniform.h">
+      <Filter>Header Files\Source\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\UniformBuffer.h">
+      <Filter>Header Files\Source\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Debugger.h">
+      <Filter>Header Files\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\PlaneCollider.h">
+      <Filter>Header Files\Source\Physics\Colliders</Filter>
+    </ClInclude>
+    <ClInclude Include="ExampleComponent.h">
+      <Filter>Header Files\Example</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\IComponent.h">
+      <Filter>Header Files\Source\Components\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\IRender.h">
+      <Filter>Header Files\Source\Components\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\MeshRenderer.h">
+      <Filter>Header Files\Source\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\EntityManager.h">
+      <Filter>Header Files\Source\ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ComponentArray.h">
+      <Filter>Header Files\Source\ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Scene.h">
+      <Filter>Header Files\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\EventSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\DebugMovement.h">
+      <Filter>Header Files\Source\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="ExampleRaycast.h">
+      <Filter>Header Files\Example</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ICollider.h">
+      <Filter>Header Files\Source\Components\Base</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\imgui.ini">
       <Filter>Source Files\Source\Imgui</Filter>
     </None>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
 </Project>

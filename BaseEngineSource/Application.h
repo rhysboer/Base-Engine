@@ -1,23 +1,28 @@
 #pragma once
-#include "Engine.h"
-#include "FlyCamera.h"
-#include "Object3D.h"
+#include "BaseEngine.h"
 
-#include "glm/matrix.hpp"
+#include "Scene.h"
 
-class Application : public BE::Engine {
+namespace BE {
+	class Debugger;
+}
+class Application : public BE::BaseEngine  {
 public:
 
-
 private:
-	// Inherited via Engine
-	virtual void OnStart() override;
-	virtual void OnEnd() override;
-	virtual void OnUpdate() override;
-	virtual void OnRender() override;
 
-	BE::FlyCamera* camera;
+	BE::Scene* mainScene;
 
-	BE::Object3D* a;
-	BE::Object3D* b;
+	//BE::FlyCamera* camera;
+	BE::Debugger* debugger;
+
+	//BE::Ray ray = BE::Ray(glm::vec3(0), glm::vec3(0));
+
+	// Inherited via BaseEngine
+	virtual void OnEngineInit() override;
+	virtual void OnEngineDestroy() override;
+
+	virtual void OnEngineUpdate() override;
+	virtual void OnEngineRender() override;
 };
+

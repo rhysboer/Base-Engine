@@ -1,4 +1,4 @@
-#include "Time.h"
+#include "TimeManager.h"
 
 namespace BE {
 	float Time::deltaTime = 0.0f;

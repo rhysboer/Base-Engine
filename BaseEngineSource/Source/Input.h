@@ -4,11 +4,9 @@
 #include "glm/glm.hpp"
 
 namespace BE {
-
-	class Engine;
-
+	class BaseEngine;
 	class Input {
-		friend Engine;
+		friend BaseEngine;
 	public:
 		enum class Scroll {
 			HORIZONTAL = 0,
