@@ -1,7 +1,9 @@
 #include "Material.h"
 #include "Uniform.h"
+#include "ITexture.h"
 #include "ShaderManager.h"
 #include "UniformBuffer.h"
+#include "Logging.h"
 #include <glad/glad.h>
 
 namespace BE {
@@ -11,20 +13,14 @@ namespace BE {
 		int uniformCount = 0;
 		
 		glGetProgramiv(shader->ProgramID(), GL_ACTIVE_UNIFORMS, &uniformCount);
-		int name_len = -1, num = -1, location = -1;
-		GLenum type = GL_ZERO;
-		for(int i = 0; i < uniformCount; i++) {
-			char name[100];
-			glGetActiveUniform(shader->ProgramID(), GLuint(i), sizeof(name) - 1, &name_len, &num, &type, name);
-			name[name_len] = 0;
 
-			if(glGetUniformLocation(shader->ProgramID(), name) == -1)
+		for(int i = 0; i < uniformCount; i++) {
+			Uniform* uniform = Uniform::CreateUniform(shader->ProgramID(), (unsigned int)i);
+			if (uniform == nullptr)
 				continue;
 
-			Uniform* uniform = Uniform::CreateUniform((UniformType)type, name, num);
-			indexing.emplace(name, uniforms.size());
+			indexing.emplace(uniform->GetName(), uniforms.size());
 			uniforms.push_back(uniform);
-			
 		}
 
 		UniformBuffer::CreateUniformBufferFromShader(shader->ProgramID());
@@ -36,30 +32,70 @@ namespace BE {
 
 	void Material::SetUniform(const char* name, const glm::mat4& value, const unsigned int& size) {
 		Uniform* uniform = GetUniform(name);
-		assert(uniform != nullptr);
+		if (uniform == nullptr) {
+			BE_ERROR("Material::SetUniform() - Failed to find mat4 uniform with name of %s", name);
+			return;
+		}
 
 		uniform->SetValue((void*)&value[0][0], 16);
 	}
 
+	void Material::SetUniform(const char* name, const glm::vec2& value, const unsigned int& size)
+	{
+		Uniform* uniform = GetUniform(name);
+		if (uniform == nullptr) {
+			BE_ERROR("Material::SetUniform() - Failed to find vec2 uniform with name of %s", name);
+			return;
+		}
+
+		uniform->SetValue((void*)&value[0], 2);
+	}
+
 	void Material::SetUniform(const char* name, const glm::vec3& value, const unsigned int& size) {
 		Uniform* uniform = GetUniform(name);
-		assert(uniform != nullptr);
+		if (uniform == nullptr) {
+			BE_ERROR("Material::SetUniform() - Failed to find vec3 uniform with name of %s", name);
+			return;
+		}
 
 		uniform->SetValue((void*)&value[0], 3);
 	}
 
-	void Material::SetUniform(const char* name, const int* value, const unsigned int& size) {
+	void Material::SetUniform(const char* name, const int& value, const unsigned int& size) {
 		Uniform* uniform = GetUniform(name);
-		assert(uniform != nullptr);
+		if (uniform == nullptr) {
+			BE_ERROR("Material::SetUniform() - Failed to find int uniform with name of %s", name);
+			return;
+		}
 
-		uniform->SetValue(value, size);
+		uniform->SetValue(&value, size);
 	}
 
-	void Material::SetUniform(const char* name, const float* value, const unsigned int& size) {
+	void Material::SetUniform(const char* name, const float& value, const unsigned int& size) {
 		Uniform* uniform = GetUniform(name);
-		assert(uniform != nullptr);
+		if (uniform == nullptr) {
+			BE_ERROR("Material::SetUniform() - Failed to find float uniform with name of %s", name);
+			return;
+		}
 
-		uniform->SetValue(value, size);
+		uniform->SetValue(&value, size);
+	}
+
+	void Material::SetUniform(const char* name, const  ITexture* texture)
+	{
+		UniformTexture* uniform = (UniformTexture*)GetUniform(name);
+		if (uniform == nullptr) {
+			BE_ERROR("Material::SetTexture() - Failed to find texture uniform with name of %s", name);
+			return;
+		}
+
+		uniform->SetValue(texture);
+	}
+
+	void Material::SetTransparent(const bool& isTransparent)
+	{
+		this->isTransparent = isTransparent;
+
 	}
 
 	void Material::UpdateShaders() {
@@ -74,8 +110,6 @@ namespace BE {
 			return nullptr;
 
 		auto index = indexing.find(name);
-		assert(index != indexing.end());
-
-		return uniforms[(*index).second];
+		return index != indexing.end() ? uniforms[(*index).second] : nullptr;
 	}
 }

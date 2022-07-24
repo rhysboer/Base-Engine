@@ -23,8 +23,6 @@ namespace BE {
 
     IComponent* ComponentArray::GetFromEntityID(const unsigned int& entityID) const {
 		auto iter = indexes.find(entityID);
-		assert(iter != indexes.end());
-
-		return components[(*iter).second];
+		return (iter != indexes.end()) ? components[(*iter).second] : nullptr;
 	}
 }

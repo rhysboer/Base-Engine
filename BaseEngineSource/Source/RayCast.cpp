@@ -34,7 +34,23 @@ namespace BE {
 
 	Ray* Ray::CreateRayFromMousePosition(Camera& camera, const glm::vec2& mousePosition, const float& distance) {
 		Entity* entity = camera.GetEntity();
-		return new Ray(entity->transform.GetPosition(), camera.ScreenSpaceToWorldSpace(mousePosition), distance);
+		glm::vec3 position, direction;
+
+		switch (camera.GetType())
+		{
+		case Camera::CameraType::ORTHOGRAPHIC:
+			position = camera.ScreenSpaceToWorldSpace(mousePosition);
+			direction = entity->transform.GetForward();
+			break;
+		case Camera::CameraType::PERSPECTIVE:
+			position = entity->transform.GetPosition();
+			direction = camera.ScreenSpaceToWorldSpace(mousePosition);
+			break;
+		}
+
+		Ray* ray = new Ray(position, direction, distance);
+		return ray;
+		//return new Ray(entity->transform.GetPosition(), camera.ScreenSpaceToWorldSpace(mousePosition), distance);
 	}
 
 

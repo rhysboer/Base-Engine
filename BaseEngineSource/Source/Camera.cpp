@@ -130,24 +130,43 @@ namespace BE {
 			return glm::vec3(0);
 	
 		//// Convert cursor cordinates to normalised device coordinates. (-1, 1)
-		glm::vec3 mouseNDC = glm::vec3(
+		glm::vec4 mouseNDC = glm::vec4(
 			(2.0f * screenCoord.x) / screenSize.x - 1.0f,
 			1.0f - (2.0f * screenCoord.y) / screenSize.y,
-			-1.0f
+			-1.0f, 1
 		);
 	
 		Entity* entity = GetEntity();
 	
 		switch(cameraType) {
 			case BE::Camera::CameraType::ORTHOGRAPHIC:
-				return entity->transform.GetPosition() + (mouseNDC * glm::vec3(right, top, 1));
+			{
+				return entity->transform.ModelMatrix() * (mouseNDC * glm::vec4(right, top, 1, 1));
+			}
 			case BE::Camera::CameraType::PERSPECTIVE:
+			{
 				glm::mat4 inverse = glm::inverse(projection * GetView());
 				glm::vec4 result = inverse * glm::vec4(mouseNDC.x, mouseNDC.y, 1.0f, 1.0f);
 				return result / result.w;
+			}
 			default:
 				return glm::vec3(0);
 		}
+	}
+
+	glm::vec2 Camera::WorldSpaceToScreenSpace(const glm::vec3& worldCoord)
+	{
+		glm::vec4 result = projection * (GetView() * glm::vec4(worldCoord, 1));
+		result /= result.w;
+
+		int x, y;
+		BaseEngine::GetWindowSize(x, y);
+		glm::vec2 screenSize = glm::vec2(x, y);
+
+		result.x = glm::clamp(((result.x + 1.0f) / 2.0f) * screenSize.x, 0.0f, screenSize.x);
+		result.y = glm::clamp(((result.y + 1.0f) / 2.0f) * screenSize.y, 0.0f, screenSize.y);
+
+		return result;
 	}
 
 	//Ray Camera::CreateRayFromMouse() {

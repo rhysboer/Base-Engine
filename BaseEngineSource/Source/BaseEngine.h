@@ -3,7 +3,9 @@
 #include "GLFW/glfw3.h"
 
 namespace BE {
+	class ShaderManager;
 	class BaseEngine {
+		friend ShaderManager;
 	public:
 		
 		// Creating the Engine

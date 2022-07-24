@@ -1,12 +1,17 @@
 #include "Transform.h"
 
 namespace BE {
-	Transform::Transform() : position(0), rotation(glm::identity<glm::quat>()), scale(1), model(1), isDirty(false) {
-	}
+	Transform::Transform() : 
+		position(0), rotation(glm::identity<glm::quat>()), scale(1), model(1), isDirty(false) 
+	{}
 
 	Transform::Transform(const glm::vec3& position) :
 		position(position), rotation(glm::identity<glm::quat>()), scale(1), model(1), isDirty(false)
 	{}
+
+	Transform::Transform(const float& x, const float& y, const float& z) :
+		position(x, y, z), rotation(glm::identity<glm::quat>()), scale(1), model(1), isDirty(false)
+	{ }
 
 	Transform::Transform(const Transform& other) {
 		this->position = other.position;

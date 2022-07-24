@@ -9,11 +9,32 @@ namespace BE {
 	EntityManager::~EntityManager() {
 	}
 
-	Entity* const EntityManager::CreateEntity(glm::vec3 position, const char* name) {
-		Entity* entity = new Entity(scene, name, position);
+    Entity* const EntityManager::CreateEntity() {
+		return CreateEntity(nullptr, 0.0f, 0.0f, 0.0f);
+    }
+
+	Entity* const EntityManager::CreateEntity(const char* name) {
+		return CreateEntity(name, 0.0f, 0.0f, 0.0f);
+	}
+
+	Entity* const EntityManager::CreateEntity(glm::vec3 position) {
+		return CreateEntity(position.x, position.y, position.z);
+	}
+
+	Entity* const EntityManager::CreateEntity(const float& x, const float& y, const float& z) {
+		return CreateEntity(nullptr, x, y, z);
+	}
+
+	Entity* const EntityManager::CreateEntity(const char* name, glm::vec3 position) {
+		return CreateEntity(name, position.x, position.y, position.z);
+	}
+
+	Entity* const EntityManager::CreateEntity(const char* name, const float& x, const float& y, const float& z) {
+		Entity* entity = new Entity(scene, name, x, y, z);
 		entities.emplace(entity->GetName(), entity);
 		return entity;
 	}
+
 
 	void EntityManager::Update() {
 		for(auto& it : components) {
@@ -47,5 +68,14 @@ namespace BE {
 
 		// TODO: Might change this to start of the first frame rather than on init?
 		component->OnStart();
+	}
+
+	void EntityManager::GetEntityComponents(std::vector<IComponent*>& components, const unsigned int& entityID) const
+	{
+		for (auto& it : this->components) {
+			IComponent* comp = it.second->GetFromEntityID(entityID);
+			if (comp != nullptr)
+				components.push_back(comp);
+		}
 	}
 }

@@ -1,7 +1,7 @@
 #include "ExampleRaycast.h"
 #include "Scene.h"
 #include "Entity.h"
-#include "Logger.h"
+#include "Logging.h"
 #include "Gizmos.h"
 #include "Input.h"
 
@@ -12,7 +12,7 @@ void ExampleRaycast::OnStart() {
 
 void ExampleRaycast::OnProcess() {
 	if(camera != nullptr) {
-		if(BE::Input::IsMouseKeyDown(GLFW_MOUSE_BUTTON_LEFT)) {
+		if(BE::Input::IsMouseKeyPressed(GLFW_MOUSE_BUTTON_LEFT)) {
 			ray = BE::Ray::CreateRayFromMousePosition(*camera, BE::Input::MousePosition());
 			ray->Fire(GetEntity()->GetScene(), rayHit);
 		}

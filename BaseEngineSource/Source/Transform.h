@@ -10,10 +10,12 @@ namespace BE {
 	public:
 		Transform();
 		Transform(const glm::vec3& position);
+		Transform(const float& x, const float& y, const float& z);
 		Transform(const Transform& other);
 		~Transform();
 
 		inline void SetPosition(const float& x, const float& y, const float& z) { SetDirty(); position.x = x; position.y = y; position.z = z; }
+		//inline void SetPosition(const int& x, const int& y, const int& z) { SetDirty(); position.x = x; position.y = y; position.z = z; }
 		inline void SetPosition(const glm::vec3& position) { SetPosition(position.x, position.y, position.z); }
 		inline void SetScale(const float& x, const float& y, const float& z) { SetDirty(); scale.x = x; scale.y = y; scale.z = z; }
 		inline void SetScale(const glm::vec3& scale) { SetScale(scale.x, scale.y, scale.z); }
@@ -33,16 +35,19 @@ namespace BE {
 		void Translate(const float& x, const float& y, const float& z);
 		void Translate(const glm::vec3& offset);
 
-		inline glm::vec3 GetPosition() const { return position; };
+		inline glm::vec3 GetPosition() const { return position; }
 		inline glm::quat GetRotation() const { return rotation; }
-		inline glm::vec3 GetUp() const { return rotation * glm::vec3(0, 1, 0); };
-		inline glm::vec3 GetRight() const { return rotation * glm::vec3(1, 0, 0); };
-		inline glm::vec3 GetForward() const { return rotation * glm::vec3(0, 0, -1); };
+		inline glm::vec3 GetScale() const { return scale; }
+		inline glm::vec3 GetUp() const { return rotation * glm::vec3(0, 1, 0); }
+		inline glm::vec3 GetRight() const { return rotation * glm::vec3(1, 0, 0); }
+		inline glm::vec3 GetForward() const { return rotation * glm::vec3(0, 0, -1); }
 
 		glm::mat4 ModelMatrix();
 
 		void SetDirty();
 		bool IsDirty() const;
+
+		//glm::mat4 operator=(const Transform& transform) { return transform.model; }
 
 	private:
 		void UpdateTransform() const;

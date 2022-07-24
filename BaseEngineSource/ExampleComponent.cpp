@@ -5,9 +5,10 @@
 #include "Gizmos.h"
 
 void ExampleComponent::OnProcess() {
-	GetEntity()->transform.Rotate(glm::vec3(1.4f, glm::sin(BE::Time::TotalTime()), glm::cos(BE::Time::TotalTime() * 0.3f)), 1.0f);
-	
-	BE::Gizmos::DrawTransform(GetEntity()->transform.ModelMatrix(), 5);
+	//GetEntity()->transform.Rotate(glm::vec3(1.4f, glm::sin(BE::Time::TotalTime()) * 3.0f, glm::cos(BE::Time::TotalTime() * 0.3f) * 3.0f), 1.0f);
+	GetEntity()->transform.RotateY(BE::Time::DeltaTime() * 100.0f);
+
+	//BE::Gizmos::DrawTransform(GetEntity()->transform.ModelMatrix(), 5);
 }
 
 void ExampleComponent::OnStart() {

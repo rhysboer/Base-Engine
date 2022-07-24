@@ -37,18 +37,22 @@ namespace BE {
 		inline bool IsActive() const { return isActive; }
 		inline float GetNear() const { return near; }
 		inline float GetFar() const { return far; }
-		inline float GetOrthoSize() const { return size; }
+		inline float GetOrthoSize() const { return size * 2.0f; }
 		inline float GetAspect() const { return aspect; }
 		inline unsigned int GetCameraIndex() const { return cameraIndex; }
 		inline CameraType GetType() const { return cameraType; }
 
+		// Clip Space
 		glm::vec3 ScreenSpaceToWorldSpace(const glm::vec2& screenCoord);
+		glm::vec2 WorldSpaceToScreenSpace(const glm::vec3& worldCoord);
 
 		//Ray CreateRayFromMouse();
 
 		bool IsPointInFrustum(const glm::vec3& point);
 		//bool IsAABBInFrustum(const AABB& aabb);
 		bool IsSphereInFrustum(const glm::vec3& point, const float radius);
+
+		virtual inline const char* GetName() const { return "Camera"; }
 
 	protected:
 
@@ -61,8 +65,6 @@ namespace BE {
 		// Update camera
 		void UpdateCamera();
 		void UpdateFrustumPlanes();
-
-		//Transform transform;
 
 		glm::vec4 frustumPlanes[6];
 

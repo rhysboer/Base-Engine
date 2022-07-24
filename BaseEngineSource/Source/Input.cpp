@@ -1,5 +1,6 @@
 #include "Input.h"
 #include "BaseEngine.h"
+#include "imgui.h"
 
 namespace BE {
 	unsigned int Input::keyStates[GLFW_KEY_LAST];
@@ -84,7 +85,7 @@ namespace BE {
 	}
 
 	void Input::MouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
-		if((button < 0 || button > GLFW_MOUSE_BUTTON_LAST) /*|| ImGui::IsAnyWindowHovered() || ImGui::IsAnyItemHovered()*/) return;
+		if((button < 0 || button > GLFW_MOUSE_BUTTON_LAST) /*|| ImGui::IsAnyWindowHovered()*/ || ImGui::IsAnyItemHovered()) return;
 		mouseButtonStates[button] = action;
 	}
 

@@ -3,6 +3,7 @@
 #include "glm/glm.hpp"
 
 namespace BE {
+	// https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glGetActiveUniform.xhtml
 	enum class UniformType {
 		FLOAT = 0x1406,
 		INT = 0x1404,
@@ -13,6 +14,7 @@ namespace BE {
 		MATRIX_3 = 0x8B5B,
 		MATRIX_4 = 0x8B5C,
 		TEXTURE_2D = 0x8B5E,
+		BOOLEAN = 0x8B56,
 	};
 
 	// TODO:
@@ -27,7 +29,6 @@ namespace BE {
 	class Uniform {
 	public:
 
-		Uniform(const UniformType& uniformType, const char* uniformName, const unsigned int& arraySize = 1);
 		~Uniform() {};
 
 		virtual void SetValue(const void* value, const unsigned int& size = 1) = 0;
@@ -35,22 +36,26 @@ namespace BE {
 
 		inline UniformType GetType() const { return type; }
 		inline const char* GetName() const { return name.c_str(); }
+		inline unsigned int GetOffset() const { return offset; }
 
-		static Uniform* CreateUniform(const UniformType& uniformType, const char* uniformName, const unsigned int& arraySize = 1);
+		static Uniform* CreateUniform(const unsigned int& shaderProg, const unsigned int& uniformIndex, const bool& checkLoc = true);
 
 	protected:
+		Uniform(const UniformType& uniformType, const char* uniformName, const unsigned int& arraySize, const unsigned int offset);
 
 		UniformType type;
 		std::string name;
 		unsigned int arraySize;
+		unsigned int offset;
+
 	};
 
 	// ------------ Int Uniform
 	class UniformInt : public Uniform {
 	public:
 
-		UniformInt(const UniformType& uniformType, const char* uniformName, const unsigned int& arraySize = 1);
-		~UniformInt() { /* TODO */ };
+		UniformInt(const UniformType& uniformType, const char* uniformName, const unsigned int& arraySize, const unsigned int offset);
+		~UniformInt() { /* TODO */ }
 
 		virtual void SetValue(const void* value, const unsigned int& size = 1) override;
 		virtual void* GetValue(const unsigned int& index = 0) const override;
@@ -64,8 +69,8 @@ namespace BE {
 	class UniformFloat : public Uniform {
 	public:
 
-		UniformFloat(const UniformType& uniformType, const char* uniformName, const unsigned int& arraySize = 1);
-		~UniformFloat() { /* TODO */ };
+		UniformFloat(const UniformType& uniformType, const char* uniformName, const unsigned int& arraySize, const unsigned int& offset);
+		~UniformFloat() { /* TODO */ }
 
 		virtual void SetValue(const void* value, const unsigned int& size = 1) override;
 		virtual void* GetValue(const unsigned int& index = 0) const override;
@@ -73,6 +78,24 @@ namespace BE {
 	private:
 
 		float* data;
+	};
+
+	// ------------ Texture Uniform
+	class ITexture;
+	class UniformTexture : public Uniform {
+	public:
+
+		UniformTexture(const UniformType& uniformType, const char* uniformName, const unsigned int& arraySize, const unsigned int& offset);
+		~UniformTexture() { /* TODO */ }
+
+		virtual void SetValue(const void* value, const unsigned int& size = 1) override;
+		virtual void* GetValue(const unsigned int& index = 0) const override;
+
+		//inline void SetDirty(const bool& isDirty) { isTextureDirty = isDirty; }
+
+	private:
+
+		ITexture* texture;
 	};
 }
 

@@ -1,5 +1,5 @@
 #pragma once
-#include "BaseTexture.h"
+//#include "BaseTexture.h"
 
 namespace BE {
 	class Sprite {//: public BaseTexture {

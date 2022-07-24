@@ -53,14 +53,16 @@ namespace BE {
 		shader->SetMatrix4("model", glm::mat4(1));
 
 		if(triangles.vertexData.size() > 0) {
-			triangles.mesh->UpdateData(triangles.vertexData, { 3, 3 }, triangles.indices);
+			triangles.mesh->SetMeshData(0, triangles.vertexData, attributes, triangles.indices);
+			triangles.mesh->Apply();
 
 			triangles.mesh->BindVAO();
 			glDrawElements(GL_TRIANGLES, triangles.indices.size(), GL_UNSIGNED_INT, 0);
 		}
 
 		if(lines.vertexData.size() > 0) {
-			lines.mesh->UpdateData(lines.vertexData, { 3, 3 }, lines.indices);
+			lines.mesh->SetMeshData(0, lines.vertexData, attributes, lines.indices);
+			lines.mesh->Apply();
 
 			lines.mesh->BindVAO();
 			glDrawElements(GL_LINES, lines.indices.size(), GL_UNSIGNED_INT, 0);
@@ -68,6 +70,9 @@ namespace BE {
 
 		triangles.Clear();
 		lines.Clear();
+		
+		triangles.mesh->Clear();
+		lines.mesh->Clear();
 	}
 
 	void Gizmos::DrawLine(const glm::vec3& start, const glm::vec3& end, const glm::mat4& mat, const glm::vec3& colour) {
@@ -448,20 +453,20 @@ namespace BE {
 		lines.SetTransform(mat);
 
 		// Triangles
-		triangles.AddPoint(-0.5f * size.x, 0.0f, 0.5f * size.y, colour);
-		triangles.AddPoint(-0.5f * size.x, 0.0f, -0.5f * size.y, colour);
-		triangles.AddPoint(0.5f * size.x, 0.0f, -0.5f * size.y, colour);
-		triangles.AddPoint(0.5f * size.x, 0.0f, 0.5f * size.y, colour);
-
-		triangles.AddIndices(0, 1, 2);
-		triangles.AddIndices(0, 2, 3);
-		triangles.AddOffset(4);
+		//triangles.AddPoint(-0.5f * size.x, 0.0f, 0.5f * size.y, colour);
+		//triangles.AddPoint(-0.5f * size.x, 0.0f, -0.5f * size.y, colour);
+		//triangles.AddPoint(0.5f * size.x, 0.0f, -0.5f * size.y, colour);
+		//triangles.AddPoint(0.5f * size.x, 0.0f, 0.5f * size.y, colour);
+		//
+		//triangles.AddIndices(0, 1, 2);
+		//triangles.AddIndices(0, 2, 3);
+		//triangles.AddOffset(4);
 
 		// Lines
-		lines.AddPoint(-0.5f * size.x, 0.0f, 0.5f * size.y, COLOUR_WHITE);
-		lines.AddPoint(-0.5f * size.x, 0.0f, -0.5f * size.y, COLOUR_WHITE);
-		lines.AddPoint(0.5f * size.x, 0.0f, -0.5f * size.y, COLOUR_WHITE);
-		lines.AddPoint(0.5f * size.x, 0.0f, 0.5f * size.y, COLOUR_WHITE);
+		lines.AddPoint(-0.5f * size.x, 0.0f, 0.5f * size.y, COLOUR_RED);
+		lines.AddPoint(-0.5f * size.x, 0.0f, -0.5f * size.y, COLOUR_RED);
+		lines.AddPoint(0.5f * size.x, 0.0f, -0.5f * size.y, COLOUR_RED);
+		lines.AddPoint(0.5f * size.x, 0.0f, 0.5f * size.y, COLOUR_RED);
 
 		lines.AddIndices(0, 1);
 		lines.AddIndices(1, 2);
@@ -521,7 +526,7 @@ namespace BE {
 		lines.AddIndices(2, 3);
 		lines.AddIndices(4, 5);
 
-		lines.AddOffset(5);
+		lines.AddOffset(6);
     }
 
 	void Gizmos::DrawRay(const Ray& ray, const glm::vec3& colour) {

@@ -1,10 +1,13 @@
 #include "ShaderManager.h"
 #include <fstream>
-#include "Logger.h"
+#include "Logging.h"
+#include "BuiltinShaders.h"
 
 namespace BE {
 	std::vector<Shader*> ShaderManager::shaders = std::vector<Shader*>();
 	std::unordered_map<const char*, int> ShaderManager::shaderIndexes = std::unordered_map<const char*, int>();
+	std::unordered_map<std::string, std::string> ShaderManager::shaderHeaders = std::unordered_map<std::string, std::string>();
+
 	unsigned int ShaderManager::shaderCount = 0;
 
 	//std::map<std::string, Shader*> ShaderManager::graphicShaders = std::map<std::string, Shader*>();
@@ -36,14 +39,14 @@ namespace BE {
 
 		// Find if shader already exists
 		if(shaderIndexes.find(name) != shaderIndexes.end()) {
-			BE::Logger::Warning("ShaderManager: Name already exists in current list - ", name);
+			BE::Logging::Warning("ShaderManager: Name already exists in current list - ", name);
 			return -1;
 		}
 
 		// VERTEX
 		file.open(vertexPath);
 		if(!file.is_open()) {
-			BE::Logger::Error("ShaderManager: Failed to find file - ", vertexPath);
+			BE::Logging::Error("ShaderManager: Failed to find file - ", vertexPath);
 			file.close();
 			return -1;
 		}
@@ -54,7 +57,7 @@ namespace BE {
 		// FRAGMENT
 		file.open(fragmentPath);
 		if(!file.is_open()) {
-			BE::Logger::Error("ShaderManager: Failed to find file - ", fragmentPath);
+			BE::Logging::Error("ShaderManager: Failed to find file - ", fragmentPath);
 			file.close();
 			return -1;
 		}
@@ -62,11 +65,13 @@ namespace BE {
 		fragSource = std::string((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
 		file.close();
 
+		TryAddHeaders(fragSource);
+
 		// GEOMETRY
 		if(geometryPath != nullptr) {
 			file.open(geometryPath);
 			if(!file.is_open()) {
-				BE::Logger::Error("ShaderManager: Failed to find file - ", geometryPath);
+				BE::Logging::Error("ShaderManager: Failed to find file - ", geometryPath);
 				file.close();
 				return -1;
 			}
@@ -81,9 +86,12 @@ namespace BE {
 	int ShaderManager::AddShaderSource(const char* name, const char* vertexSource, const char* fragmentSource, const char* geometrySource) {
 		int index = -1;
 
+		std::string fragString = std::string(fragmentSource);
+		TryAddHeaders(fragString);
+
 		// CREATE SHADER
 		Shader* shader = new Shader();
-		if(shader->LoadShader(vertexSource, fragmentSource, geometrySource)) {
+		if(shader->LoadShader(vertexSource, fragString.c_str(), geometrySource)) {
 			index = shaderCount;
 			++shaderCount;
 
@@ -94,6 +102,12 @@ namespace BE {
 		}
 
 		return index;
+	}
+
+	void ShaderManager::AddShaderHeader(const char* headerName, const char* header)
+	{
+		// TODO: should change shaderHeader to use std::String instead of const char*
+		shaderHeaders.emplace(headerName, header);
 	}
 
 	Shader* ShaderManager::GetShader(const char* name) {
@@ -111,122 +125,37 @@ namespace BE {
 		return (iter != shaderIndexes.end()) ? (*iter).second : -1;
 	}
 
-	/*
-	Shader* ShaderManager::GetShader(const char* name, ShaderType type) {
-		switch(type) {
-			case ShaderManager::ShaderType::GRAPHIC:
-			{
-				std::map<std::string, Shader*>::iterator iter = graphicShaders.find(name);
-				if(iter != graphicShaders.end())
-					return (*iter).second;
-				break;
-			}
-			case ShaderManager::ShaderType::COMPUTE:
-			{
-				std::map<std::string, Shader*>::iterator iter = computeShaders.find(name);
-				if(iter != computeShaders.end())
-					return (*iter).second;
-				break;
-			}
-		}
+	void ShaderManager::TryAddHeaders(std::string& source)
+	{
+		int offset = 0;
+		int s = 0;
+		do {
+			s = source.find("#include", offset);
+			offset += s;
 
-		printf("Failed to find shader: %s!\n", name);
-		return nullptr;
-	}
+			if (s > 0) {
+				int end = source.find("\n", offset);
+				if (end != std::string::npos) {
+					auto name = source.substr(offset + 9, end - offset - 9);
+					auto iter = shaderHeaders.find(name.c_str());
 
-	Shader* ShaderManager::AddShader(std::string name, std::string shaderPath, bool useGeometryShader) {
-		return AddShader(name.c_str(), (shaderPath + ".vert").c_str(), (shaderPath + ".frag").c_str(), (useGeometryShader) ? (shaderPath + ".geom").c_str() : nullptr);
-	}
-
-	Shader* ShaderManager::AddShader(const char* name, const char* vertPath, const char* fragPath, const char* geomPath) {
-		std::ifstream file;
-
-		std::string vertSource;
-		std::string fragSource;
-		std::string geomSource;
-
-		// Find if shader already exists
-		std::map<std::string, Shader*>::iterator iter = graphicShaders.find(name);
-		if(iter != graphicShaders.end())
-			return (*iter).second;
-
-		// VERTEX
-		file.open(vertPath);
-		if(!file.is_open()) {
-			printf("Failed to load Vertex Shader: %s\n", vertPath);
-			file.close();
-			return nullptr;
-		}
-
-		vertSource = std::string((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
-		file.close();
-
-		// FRAGMENT
-		file.open(fragPath);
-		if(!file.is_open()) {
-			printf("Failed to load Fragment Shader: %s\n", fragPath);
-			file.close();
-			return nullptr;
-		}
-
-		fragSource = std::string((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
-		file.close();
-
-		// GEOMETRY
-		if(geomPath != nullptr) {
-			file.open(geomPath);
-			if(!file.is_open()) {
-				printf("Failed to load Geometry Shader: %s\n", geomPath);
-				file.close();
-				return nullptr;
+					if (iter != shaderHeaders.end()) {
+						source.replace(offset, end - offset, (*iter).second);
+					}
+					else {
+						source.replace(offset, end - offset, "");
+					}
+				}
 			}
 
-			geomSource = std::string((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
-			file.close();
-		}
-
-		// CREATE SHADER
-		Shader* shader = new Shader();
-		if(shader->LoadShader(vertSource, fragSource, geomSource)) {
-			graphicShaders.insert(std::pair<const char*, Shader*>(name, shader));
-			return shader;
-		}
-
-		return nullptr;
+		} while (s != std::string::npos);
 	}
 
-    Shader* ShaderManager::AddShader(std::string name, std::string vertexSource, std::string fragmentSource, std::string geometrySource) {
-		// CREATE SHADER
-		Shader* shader = new Shader();
-		if(shader->LoadShader(vertexSource, fragmentSource, geometrySource)) {
-			graphicShaders.insert(std::pair<const char*, Shader*>(name.c_str(), shader));
-			return shader;
-		}
+    void ShaderManager::InitBaseShaders() {
+		AddShaderHeader(ShaderSource::HEADER_NAME_BEGLOBAL, ShaderSource::HEADER_SOURCE_BEGLOBAL);
 
-		return nullptr;
+		AddShaderSource(BE_SHADER_STANDARD, ShaderSource::VERT_STANDARD, ShaderSource::FRAG_STANDARD);
+		AddShaderSource(BE_SHADER_UNLIT, ShaderSource::VERT_STANDARD, ShaderSource::FRAG_UNLIT);
+		AddShaderSource(BE_SHADER_FLAT, ShaderSource::VERT_STANDARD, ShaderSource::FRAG_FLAT);
     }
-
-	Shader* ShaderManager::AddComputeShader(const char* name, const char* compPath) {
-		std::ifstream file;
-
-		file.open(compPath);
-
-		if(!file.is_open()) {
-			printf("Failed to load Compute Shader: %s\n", compPath);
-			file.close();
-			return nullptr;
-		}
-
-		std::string source((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
-		file.close();
-
-		Shader* shader = new Shader();
-		if(shader->LoadShader(source)) {
-			computeShaders.insert(std::pair<const char*, Shader*>(name, shader));
-			return shader;
-		}
-
-		return nullptr;
-	}
-	*/
 }

@@ -30,7 +30,7 @@ namespace BE {
 		shader->SetMatrix4(SHADER_PROJECTIONVIEW, projectionView);
 
 
-		if(!mesh->IsUsingEBO())
+		if(!mesh->HasEBO())
 			glDrawArrays((GLenum)renderType, 0, mesh->GetIndicesCount());
 		else
 			glDrawElements((GLenum)renderType, mesh->GetIndicesCount(), GL_UNSIGNED_INT, 0);
@@ -41,7 +41,7 @@ namespace BE {
 
 		mesh->BindVAO();
 
-		if(!mesh->IsUsingEBO())
+		if(!mesh->HasEBO())
 			glDrawArrays((GLenum)renderType, 0, mesh->GetIndicesCount());
 		else
 			glDrawElements((GLenum)renderType, mesh->GetIndicesCount(), GL_UNSIGNED_INT, 0);
@@ -267,9 +267,9 @@ namespace BE {
 		std::vector<float> vertexData = std::vector<float>();
 		std::vector<unsigned int> vertexAttributes = std::vector<unsigned int>();
 
-		if(FileLoader::LoadOBJ(path, vertexData, vertexAttributes))
-			return new Object3D(position, vertexData, vertexAttributes);
-		else
+		//if(FileLoader::LoadOBJ(path, vertexData, vertexAttributes))
+		//	return new Object3D(position, vertexData, vertexAttributes);
+		//else
 			return nullptr;
 	}
 

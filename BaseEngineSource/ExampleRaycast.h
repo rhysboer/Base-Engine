@@ -11,6 +11,7 @@ public:
 	virtual void OnProcess() override;
 	virtual void OnDestroy() override;
 	virtual size_t GetID() const override;
+	virtual inline const char* GetName() const { return "Example Raycast"; }
 
 private:
 

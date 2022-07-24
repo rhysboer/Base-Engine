@@ -6,15 +6,13 @@
 #include "Gizmos.h"
 #endif
 
-#include <iostream>
-
 namespace BE {
 	PlaneCollider::PlaneCollider(const glm::vec2& size) : ICollider(ColliderType::PLANE), size(size) { }
 	PlaneCollider::PlaneCollider(const float& x, const float& y) : ICollider(ColliderType::PLANE), size(x, y) { }
 	PlaneCollider::PlaneCollider(const float& size) : ICollider(ColliderType::PLANE), size(size, size) { }
 
 	void PlaneCollider::OnProcess() {
-
+		//DebugDraw();
 	}
 
 	// Source: http://www.opengl-tutorial.org/miscellaneous/clicking-on-objects/picking-with-custom-ray-obb-function/
@@ -24,17 +22,19 @@ namespace BE {
 		float tMin = 0.0f;
 		float tMax = 1000000.0f;
 
-		glm::vec3 aabbMax = glm::vec3(size.x / 2.0f, 0.0f, size.y / 2.0f);
+		glm::vec3 scale = entity->transform.GetScale();
+
+		glm::vec3 aabbMax = glm::vec3(size.x / 2.0f, 0.0f, size.y / 2.0f) * scale;
 		glm::vec3 aabbMin = aabbMax * -1.0f;
 
-		glm::vec3 position = entity->transform.GetPosition();
+		glm::vec3 position = entity->transform.GetPosition() + offset;
 		glm::vec3 delta = position - ray.GetOrigin();
-		glm::mat4 model = entity->transform.ModelMatrix();
+		glm::mat4 model = glm::translate(entity->transform.ModelMatrix(), offset);
 
 		hitOutput.SetResults(false);
 
 		for(int i = 0; i < 3; i++) {
-			glm::vec3 axis = glm::vec3(model[i].x, model[i].y, model[i].z);
+			glm::vec3 axis = glm::normalize(glm::vec3(model[i].x, model[i].y, model[i].z));
 			float e = glm::dot(axis, delta);
 			float f = glm::dot(ray.GetDirection(), axis);
 
@@ -71,6 +71,6 @@ namespace BE {
     }
 
 	void PlaneCollider::DebugDraw() {
-		//BE::Gizmos::DrawPlane(size, GetEntity()->transform.ModelMatrix());
+		//BE::Gizmos::DrawPlane(size, glm::translate(GetEntity()->transform.ModelMatrix(), this->offset), COLOUR_RED);
 	}
 }

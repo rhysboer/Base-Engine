@@ -2,6 +2,9 @@
 #include "glm/mat4x4.hpp"
 #include "Camera.h"
 
+/// <summary>
+/// OBSOLETE - Do not use
+/// </summary>
 class Drawable {
 public:
 	// Renders an object

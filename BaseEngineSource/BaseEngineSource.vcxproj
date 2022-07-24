@@ -44,52 +44,52 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugLib|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseLib|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugLib|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseLib|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -291,25 +291,38 @@
     <ClCompile Include="ExampleRaycast.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Source\BaseEngine.cpp" />
+    <ClCompile Include="source\BEMath.cpp" />
     <ClCompile Include="Source\Camera.cpp" />
-    <ClCompile Include="Source\BaseTexture.cpp" />
+    <ClCompile Include="Source\Colour.cpp" />
+    <ClCompile Include="Source\Common.cpp" />
     <ClCompile Include="Source\ComponentArray.cpp" />
+    <ClCompile Include="source\DebugComponent.cpp" />
     <ClCompile Include="Source\DebugMovement.cpp" />
+    <ClCompile Include="source\BEGlobal.cpp" />
+    <ClCompile Include="source\EntityDebugger.cpp" />
     <ClCompile Include="Source\EntityManager.cpp" />
-    <ClCompile Include="Source\ECSManager.cpp" />
     <ClCompile Include="Source\Cubemap.cpp" />
     <ClCompile Include="Source\Drawable.cpp" />
     <ClCompile Include="Source\Entity.cpp" />
-    <ClCompile Include="Source\Debugger.cpp" />
     <ClCompile Include="Source\EventSystem.cpp" />
+    <ClCompile Include="Source\File.cpp" />
+    <ClCompile Include="Source\FLVERLoader.cpp" />
     <ClCompile Include="Source\FlyCamera.cpp" />
     <ClCompile Include="Source\Framebuffer.cpp" />
     <ClCompile Include="Source\Gizmos.cpp" />
     <ClCompile Include="Source\glad.c" />
     <ClCompile Include="Source\ICollider.cpp" />
+    <ClCompile Include="Source\imgui_tables.cpp" />
     <ClCompile Include="Source\IRender.cpp" />
+    <ClCompile Include="source\ITexture.cpp" />
+    <ClCompile Include="Source\Light.cpp" />
+    <ClCompile Include="Source\LightManager.cpp" />
+    <ClCompile Include="source\MeshLoader.cpp" />
+    <ClCompile Include="Source\OBJLoader.cpp" />
     <ClCompile Include="Source\PlaneCollider.cpp" />
+    <ClCompile Include="source\RenderSystem.cpp" />
     <ClCompile Include="Source\Scene.cpp" />
+    <ClCompile Include="Source\Texture.cpp" />
     <ClCompile Include="Source\Uniform.cpp" />
     <ClCompile Include="Source\IComponent.cpp" />
     <ClCompile Include="Source\imgui.cpp" />
@@ -320,12 +333,10 @@
     <ClCompile Include="Source\imgui_stdlib.cpp" />
     <ClCompile Include="Source\imgui_widgets.cpp" />
     <ClCompile Include="Source\Input.cpp" />
-    <ClCompile Include="Source\Loader.cpp" />
-    <ClCompile Include="Source\Logger.cpp" />
+    <ClCompile Include="Source\Logging.cpp" />
     <ClCompile Include="Source\Material.cpp" />
     <ClCompile Include="Source\Mesh.cpp" />
     <ClCompile Include="Source\MeshRenderer.cpp" />
-    <ClCompile Include="Source\MeshUtil.cpp" />
     <ClCompile Include="Source\Object3D.cpp" />
     <ClCompile Include="Source\PostProcess.cpp" />
     <ClCompile Include="Source\Raycast.cpp" />
@@ -338,32 +349,82 @@
     <ClCompile Include="Source\tiny_obj_loader.cc" />
     <ClCompile Include="Source\Transform.cpp" />
     <ClCompile Include="Source\UniformBuffer.cpp" />
-    <ClCompile Include="Source\Util.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
     <ClInclude Include="ExampleComponent.h" />
     <ClInclude Include="ExampleRaycast.h" />
     <ClInclude Include="Source\BaseEngine.h" />
+    <ClInclude Include="source\BEMath.h" />
+    <ClInclude Include="source\BuiltinShaders.h" />
     <ClInclude Include="Source\Camera.h" />
-    <ClInclude Include="Source\BaseTexture.h" />
+    <ClInclude Include="Source\Colour.h" />
     <ClInclude Include="Source\Common.h" />
     <ClInclude Include="Source\ComponentArray.h" />
+    <ClInclude Include="source\DebugComponent.h" />
     <ClInclude Include="Source\DebugMovement.h" />
+    <ClInclude Include="source\BEGlobal.h" />
+    <ClInclude Include="source\EntityDebugger.h" />
     <ClInclude Include="Source\EntityManager.h" />
-    <ClInclude Include="Source\ECSManager.h" />
     <ClInclude Include="Source\Cubemap.h" />
     <ClInclude Include="Source\Drawable.h" />
     <ClInclude Include="Source\Entity.h" />
-    <ClInclude Include="Source\Debugger.h" />
     <ClInclude Include="Source\EventSystem.h" />
+    <ClInclude Include="Source\File.h" />
+    <ClInclude Include="Source\FLVERLoader.h" />
     <ClInclude Include="Source\FlyCamera.h" />
     <ClInclude Include="Source\Framebuffer.h" />
     <ClInclude Include="Source\Gizmos.h" />
     <ClInclude Include="Source\ICollider.h" />
+    <ClInclude Include="Source\imgui_impl_opengl3_loader.h" />
+    <ClInclude Include="source\ITexture.h" />
+    <ClInclude Include="Source\Light.h" />
     <ClInclude Include="Source\IRender.h" />
+    <ClInclude Include="Source\LightManager.h" />
+    <ClInclude Include="source\MeshLoader.h" />
+    <ClInclude Include="Source\OBJLoader.h" />
     <ClInclude Include="Source\PlaneCollider.h" />
+    <ClInclude Include="Source\rapidjson\allocators.h" />
+    <ClInclude Include="Source\rapidjson\cursorstreamwrapper.h" />
+    <ClInclude Include="Source\rapidjson\document.h" />
+    <ClInclude Include="Source\rapidjson\encodedstream.h" />
+    <ClInclude Include="Source\rapidjson\encodings.h" />
+    <ClInclude Include="Source\rapidjson\error\en.h" />
+    <ClInclude Include="Source\rapidjson\error\error.h" />
+    <ClInclude Include="Source\rapidjson\filereadstream.h" />
+    <ClInclude Include="Source\rapidjson\filewritestream.h" />
+    <ClInclude Include="Source\rapidjson\fwd.h" />
+    <ClInclude Include="Source\rapidjson\internal\biginteger.h" />
+    <ClInclude Include="Source\rapidjson\internal\clzll.h" />
+    <ClInclude Include="Source\rapidjson\internal\diyfp.h" />
+    <ClInclude Include="Source\rapidjson\internal\dtoa.h" />
+    <ClInclude Include="Source\rapidjson\internal\ieee754.h" />
+    <ClInclude Include="Source\rapidjson\internal\itoa.h" />
+    <ClInclude Include="Source\rapidjson\internal\meta.h" />
+    <ClInclude Include="Source\rapidjson\internal\pow10.h" />
+    <ClInclude Include="Source\rapidjson\internal\regex.h" />
+    <ClInclude Include="Source\rapidjson\internal\stack.h" />
+    <ClInclude Include="Source\rapidjson\internal\strfunc.h" />
+    <ClInclude Include="Source\rapidjson\internal\strtod.h" />
+    <ClInclude Include="Source\rapidjson\internal\swap.h" />
+    <ClInclude Include="Source\rapidjson\istreamwrapper.h" />
+    <ClInclude Include="Source\rapidjson\memorybuffer.h" />
+    <ClInclude Include="Source\rapidjson\memorystream.h" />
+    <ClInclude Include="Source\rapidjson\msinttypes\inttypes.h" />
+    <ClInclude Include="Source\rapidjson\msinttypes\stdint.h" />
+    <ClInclude Include="Source\rapidjson\ostreamwrapper.h" />
+    <ClInclude Include="Source\rapidjson\pointer.h" />
+    <ClInclude Include="Source\rapidjson\prettywriter.h" />
+    <ClInclude Include="Source\rapidjson\rapidjson.h" />
+    <ClInclude Include="Source\rapidjson\reader.h" />
+    <ClInclude Include="Source\rapidjson\schema.h" />
+    <ClInclude Include="Source\rapidjson\stream.h" />
+    <ClInclude Include="Source\rapidjson\stringbuffer.h" />
+    <ClInclude Include="Source\rapidjson\uri.h" />
+    <ClInclude Include="Source\rapidjson\writer.h" />
+    <ClInclude Include="source\RenderSystem.h" />
     <ClInclude Include="Source\Scene.h" />
+    <ClInclude Include="Source\Texture.h" />
     <ClInclude Include="Source\Uniform.h" />
     <ClInclude Include="Source\IComponent.h" />
     <ClInclude Include="Source\imconfig.h" />
@@ -377,12 +438,10 @@
     <ClInclude Include="Source\imstb_textedit.h" />
     <ClInclude Include="Source\imstb_truetype.h" />
     <ClInclude Include="Source\Input.h" />
-    <ClInclude Include="Source\Loader.h" />
-    <ClInclude Include="Source\Logger.h" />
+    <ClInclude Include="Source\Logging.h" />
     <ClInclude Include="Source\Material.h" />
     <ClInclude Include="Source\Mesh.h" />
     <ClInclude Include="Source\MeshRenderer.h" />
-    <ClInclude Include="Source\MeshUtil.h" />
     <ClInclude Include="Source\Object3D.h" />
     <ClInclude Include="Source\PostProcess.h" />
     <ClInclude Include="Source\Raycast.h" />
@@ -396,10 +455,8 @@
     <ClInclude Include="Source\tiny_obj_loader.h" />
     <ClInclude Include="Source\Transform.h" />
     <ClInclude Include="Source\UniformBuffer.h" />
-    <ClInclude Include="Source\Util.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClassDiagram.cd" />
     <None Include="Source\imgui.ini" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

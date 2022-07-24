@@ -7,6 +7,7 @@
 namespace BE {
 	class Shader;
 	class Uniform;
+	class ITexture;
 	class Material {
 	public:
 
@@ -15,11 +16,16 @@ namespace BE {
 		Material(const int& shaderId);
 		~Material();
 
-		void SetUniform(const char* name, const int* value, const unsigned int& size = 1);
-		void SetUniform(const char* name, const float* value, const unsigned int& size = 1);
+		void SetUniform(const char* name, const int& value, const unsigned int& size = 1);
+		void SetUniform(const char* name, const float& value, const unsigned int& size = 1);
+		void SetUniform(const char* name, const glm::vec2& value, const unsigned int& size = 1);
 		void SetUniform(const char* name, const glm::vec3& value, const unsigned int& size = 1);
 		void SetUniform(const char* name, const glm::mat4& value, const unsigned int& size = 1);
-		
+		void SetUniform(const char* name, const ITexture* texture);
+
+		void SetTransparent(const bool& isTransparent);
+		bool IsTransparent() const { return isTransparent; }
+
 		void UpdateShaders();
 
 	private:
@@ -29,6 +35,7 @@ namespace BE {
 		std::vector<Uniform*> uniforms = std::vector<Uniform*>();
 
 		Shader const* shader;
+		bool isTransparent;
 	};
 }
 

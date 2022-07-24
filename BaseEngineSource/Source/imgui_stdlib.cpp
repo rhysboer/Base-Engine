@@ -1,10 +1,5 @@
-// imgui_stdlib.cpp
-// Wrappers for C++ standard library (STL) types (std::string, etc.)
+// dear imgui: wrappers for C++ standard library (STL) types (std::string, etc.)
 // This is also an example of how you may wrap your own similar types.
-
-// Compatibility:
-// - std::string support is only guaranteed to work from C++11.
-//   If you try to use it pre-C++11, please share your findings (w/ info about compiler/architecture)
 
 // Changelog:
 // - v0.10: Initial version. Added InputText() / InputTextMultiline() calls with std::string
@@ -45,10 +40,8 @@ bool ImGui::InputText(const char* label, std::string* str, ImGuiInputTextFlags f
     IM_ASSERT((flags & ImGuiInputTextFlags_CallbackResize) == 0);
     flags |= ImGuiInputTextFlags_CallbackResize;
 
-	std::wstring test = L"ass";
-
     InputTextCallback_UserData cb_user_data;
-	cb_user_data.Str = str;
+    cb_user_data.Str = str;
     cb_user_data.ChainCallback = callback;
     cb_user_data.ChainCallbackUserData = user_data;
     return InputText(label, (char*)str->c_str(), str->capacity() + 1, flags, InputTextCallback, &cb_user_data);

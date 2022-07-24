@@ -1,16 +1,17 @@
-#ifndef STB_IMAGE_IMPLEMENTATION
-#define STB_IMAGE_IMPLEMENTATION
-#endif
-#include "stb_image.h"
-#include "TextureManager.h"
-#include "Logger.h"
-#include "glad/glad.h"
-#include "GLFW/glfw3.h"
-#include <assert.h>
-
-#define IsValid(t) t > 0
+//#ifndef STB_IMAGE_IMPLEMENTATION
+//#define STB_IMAGE_IMPLEMENTATION
+//#endif
+//#include "stb_image.h"
+//#include "TextureManager.h"
+//#include "Logging.h"
+//#include "glad/glad.h"
+//#include "GLFW/glfw3.h"
+//#include <assert.h>
+//
+//#define IsValid(t) t > 0
 
 namespace BE {
+	/*
 	std::vector<Texture> TextureManager::textures = std::vector<Texture>();
 	std::unordered_map<const char*, unsigned int> TextureManager::textureIndexes = std::unordered_map<const char*, unsigned int>();
 	unsigned int TextureManager::index = 0;
@@ -24,7 +25,7 @@ namespace BE {
 		stbi_uc* data = stbi_load(path, &texture.width, &texture.height, &texture.format, 0);
 
 		if(data == nullptr) {
-			Logger::Error("TextureManager: Failed to load texture - ", name);
+			Logging::Error("TextureManager: Failed to load texture - ", name);
 			data = GenerateErrorTexture(texture);
 		}
 
@@ -108,4 +109,5 @@ namespace BE {
 
 		assert(false && "Texture format not supported");
 	}
+	*/
 }

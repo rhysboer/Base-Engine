@@ -1,6 +1,5 @@
 #pragma once
 #include "ICollider.h"
-#include "glm/glm.hpp"
 
 namespace BE {
 	class PlaneCollider : public ICollider {

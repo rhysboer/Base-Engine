@@ -55,9 +55,6 @@
     <Filter Include="Header Files\Source\Physics">
       <UniqueIdentifier>{bdf726c5-890d-41d8-8b91-1cfaedd73f8b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Source\Core">
-      <UniqueIdentifier>{3ed9177e-eef2-43b4-9857-260e5c10e7ea}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Source\Core">
       <UniqueIdentifier>{feaadc7f-5b42-458d-8e41-73f80b2787cc}</UniqueIdentifier>
     </Filter>
@@ -97,6 +94,36 @@
     <Filter Include="Source Files\Source\ECS">
       <UniqueIdentifier>{fdf144bf-3206-462e-a3d2-0e644a7f67dd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\RapidJson">
+      <UniqueIdentifier>{b9b91a6a-8fd8-4ae0-a2f7-8d243eb22c2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\RapidJson">
+      <UniqueIdentifier>{f37b2dd8-1633-4453-abe7-8d5a6f387daa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Source\Core">
+      <UniqueIdentifier>{3ed9177e-eef2-43b4-9857-260e5c10e7ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Source\Util\Math">
+      <UniqueIdentifier>{2e0961d1-71b2-421d-a0d2-79a131ef48a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Source\Util\Math">
+      <UniqueIdentifier>{6ec7e5c7-325b-475f-9e27-9be19f1fb226}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Source\Components\Loaders">
+      <UniqueIdentifier>{1fe0beda-799f-473a-92aa-563cd16cb8c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Source\Util\Loaders">
+      <UniqueIdentifier>{92147515-c9c9-4bb5-aec0-2d304a927fc0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Source\Util\FileSystem">
+      <UniqueIdentifier>{5ddafc63-e5cd-4fed-8d11-e28673f9c90d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Source\Util\FileSystem">
+      <UniqueIdentifier>{621fc700-6bdf-42af-8644-26e3afc57d48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Source\Util\Loaders">
+      <UniqueIdentifier>{d5547836-4a2d-48a2-9c8e-d29d76e8d86a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\imgui.cpp">
@@ -129,9 +156,6 @@
     <ClCompile Include="Source\Sprite.cpp">
       <Filter>Source Files\Source\Textures</Filter>
     </ClCompile>
-    <ClCompile Include="Source\BaseTexture.cpp">
-      <Filter>Source Files\Source\Textures</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Framebuffer.cpp">
       <Filter>Source Files\Source</Filter>
     </ClCompile>
@@ -162,9 +186,6 @@
     <ClCompile Include="Source\Camera.cpp">
       <Filter>Source Files\Source\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Loader.cpp">
-      <Filter>Source Files\Source\Util</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Gizmos.cpp">
       <Filter>Source Files\Source</Filter>
     </ClCompile>
@@ -174,10 +195,7 @@
     <ClCompile Include="Source\Raycast.cpp">
       <Filter>Source Files\Source\Physics</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Util.cpp">
-      <Filter>Source Files\Source\Util</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Logger.cpp">
+    <ClCompile Include="Source\Logging.cpp">
       <Filter>Source Files\Source\Util</Filter>
     </ClCompile>
     <ClCompile Include="Source\Drawable.cpp">
@@ -198,9 +216,6 @@
     <ClCompile Include="Source\Entity.cpp">
       <Filter>Source Files\Source\Objects</Filter>
     </ClCompile>
-    <ClCompile Include="Source\ECSManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Shader.cpp">
       <Filter>Source Files\Source\Shaders</Filter>
     </ClCompile>
@@ -210,17 +225,11 @@
     <ClCompile Include="Source\Material.cpp">
       <Filter>Source Files\Source\Shaders</Filter>
     </ClCompile>
-    <ClCompile Include="Source\MeshUtil.cpp">
-      <Filter>Source Files\Source\Util</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Uniform.cpp">
       <Filter>Source Files\Source\Shaders</Filter>
     </ClCompile>
     <ClCompile Include="Source\UniformBuffer.cpp">
       <Filter>Source Files\Source\Shaders</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Debugger.cpp">
-      <Filter>Source Files\Source</Filter>
     </ClCompile>
     <ClCompile Include="Source\PlaneCollider.cpp">
       <Filter>Source Files\Source\Physics\Colliders</Filter>
@@ -257,6 +266,54 @@
     </ClCompile>
     <ClCompile Include="Source\ICollider.cpp">
       <Filter>Source Files\Source\Components\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Common.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Texture.cpp">
+      <Filter>Source Files\Source\Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Colour.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\LightManager.cpp">
+      <Filter>Source Files\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Light.cpp">
+      <Filter>Source Files\Source\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="source\ITexture.cpp">
+      <Filter>Source Files\Source\Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="source\BEGlobal.cpp">
+      <Filter>Source Files\Source\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\RenderSystem.cpp">
+      <Filter>Source Files\Source\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\EntityDebugger.cpp">
+      <Filter>Source Files\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="source\DebugComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="source\MeshLoader.cpp">
+      <Filter>Source Files\Source\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="source\BEMath.cpp">
+      <Filter>Source Files\Source\Util\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\File.cpp">
+      <Filter>Source Files\Source\Util\FileSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\OBJLoader.cpp">
+      <Filter>Source Files\Source\Util\Loaders</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\FLVERLoader.cpp">
+      <Filter>Source Files\Source\Util\Loaders</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\imgui_tables.cpp">
+      <Filter>Source Files\Source\Imgui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -308,9 +365,6 @@
     <ClInclude Include="Source\imstb_truetype.h">
       <Filter>Header Files\Source\Imgui</Filter>
     </ClInclude>
-    <ClInclude Include="Source\BaseTexture.h">
-      <Filter>Header Files\Source\Textures</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Cubemap.h">
       <Filter>Header Files\Source\Textures</Filter>
     </ClInclude>
@@ -329,9 +383,6 @@
     <ClInclude Include="Source\Camera.h">
       <Filter>Header Files\Source\Camera</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Loader.h">
-      <Filter>Header Files\Source\Util</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Gizmos.h">
       <Filter>Header Files\Source</Filter>
     </ClInclude>
@@ -344,13 +395,7 @@
     <ClInclude Include="Source\Drawable.h">
       <Filter>Header Files\Source</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Common.h">
-      <Filter>Header Files\Source</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Util.h">
-      <Filter>Header Files\Source\Util</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Logger.h">
+    <ClInclude Include="Source\Logging.h">
       <Filter>Header Files\Source\Util</Filter>
     </ClInclude>
     <ClInclude Include="Source\Transform.h">
@@ -374,23 +419,14 @@
     <ClInclude Include="Source\Entity.h">
       <Filter>Header Files\Source\Objects</Filter>
     </ClInclude>
-    <ClInclude Include="Source\ECSManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Material.h">
       <Filter>Header Files\Source\Shaders</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\MeshUtil.h">
-      <Filter>Header Files\Source\Util</Filter>
     </ClInclude>
     <ClInclude Include="Source\Uniform.h">
       <Filter>Header Files\Source\Shaders</Filter>
     </ClInclude>
     <ClInclude Include="Source\UniformBuffer.h">
       <Filter>Header Files\Source\Shaders</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Debugger.h">
-      <Filter>Header Files\Source</Filter>
     </ClInclude>
     <ClInclude Include="Source\PlaneCollider.h">
       <Filter>Header Files\Source\Physics\Colliders</Filter>
@@ -428,11 +464,175 @@
     <ClInclude Include="Source\ICollider.h">
       <Filter>Header Files\Source\Components\Base</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Common.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\rapidjson\allocators.h">
+      <Filter>Header Files\RapidJson</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\rapidjson\cursorstreamwrapper.h">
+      <Filter>Header Files\RapidJson</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\rapidjson\document.h">
+      <Filter>Header Files\RapidJson</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\rapidjson\encodings.h">
+      <Filter>Header Files\RapidJson</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\rapidjson\encodedstream.h">
+      <Filter>Header Files\RapidJson</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\rapidjson\filereadstream.h">
+      <Filter>Header Files\RapidJson</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\rapidjson\filewritestream.h">
+      <Filter>Header Files\RapidJson</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\rapidjson\fwd.h">
+      <Filter>Header Files\RapidJson</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\rapidjson\istreamwrapper.h">
+      <Filter>Header Files\RapidJson</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\rapidjson\memorybuffer.h">
+      <Filter>Header Files\RapidJson</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\rapidjson\memorystream.h">
+      <Filter>Header Files\RapidJson</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\rapidjson\ostreamwrapper.h">
+      <Filter>Header Files\RapidJson</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\rapidjson\pointer.h">
+      <Filter>Header Files\RapidJson</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\rapidjson\prettywriter.h">
+      <Filter>Header Files\RapidJson</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\rapidjson\rapidjson.h">
+      <Filter>Header Files\RapidJson</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\rapidjson\reader.h">
+      <Filter>Header Files\RapidJson</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\rapidjson\schema.h">
+      <Filter>Header Files\RapidJson</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\rapidjson\stream.h">
+      <Filter>Header Files\RapidJson</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\rapidjson\stringbuffer.h">
+      <Filter>Header Files\RapidJson</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\rapidjson\uri.h">
+      <Filter>Header Files\RapidJson</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\rapidjson\writer.h">
+      <Filter>Header Files\RapidJson</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\rapidjson\msinttypes\inttypes.h">
+      <Filter>Header Files\RapidJson</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\rapidjson\msinttypes\stdint.h">
+      <Filter>Header Files\RapidJson</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\rapidjson\internal\biginteger.h">
+      <Filter>Header Files\RapidJson</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\rapidjson\internal\clzll.h">
+      <Filter>Header Files\RapidJson</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\rapidjson\internal\diyfp.h">
+      <Filter>Header Files\RapidJson</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\rapidjson\internal\dtoa.h">
+      <Filter>Header Files\RapidJson</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\rapidjson\internal\ieee754.h">
+      <Filter>Header Files\RapidJson</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\rapidjson\internal\itoa.h">
+      <Filter>Header Files\RapidJson</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\rapidjson\internal\meta.h">
+      <Filter>Header Files\RapidJson</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\rapidjson\internal\pow10.h">
+      <Filter>Header Files\RapidJson</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\rapidjson\internal\regex.h">
+      <Filter>Header Files\RapidJson</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\rapidjson\internal\stack.h">
+      <Filter>Header Files\RapidJson</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\rapidjson\internal\strfunc.h">
+      <Filter>Header Files\RapidJson</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\rapidjson\internal\strtod.h">
+      <Filter>Header Files\RapidJson</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\rapidjson\internal\swap.h">
+      <Filter>Header Files\RapidJson</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\rapidjson\error\en.h">
+      <Filter>Header Files\RapidJson</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\rapidjson\error\error.h">
+      <Filter>Header Files\RapidJson</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Texture.h">
+      <Filter>Header Files\Source\Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Colour.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\LightManager.h">
+      <Filter>Header Files\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Light.h">
+      <Filter>Header Files\Source\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ITexture.h">
+      <Filter>Header Files\Source\Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="source\BEGlobal.h">
+      <Filter>Header Files\Source\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="source\RenderSystem.h">
+      <Filter>Header Files\Source\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="source\BuiltinShaders.h">
+      <Filter>Header Files\Source\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="source\EntityDebugger.h">
+      <Filter>Header Files\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="source\DebugComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\MeshLoader.h">
+      <Filter>Header Files\Source\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="source\BEMath.h">
+      <Filter>Header Files\Source\Util\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\File.h">
+      <Filter>Header Files\Source\Util\FileSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\OBJLoader.h">
+      <Filter>Header Files\Source\Util\Loaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\FLVERLoader.h">
+      <Filter>Header Files\Source\Util\Loaders</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\imgui_impl_opengl3_loader.h">
+      <Filter>Header Files\Source\Imgui</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\imgui.ini">
       <Filter>Source Files\Source\Imgui</Filter>
     </None>
-    <None Include="ClassDiagram.cd" />
   </ItemGroup>
 </Project>

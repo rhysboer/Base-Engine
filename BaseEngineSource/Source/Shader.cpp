@@ -1,9 +1,9 @@
 #include "Shader.h"
 
-#include <iostream>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include "Uniform.h"
+#include "Logging.h"
 #include "glm/gtc/type_ptr.hpp"
 
 namespace BE {
@@ -94,7 +94,7 @@ namespace BE {
 	void Shader::SetFloat(const char* name, const float& value) const {
 		unsigned int loc = glGetUniformLocation(shaderProgram, name);
 		if(loc == -1) {
-			printf("Error finding float Uniform: %s\n", name);
+			BE_ERROR("Shader::SetFloat() - Failed to find location of Uniform (Name: %s)", name);
 			return;
 		}
 		glUniform1f(loc, value);
@@ -103,7 +103,7 @@ namespace BE {
 	void Shader::SetFloatArray(const char* name, const unsigned int& size, const float& value) const {
 		unsigned int loc = glGetUniformLocation(shaderProgram, name);
 		if(loc == -1) {
-			printf("Error finding float Uniform: %s\n", name);
+			BE_ERROR("Shader::SetFloatArray() - Failed to find location of Uniform (Name: %s)", name);
 			return;
 		}
 
@@ -113,7 +113,7 @@ namespace BE {
 	void Shader::SetInt(const char* name, const int& value) const {
 		unsigned int loc = glGetUniformLocation(shaderProgram, name);
 		if(loc == -1) {
-			printf("Error finding int Uniform: %s\n", name);
+			BE_ERROR("Shader::SetInt() - Failed to find location of Uniform (Name: %s)", name);
 			return;
 		}
 		glUniform1i(loc, value);
@@ -122,7 +122,7 @@ namespace BE {
 	void Shader::SetIntArray(const char* name, const unsigned int& size, const int& value) const {
 		unsigned int loc = glGetUniformLocation(shaderProgram, name);
 		if(loc == -1) {
-			printf("Error finding int Uniform: %s\n", name);
+			BE_ERROR("Shader::SetIntArray() - Failed to find location of Uniform (Name: %s)", name);
 			return;
 		}
 		glUniform1iv(loc, size, &value);
@@ -131,7 +131,7 @@ namespace BE {
 	void Shader::SetMatrix4(const char* name, const glm::mat4& value) const {
 		unsigned int loc = glGetUniformLocation(shaderProgram, name);
 		if(loc == -1) {
-			printf("Error finding Mat4 Uniform: %s\n", name);
+			BE_ERROR("Shader::SetMatrix4() - Failed to find location of Uniform (Name: %s)", name);
 			return;
 		}
 		glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(value));
@@ -140,7 +140,7 @@ namespace BE {
 	void Shader::SetMatrix3(const char* name, const glm::mat3& value) const {
 		unsigned int loc = glGetUniformLocation(shaderProgram, name);
 		if(loc == -1) {
-			printf("Error finding Mat4 Uniform: %s\n", name);
+			BE_ERROR("Shader::Setmatrix3() - Failed to find location of Uniform (Name: %s)", name);
 			return;
 		}
 		glUniformMatrix3fv(loc, 1, GL_FALSE, glm::value_ptr(value));
@@ -149,7 +149,7 @@ namespace BE {
 	void Shader::SetVector2(const char* name, const glm::vec2& value) const {
 		unsigned int loc = glGetUniformLocation(shaderProgram, name);
 		if(loc == -1) {
-			printf("Error finding Vec4 Uniform: %s\n", name);
+			BE_ERROR("Shader::SetVector2() - Failed to find location of Uniform (Name: %s)", name);
 			return;
 		}
 
@@ -159,7 +159,7 @@ namespace BE {
 	void Shader::SetVector2Array(const char* name, const unsigned int& size, const glm::vec2& value) const {
 		unsigned int loc = glGetUniformLocation(shaderProgram, name);
 		if(loc == -1) {
-			printf("Error finding Vec3 Uniform: %s\n", name);
+			BE_ERROR("Shader::SetVector2Array() - Failed to find location of Uniform (Name: %s)", name);
 			return;
 		}
 
@@ -169,7 +169,7 @@ namespace BE {
 	void Shader::SetVector4(const char* name, const glm::vec4& value)const {
 		unsigned int loc = glGetUniformLocation(shaderProgram, name);
 		if(loc == -1) {
-			printf("Error finding Vec4 Uniform: %s\n", name);
+			BE_ERROR("Shader::SetVector4() - Failed to find location of Uniform (Name: %s)", name);
 			return;
 		}
 
@@ -179,7 +179,7 @@ namespace BE {
 	void Shader::SetVector3(const char* name, const glm::vec3& value)const {
 		unsigned int loc = glGetUniformLocation(shaderProgram, name);
 		if(loc == -1) {
-			printf("Error finding Vec3 Uniform: %s\n", name);
+			BE_ERROR("Shader::SetVector3() - Failed to find location of Uniform (Name: %s)", name);
 			return;
 		}
 
@@ -189,7 +189,7 @@ namespace BE {
 	void Shader::SetTextureUnit(const char* name, const unsigned int& textureUnit) const {
 		unsigned int loc = glGetUniformLocation(shaderProgram, name);
 		if(loc == -1) {
-			printf("Error finding Mat4 Uniform: %s\n", name);
+			BE_ERROR("Shader::SetTextureUnit() - Failed to find location of Uniform (Name: %s)", name);
 			return;
 		}
 		glUniform1i(loc, textureUnit);
@@ -197,18 +197,19 @@ namespace BE {
 
 	void Shader::SetUniform(const Uniform& uniform) const {
 		unsigned int loc = glGetUniformLocation(shaderProgram, uniform.GetName());
-		assert(loc != -1);
-
-		//float ass = *(float*)uniform.GetValue(2);
+		BE_ASSERT(loc != -1, "Shader::SetUniform() - Failed to find location of Uniform (Name: %s, Type: %i)", uniform.GetName(), uniform.GetType());
 
 		switch(uniform.GetType()) {
-			case UniformType::INT: break;
+			case UniformType::TEXTURE_2D: 
+			case UniformType::BOOLEAN: 
+			case UniformType::INT: glUniform1i(loc, (int)uniform.GetValue(0)); break;
 			case UniformType::FLOAT: glUniform1f(loc, *(float*)uniform.GetValue(0)); break;
 			case UniformType::VECTOR_2: glUniform2f(loc, *(float*)uniform.GetValue(0), *(float*)uniform.GetValue(1)); break;
 			case UniformType::VECTOR_3: glUniform3f(loc, *(float*)uniform.GetValue(0), *(float*)uniform.GetValue(1), *(float*)uniform.GetValue(2)); break;
 			case UniformType::VECTOR_4: glUniform4f(loc, *(float*)uniform.GetValue(0), *(float*)uniform.GetValue(1), *(float*)uniform.GetValue(2), *(float*)uniform.GetValue(3)); break;;
-			case UniformType::MATRIX_3: break;
+			case UniformType::MATRIX_3: break; // TODO
 			case UniformType::MATRIX_4: glUniformMatrix4fv(loc, 1, false, (float*)uniform.GetValue()); break;
+			default: BE_ERROR("Shader::SetUniform() - Unsupported uniform type (%i)", uniform.GetType());
 		}
 	}
 
@@ -225,7 +226,7 @@ namespace BE {
 
 				if(!success) {
 					glGetShaderInfoLog(toTest, logSize, NULL, log);
-					std::cout << "ERROR COMPILING SHADER FAILED!\n" << log << std::endl;
+					BE_ERROR("Shader::ErrorHandler() - Failed to compile shader (Error: %s)", log);
 					return false;
 				}
 
@@ -235,14 +236,11 @@ namespace BE {
 
 				if(!success) {
 					glGetProgramInfoLog(toTest, logSize, NULL, log);
-					std::cout << "ERROR LINKING FAILED\n" << log << std::endl;
+					BE_ERROR("Shader::ErrorHandler() - Failed to link shader (Error: %s)", log);
 					return false;
 				}
 
 				break;
-			default:
-				printf("No Shader Error Status: %i\n", statusType);
-				return false;
 		}
 
 		delete[] log;

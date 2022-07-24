@@ -13,8 +13,6 @@ private:
 
 	BE::Scene* mainScene;
 
-	//BE::FlyCamera* camera;
-	BE::Debugger* debugger;
 
 	//BE::Ray ray = BE::Ray(glm::vec3(0), glm::vec3(0));
 

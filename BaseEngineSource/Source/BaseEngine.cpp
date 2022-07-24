@@ -1,10 +1,13 @@
 #include "BaseEngine.h"
 #include "Input.h"
-#include "Logger.h"
+#include "Logging.h"
 #include "TimeManager.h"
 #include "Gizmos.h"
-#include "ECSManager.h"
 #include "Scene.h"
+#include "ShaderManager.h"
+#include "BEGlobal.h"
+
+#include "RenderSystem.h"
 
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
@@ -51,23 +54,23 @@ namespace BE {
 		ImGui_ImplOpenGL3_Init("#version 330");
 		ImGui::StyleColorsDark();
 
+		ShaderManager::InitBaseShaders();
+		Gizmos::Init();
+		BEGlobal::Init();
+
 		return true;
 	}
 
 	void BaseEngine::StartEngine() {
 		if(!isInitialized) {
-			Logger::Error("BaseEngine: Engine has not been initialized");
+			Logging::Error("BaseEngine: Engine has not been initialized");
 			return;
 		}
 
 		glEnable(GL_DEPTH_TEST); // Depth Testing
-		glEnable(GL_BLEND); // Transperent Blend
+		glEnable(GL_BLEND); // Transparent Blend
 		glDepthFunc(GL_LEQUAL);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	#ifdef _DEBUG
-		BE::Gizmos::Init();
-	#endif // _DEBUG
 
 		// Call On Start
 		OnEngineInit();
@@ -83,7 +86,7 @@ namespace BE {
 			// -- UPDATE
 			{
 				Time::Update();
-				Input::Update();
+				
 				Scene::UpdateScenes();
 
 				OnEngineUpdate();
@@ -95,13 +98,9 @@ namespace BE {
 
 			// -- RENDER
 			{
-				Scene::DrawScenes();
+				//Scene::DrawScenes();
+				RenderSystem::Render();
 				OnEngineRender();
-
-			#ifdef _DEBUG
-				//if(CameraManager::GetMainCamera() != nullptr)
-				//	BE::Gizmos::Render(CameraManager::GetMainCamera()->GetProjectionView());
-			#endif // _DEBUG
 			}
 
 			// --  IMGUI RENDER
@@ -112,6 +111,8 @@ namespace BE {
 
 			// -- SWAP BUFFERS
 			glfwSwapBuffers(this->window);
+			
+			Input::Update();
 			glfwPollEvents();
 		}
 
@@ -128,6 +129,7 @@ namespace BE {
 	void BaseEngine::RegisterCallbacks() {
 		Input::SetCallbacks(this->window);
 
+		// -- Register Callbacks Here
 		glfwSetFramebufferSizeCallback(this->window, Callback_FrameBufferResize);
 	}
 }

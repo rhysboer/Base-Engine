@@ -2,7 +2,7 @@
 #include <vector>
 #include "Drawable.h"
 #include "Camera.h"
-#include "Loader.h"
+//#include "Loader.h"
 #include "ShaderManager.h"
 #include "Transform.h"
 #include "Mesh.h"
@@ -11,6 +11,9 @@
 #define SHADER_PROJECTIONVIEW "projectionView"
 
 namespace BE {
+	/// <summary>
+	/// OBSOLETE - Do not use
+	/// </summary>
 	class Object3D : public Drawable {
 
 	// Static Functions

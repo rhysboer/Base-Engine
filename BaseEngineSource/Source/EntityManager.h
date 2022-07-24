@@ -23,8 +23,13 @@ namespace BE {
 		~EntityManager();
 
 		/// <summary> Creates an empty entity within the scene </summary>
-		Entity* const CreateEntity(glm::vec3 position = glm::vec3(0), const char* name = nullptr);
-		Entity* const CreateEntity(PrimitiveEntity type, glm::vec3 position = glm::vec3(0), const char* name = nullptr); // TODO
+		Entity* const CreateEntity();
+		Entity* const CreateEntity(const char* name);
+		Entity* const CreateEntity(glm::vec3 position);
+		Entity* const CreateEntity(const float& x, const float& y, const float& z);
+		Entity* const CreateEntity(const char* name, const float& x, const float& y, const float& z);
+		Entity* const CreateEntity(const char* name, glm::vec3 position);
+		//Entity* const CreateEntity(PrimitiveEntity type, glm::vec3 position = glm::vec3(0), const char* name = nullptr); // TODO
 
 		void Update();
 
@@ -33,7 +38,10 @@ namespace BE {
 		ComponentArray* const GetComponents();
 
 		Entity* const GetEntity(std::string name) const;
+		inline unsigned int GetEntityCount() const { return entities.size(); }
 
+		inline std::unordered_map<std::string, Entity*>::iterator GetEntityIterBegin() { return entities.begin(); };
+		inline std::unordered_map<std::string, Entity*>::iterator GetEntityIterEnd() { return entities.end(); }
 	private:
 
 		/// <summary> Registers an entitys component </summary>
@@ -43,9 +51,13 @@ namespace BE {
 		template<class T>
 		T* GetEntityComponent(const unsigned int& entityID) const;
 
+		/// <summary> Returns all entities components </summary>
+		void GetEntityComponents(std::vector<IComponent*>& components, const unsigned int& entityID) const;
+
 		/// <summary> Checks if entity has the component (EntityID: ID of the entity) </summary>
 		template<class T>
-		bool HasComponent(unsigned int& entityID);
+		inline bool HasComponent(const unsigned int& entityId);
+		inline bool HasComponent(const unsigned int& entityId, const size_t& componentId);
 
 	private:
 
@@ -81,12 +93,16 @@ namespace BE {
 	}
 
 	template<class T>
-	bool EntityManager::HasComponent(unsigned int& entityID) {
-		auto iter = components.find(IComponent::GetComponentID<T>());
-		if(iter == components.end())
+	bool EntityManager::HasComponent(const unsigned int& entityId) {
+		return HasComponent(entityId, IComponent::GetComponentID<T>());
+	}
+
+	bool EntityManager::HasComponent(const unsigned int& entityId, const size_t& componentId) {
+		auto iter = components.find(componentId);
+		if (iter == components.end())
 			return false;
 
-		return (*iter).second->Has(entityID);
+		return (*iter).second->Has(entityId);
 	}
 }
 

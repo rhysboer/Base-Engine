@@ -5,10 +5,17 @@ namespace BE {
 	bool IComponent::IsActive() {
 		return (isEnabled && entity->IsActive());
 	}
-	//void IComponent::Register(Entity* entity) {
-	//	this->entity = entity;
-	//	ECSManager::RegisterComponent(this);
-	//
-	//	OnStart();
-	//}
+
+	Transform& IComponent::GetTransform() const
+	{
+		return entity->transform;
+	}
+
+	bool IComponent::SetOwner(Entity* entity) {
+		if (this->entity != nullptr)
+			return false;
+
+		this->entity = entity;
+		return true;
+	}
 }
