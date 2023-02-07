@@ -16,7 +16,6 @@ namespace BE {
 	public:
 		IRender();
 		~IRender();
-		
 
 
 		virtual void OnStart() = 0;
