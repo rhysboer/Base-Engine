@@ -1,4 +1,5 @@
 #include "Transform.h"
+#include "Entity.h"
 
 namespace BE {
 	Transform::Transform() : 
@@ -103,13 +104,15 @@ namespace BE {
 		return isDirty;
 	}
 
-	glm::mat4 Transform::ModelMatrix() {
+	glm::mat4 Transform::ModelMatrix() const {
 		UpdateTransform();
-		return model;
+		return (parent != nullptr) ? parent->transform.ModelMatrix() * model : model;
 	}
 
 	void Transform::UpdateTransform() const {
-		model = glm::translate(glm::mat4(1), position) * glm::toMat4(rotation) * glm::scale(glm::mat4(1), scale);
-		isDirty = false;
+		if (isDirty) {
+			model = glm::translate(glm::mat4(1), position) * glm::toMat4(rotation) * glm::scale(glm::mat4(1), scale);
+			isDirty = false;
+		}
 	}
 }

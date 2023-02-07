@@ -109,9 +109,6 @@
     <Filter Include="Source Files\Source\Util\Math">
       <UniqueIdentifier>{6ec7e5c7-325b-475f-9e27-9be19f1fb226}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Source\Components\Loaders">
-      <UniqueIdentifier>{1fe0beda-799f-473a-92aa-563cd16cb8c2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Source\Util\Loaders">
       <UniqueIdentifier>{92147515-c9c9-4bb5-aec0-2d304a927fc0}</UniqueIdentifier>
     </Filter>
@@ -123,6 +120,24 @@
     </Filter>
     <Filter Include="Source Files\Source\Util\Loaders">
       <UniqueIdentifier>{d5547836-4a2d-48a2-9c8e-d29d76e8d86a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Source\Rendering">
+      <UniqueIdentifier>{9ccc0119-5a1f-4416-8312-e5227d6c0093}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Source\Rendering">
+      <UniqueIdentifier>{75aaf740-6cfe-4f89-85d0-31b853f8c6bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Source\Components\Debug">
+      <UniqueIdentifier>{31898d7a-b86c-4ea6-9125-963080bd8111}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Source\Components\Debug">
+      <UniqueIdentifier>{dd1d7625-7a3b-429c-b026-4dcbb48d9414}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Source\Rendering\Passes">
+      <UniqueIdentifier>{a30dc39b-40c9-471f-b20b-3adf9af36176}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Source\Rendering\Passes">
+      <UniqueIdentifier>{c20da61a-6529-4c61-a861-b0c4d2942205}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -165,9 +180,6 @@
     <ClCompile Include="Source\Input.cpp">
       <Filter>Source Files\Source</Filter>
     </ClCompile>
-    <ClCompile Include="Source\PostProcess.cpp">
-      <Filter>Source Files\Source</Filter>
-    </ClCompile>
     <ClCompile Include="Source\TimeManager.cpp">
       <Filter>Source Files\Source</Filter>
     </ClCompile>
@@ -178,9 +190,6 @@
       <Filter>Source Files\Source</Filter>
     </ClCompile>
     <ClCompile Include="Source\Mesh.cpp">
-      <Filter>Source Files\Source\Objects</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Object3D.cpp">
       <Filter>Source Files\Source\Objects</Filter>
     </ClCompile>
     <ClCompile Include="Source\Camera.cpp">
@@ -197,9 +206,6 @@
     </ClCompile>
     <ClCompile Include="Source\Logging.cpp">
       <Filter>Source Files\Source\Util</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Drawable.cpp">
-      <Filter>Source Files\Source</Filter>
     </ClCompile>
     <ClCompile Include="Source\TextureManager.cpp">
       <Filter>Source Files\Source\Textures</Filter>
@@ -243,9 +249,6 @@
     <ClCompile Include="Source\IRender.cpp">
       <Filter>Source Files\Source\Components\Base</Filter>
     </ClCompile>
-    <ClCompile Include="Source\MeshRenderer.cpp">
-      <Filter>Source Files\Source\Components</Filter>
-    </ClCompile>
     <ClCompile Include="Source\EntityManager.cpp">
       <Filter>Source Files\Source\ECS</Filter>
     </ClCompile>
@@ -288,14 +291,8 @@
     <ClCompile Include="source\BEGlobal.cpp">
       <Filter>Source Files\Source\Core</Filter>
     </ClCompile>
-    <ClCompile Include="source\RenderSystem.cpp">
-      <Filter>Source Files\Source\Core</Filter>
-    </ClCompile>
     <ClCompile Include="source\EntityDebugger.cpp">
       <Filter>Source Files\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="source\DebugComponent.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="source\MeshLoader.cpp">
       <Filter>Source Files\Source\Util</Filter>
@@ -315,15 +312,36 @@
     <ClCompile Include="Source\imgui_tables.cpp">
       <Filter>Source Files\Source\Imgui</Filter>
     </ClCompile>
+    <ClCompile Include="Source\MeshRenderer.cpp">
+      <Filter>Source Files\Source\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Renderer.cpp">
+      <Filter>Source Files\Source\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Singleton.cpp">
+      <Filter>Source Files\Source\Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\RenderPass.cpp">
+      <Filter>Source Files\Source\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Chunk.cpp">
+      <Filter>Source Files\Example</Filter>
+    </ClCompile>
+    <ClCompile Include="source\MeshData.cpp">
+      <Filter>Source Files\Source\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="source\BoundingBox.cpp">
+      <Filter>Source Files\Source\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\BasePass.cpp">
+      <Filter>Source Files\Source\Rendering\Passes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Framebuffer.h">
       <Filter>Header Files\Source</Filter>
     </ClInclude>
     <ClInclude Include="Source\Input.h">
-      <Filter>Header Files\Source</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\PostProcess.h">
       <Filter>Header Files\Source</Filter>
     </ClInclude>
     <ClInclude Include="Source\stb_image.h">
@@ -377,9 +395,6 @@
     <ClInclude Include="Source\Mesh.h">
       <Filter>Header Files\Source\Objects</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Object3D.h">
-      <Filter>Header Files\Source\Objects</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Camera.h">
       <Filter>Header Files\Source\Camera</Filter>
     </ClInclude>
@@ -391,9 +406,6 @@
     </ClInclude>
     <ClInclude Include="Source\Raycast.h">
       <Filter>Header Files\Source\Physics</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Drawable.h">
-      <Filter>Header Files\Source</Filter>
     </ClInclude>
     <ClInclude Include="Source\Logging.h">
       <Filter>Header Files\Source\Util</Filter>
@@ -599,17 +611,11 @@
     <ClInclude Include="source\BEGlobal.h">
       <Filter>Header Files\Source\Core</Filter>
     </ClInclude>
-    <ClInclude Include="source\RenderSystem.h">
-      <Filter>Header Files\Source\Core</Filter>
-    </ClInclude>
     <ClInclude Include="source\BuiltinShaders.h">
       <Filter>Header Files\Source\Shaders</Filter>
     </ClInclude>
     <ClInclude Include="source\EntityDebugger.h">
       <Filter>Header Files\Source</Filter>
-    </ClInclude>
-    <ClInclude Include="source\DebugComponent.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="source\MeshLoader.h">
       <Filter>Header Files\Source\Util</Filter>
@@ -628,6 +634,27 @@
     </ClInclude>
     <ClInclude Include="Source\imgui_impl_opengl3_loader.h">
       <Filter>Header Files\Source\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Renderer.h">
+      <Filter>Header Files\Source\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Singleton.h">
+      <Filter>Header Files\Source\Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\RenderPass.h">
+      <Filter>Header Files\Source\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Chunk.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="source\MeshData.h">
+      <Filter>Header Files\Source\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="source\BoundingBox.h">
+      <Filter>Header Files\Source\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\BasePass.h">
+      <Filter>Header Files\Source\Rendering\Passes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -5,7 +5,7 @@
 
 namespace BE {
 	std::vector<Shader*> ShaderManager::shaders = std::vector<Shader*>();
-	std::unordered_map<const char*, int> ShaderManager::shaderIndexes = std::unordered_map<const char*, int>();
+	std::unordered_map<std::string, int> ShaderManager::shaderIndexes = std::unordered_map<std::string, int>();
 	std::unordered_map<std::string, std::string> ShaderManager::shaderHeaders = std::unordered_map<std::string, std::string>();
 
 	unsigned int ShaderManager::shaderCount = 0;
@@ -39,14 +39,14 @@ namespace BE {
 
 		// Find if shader already exists
 		if(shaderIndexes.find(name) != shaderIndexes.end()) {
-			BE::Logging::Warning("ShaderManager: Name already exists in current list - ", name);
+			BE::Logging::Warning("ShaderManager: Name already exists in current list - %s", name);
 			return -1;
 		}
 
 		// VERTEX
 		file.open(vertexPath);
 		if(!file.is_open()) {
-			BE::Logging::Error("ShaderManager: Failed to find file - ", vertexPath);
+			BE::Logging::Error("ShaderManager: Failed to find file - %s", vertexPath);
 			file.close();
 			return -1;
 		}
@@ -57,7 +57,7 @@ namespace BE {
 		// FRAGMENT
 		file.open(fragmentPath);
 		if(!file.is_open()) {
-			BE::Logging::Error("ShaderManager: Failed to find file - ", fragmentPath);
+			BE::Logging::Error("ShaderManager: Failed to find file - %s", fragmentPath);
 			file.close();
 			return -1;
 		}
@@ -141,8 +141,8 @@ namespace BE {
 
 					if (iter != shaderHeaders.end()) {
 						source.replace(offset, end - offset, (*iter).second);
-					}
-					else {
+						offset = 0;
+					} else {
 						source.replace(offset, end - offset, "");
 					}
 				}
@@ -152,10 +152,12 @@ namespace BE {
 	}
 
     void ShaderManager::InitBaseShaders() {
-		AddShaderHeader(ShaderSource::HEADER_NAME_BEGLOBAL, ShaderSource::HEADER_SOURCE_BEGLOBAL);
+		AddShaderHeader(ShaderSource::HEADER_NAME_BEGLOBAL, ShaderSource::HEADER_SRC_BEGLOBAL);
+		AddShaderHeader(ShaderSource::HEADER_NAME_LIGHTING, ShaderSource::HEADER_SCR_LIGHTING);
 
 		AddShaderSource(BE_SHADER_STANDARD, ShaderSource::VERT_STANDARD, ShaderSource::FRAG_STANDARD);
 		AddShaderSource(BE_SHADER_UNLIT, ShaderSource::VERT_STANDARD, ShaderSource::FRAG_UNLIT);
 		AddShaderSource(BE_SHADER_FLAT, ShaderSource::VERT_STANDARD, ShaderSource::FRAG_FLAT);
+		AddShaderSource(BE_SHADER_SCREENQUAD, ShaderSource::VERT_POSTPROCESS, ShaderSource::FRAG_POSTPROCESS);
     }
 }

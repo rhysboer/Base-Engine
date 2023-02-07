@@ -3,14 +3,16 @@
 #include <unordered_map>
 #include <glm/glm.hpp>
 
+#include "EntityManager.h"
+
 // TODO
 // Change entities vector to a map, allowing for much quicker find and deletion
 
 
 namespace BE {
 	class Entity;
-	class EntityManager;
 	class LightManager;
+	//class SceneRenderer;
 
 	class Scene {
 		friend class BaseEngine;
@@ -21,34 +23,32 @@ namespace BE {
 	
 		inline EntityManager& GetEntityManager() { return *entityManager; }
 		inline LightManager& GetLightManager() { return *lightManager; }
+		//inline SceneRenderer& GetRenderer() { return *sceneRenderer; }
 
 	public:
 
 		static Scene* CreateScene(const char* name);
 		static Scene* GetScene(const char* name);
+		static Scene* GetActiveScene() { return activeScene; }
 		static unsigned int GetSceneCount() { return scenes.size(); }
 
 	protected:
 
 		EntityManager* entityManager = nullptr;
 		LightManager* lightManager = nullptr;
+		//SceneRenderer* sceneRenderer = nullptr;
 
 		std::string name;
 		bool isEnabled;
-
-		void OnUpdate();
-		void OnRender();
-
-		static std::unordered_map<std::string, Scene*>::iterator GetBegin() { return scenes.begin(); }
-		static std::unordered_map<std::string, Scene*>::iterator GetEnd() { return scenes.end(); }
 
 	private:
 
 		Scene(const char* name);
 
-		static void UpdateScenes();
-		static void DrawScenes();
+		static void RenderActiveScene();
+		static void UpdateActiveScene();
 		
+		static Scene* activeScene;
 		static std::unordered_map<std::string, Scene*> scenes;
 	};
 }

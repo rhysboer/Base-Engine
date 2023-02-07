@@ -22,6 +22,9 @@ namespace BE {
 		void SetOrthographic(const float& orthoSize, const bool& autoResize = false);
 		void SetPerspective(const float& fov);
 
+		/// <summary> Updates the global Camera buffer </summary>
+		void BindBuffer();
+
 		inline void SetNear(const float& distance) { near = distance; SetDirty(); }
 		inline void SetFar(const float& distance) { far = distance; SetDirty(); }
 		inline void SetFOV(const float& fov) { this->fov = fov; SetDirty(); }
@@ -39,7 +42,7 @@ namespace BE {
 		inline float GetFar() const { return far; }
 		inline float GetOrthoSize() const { return size * 2.0f; }
 		inline float GetAspect() const { return aspect; }
-		inline unsigned int GetCameraIndex() const { return cameraIndex; }
+		//inline unsigned int GetCameraIndex() const { return cameraIndex; }
 		inline CameraType GetType() const { return cameraType; }
 
 		// Clip Space
@@ -78,10 +81,10 @@ namespace BE {
 		float far = 1000.0f;
 		float fov, aspect; // Perspective
 		float left, right, bottom, top, size; // Orthographic
-		unsigned int cameraIndex;
+		//unsigned int cameraIndex;
 
+		unsigned int eventId;
 		bool isDirty = true;
-		bool autoResizeOrtho;
 	};
 }
 

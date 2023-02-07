@@ -42,117 +42,186 @@ namespace BE {
 		}
 	}
 
-	Mesh* MeshLoader::CreateCube(const float& size) {
-		return new Mesh(
-			{
-				// Bot
-			   -0.5f * size,-0.5f * size, 0.5f * size,  0.0f,-1.0f, 0.0f,  0.0f, 0.0f,
-			   -0.5f * size,-0.5f * size,-0.5f * size,  0.0f,-1.0f, 0.0f,  0.0f, 1.0f,
-				0.5f * size,-0.5f * size,-0.5f * size,  0.0f,-1.0f, 0.0f,  1.0f, 1.0f,
-				0.5f * size,-0.5f * size, 0.5f * size,  0.0f,-1.0f, 0.0f,  1.0f, 0.0f,
+	MeshData MeshLoader::CreateCube(const float& size) {
+		MeshData mesh = MeshData();
 
-				// Top
-			   -0.5f * size, 0.5f * size, 0.5f * size,  0.0f, 1.0f, 0.0f,  0.0f, 0.0f,
-			   -0.5f * size, 0.5f * size,-0.5f * size,  0.0f, 1.0f, 0.0f,  0.0f, 1.0f,
-				0.5f * size, 0.5f * size,-0.5f * size,  0.0f, 1.0f, 0.0f,  1.0f, 1.0f,
-				0.5f * size, 0.5f * size, 0.5f * size,  0.0f, 1.0f, 0.0f,  1.0f, 0.0f,
+		mesh.position = {
+			// Bot
+		   -0.5f * size,-0.5f * size,-0.5f * size, // Bot Left
+		   -0.5f * size,-0.5f * size, 0.5f * size, // Top Left
+			0.5f * size,-0.5f * size, 0.5f * size, // Top Right
+			0.5f * size,-0.5f * size,-0.5f * size, // Bot Right
 
-				// Left
-			   -0.5f * size,-0.5f * size, 0.5f * size, -1.0f, 0.0f, 0.0f,  1.0f, 0.0f,
-			   -0.5f * size,-0.5f * size,-0.5f * size, -1.0f, 0.0f, 0.0f,  0.0f, 0.0f,
-			   -0.5f * size, 0.5f * size,-0.5f * size, -1.0f, 0.0f, 0.0f,  0.0f, 1.0f,
-			   -0.5f * size, 0.5f * size, 0.5f * size, -1.0f, 0.0f, 0.0f,  1.0f, 1.0f,
+			// Top
+		   -0.5f * size, 0.5f * size, 0.5f * size, 
+		   -0.5f * size, 0.5f * size,-0.5f * size, 
+			0.5f * size, 0.5f * size,-0.5f * size, 
+			0.5f * size, 0.5f * size, 0.5f * size, 
 
-			   // Right
-			   0.5f * size,-0.5f * size, 0.5f * size,  1.0f, 0.0f, 0.0f,  0.0f, 1.0f,
-			   0.5f * size,-0.5f * size,-0.5f * size,  1.0f, 0.0f, 0.0f,  1.0f, 1.0f,
-			   0.5f * size, 0.5f * size,-0.5f * size,  1.0f, 0.0f, 0.0f,  1.0f, 0.0f,
-			   0.5f * size, 0.5f * size, 0.5f * size,  1.0f, 0.0f, 0.0f,  0.0f, 0.0f,
+			// Left
+		   -0.5f * size,-0.5f * size, 0.5f * size, 
+		   -0.5f * size,-0.5f * size,-0.5f * size, 
+		   -0.5f * size, 0.5f * size,-0.5f * size, 
+		   -0.5f * size, 0.5f * size, 0.5f * size, 
 
-			   // Front
-			  -0.5f * size,-0.5f * size, 0.5f * size,  0.0f, 0.0f, 1.0f,  0.0f, 0.0f,
-			  -0.5f * size, 0.5f * size, 0.5f * size,  0.0f, 0.0f, 1.0f,  0.0f, 1.0f,
-			   0.5f * size, 0.5f * size, 0.5f * size,  0.0f, 0.0f, 1.0f,  1.0f, 1.0f,
-			   0.5f * size,-0.5f * size, 0.5f * size,  0.0f, 0.0f, 1.0f,  1.0f, 0.0f,
+		   // Right
+		   0.5f * size,-0.5f * size, 0.5f * size, // bot left
+		   0.5f * size,-0.5f * size,-0.5f * size, // bot right
+		   0.5f * size, 0.5f * size,-0.5f * size, // top right
+		   0.5f * size, 0.5f * size, 0.5f * size, // top left
 
-			   // Back
-			  -0.5f * size,-0.5f * size,-0.5f * size,  0.0f, 0.0f,-1.0f,  1.0f, 1.0f,
-			  -0.5f * size, 0.5f * size,-0.5f * size,  0.0f, 0.0f,-1.0f,  1.0f, 0.0f,
-			   0.5f * size, 0.5f * size,-0.5f * size,  0.0f, 0.0f,-1.0f,  0.0f, 0.0f,
-			   0.5f * size,-0.5f * size,-0.5f * size,  0.0f, 0.0f,-1.0f,  0.0f, 1.0f
-			},
-			{
-				3, 3, 2
-			},
-			{
-				0, 1, 2,  0, 2, 3, // BOT
-				4, 5, 6,  4, 6, 7, // TOP
-				8, 9,10,  8,10,11, // LEFT
-			   12,13,14, 12,14,15, // RIGHT
-			   16,17,18, 16,18,19, // FRONT
-			   20,21,22, 20,22,23  // BACK
-			}
-			);
+		   // Front
+		  -0.5f * size,-0.5f * size, 0.5f * size,  
+		  -0.5f * size, 0.5f * size, 0.5f * size,  
+		   0.5f * size, 0.5f * size, 0.5f * size,  
+		   0.5f * size,-0.5f * size, 0.5f * size,  
+
+		   // Back
+		  -0.5f * size,-0.5f * size,-0.5f * size,  // bot right
+		  -0.5f * size, 0.5f * size,-0.5f * size,  // top right
+		   0.5f * size,-0.5f * size,-0.5f * size,  // bot left
+		   0.5f * size, 0.5f * size,-0.5f * size,  // top left
+		};
+		mesh.normals = {
+			 0.0f,-1.0f, 0.0f,
+			 0.0f,-1.0f, 0.0f,
+			 0.0f,-1.0f, 0.0f,
+			 0.0f,-1.0f, 0.0f,
+
+			 0.0f, 1.0f, 0.0f,
+			 0.0f, 1.0f, 0.0f,
+			 0.0f, 1.0f, 0.0f,
+			 0.0f, 1.0f, 0.0f,
+
+			-1.0f, 0.0f, 0.0f,
+			-1.0f, 0.0f, 0.0f,
+			-1.0f, 0.0f, 0.0f,
+			-1.0f, 0.0f, 0.0f,
+
+			 1.0f, 0.0f, 0.0f,
+			 1.0f, 0.0f, 0.0f,
+			 1.0f, 0.0f, 0.0f,
+			 1.0f, 0.0f, 0.0f,
+
+			 0.0f, 0.0f, 1.0f,
+			 0.0f, 0.0f, 1.0f,
+			 0.0f, 0.0f, 1.0f,
+			 0.0f, 0.0f, 1.0f,
+
+			 0.0f, 0.0f,-1.0f,
+			 0.0f, 0.0f,-1.0f,
+			 0.0f, 0.0f,-1.0f,
+			 0.0f, 0.0f,-1.0f
+		};
+		mesh.uvs = {
+			 1.0f, 0.0f,
+			 0.0f, 0.0f,
+			 0.0f, 1.0f,
+			 1.0f, 1.0f,
+
+			 0.0f, 0.0f,
+			 0.0f, 1.0f,
+			 1.0f, 1.0f,
+			 1.0f, 0.0f,
+
+			 1.0f, 0.0f,
+			 0.0f, 0.0f,
+			 0.0f, 1.0f,
+			 1.0f, 1.0f,
+
+			 0.0f, 0.0f,
+			 1.0f, 0.0f,
+			 1.0f, 1.0f,
+			 0.0f, 1.0f,
+
+			 0.0f, 0.0f,
+			 0.0f, 1.0f,
+			 1.0f, 1.0f,
+			 1.0f, 0.0f,
+			 
+			 1.0f, 0.0f,  
+			 1.0f, 1.0f,  
+			 0.0f, 0.0f,  
+			 0.0f, 1.0f,	  
+		};
+		mesh.indices = {
+			0, 1, 2,  0, 2, 3, // BOT
+			4, 5, 6,  4, 6, 7, // TOP
+			8, 9,10,  8,10,11, // LEFT
+		   12,13,14, 12,14,15, // RIGHT
+		   16,17,18, 16,18,19, // FRONT 16,17,18, 16,18,19,
+		   20,21,22, 21,22,23  // BACK
+		};
+		mesh.GenerateTangents();
+
+		return mesh;
 	}
 
-	Mesh* MeshLoader::CreatePlane(const float& size) {
-		return new Mesh(
-			{
-				// Bot
-				-0.5f * size, 0.0f , 0.5f * size,  0.0f, 1.0f, 0.0f,  0.0f, 0.0f,	0.0f, 0.0f, 1.0f,
-				-0.5f * size, 0.0f ,-0.5f * size,  0.0f, 1.0f, 0.0f,  0.0f, 1.0f,	0.0f, 0.0f, 1.0f,
-				 0.5f * size, 0.0f ,-0.5f * size,  0.0f, 1.0f, 0.0f,  1.0f, 1.0f,	0.0f, 0.0f, 1.0f,
-				 0.5f * size, 0.0f , 0.5f * size,  0.0f, 1.0f, 0.0f,  1.0f, 0.0f,	0.0f, 0.0f, 1.0f
-			},
-			{
-				// Position, Normal, UVs, Tangent
-				3, 3, 2, 3
-			},
-			{
-				0, 1, 2,  0, 2, 3
-			}
-			);
+	MeshData MeshLoader::CreatePlane(const float& size) {
+		MeshData mesh = MeshData();
+
+		mesh.position = {
+			-0.5f * size, 0.0f , 0.5f * size,
+			-0.5f * size, 0.0f ,-0.5f * size,
+			 0.5f * size, 0.0f ,-0.5f * size,
+			 0.5f * size, 0.0f , 0.5f * size
+		};
+		mesh.normals = {
+			0.0f, 1.0f, 0.0f,
+			0.0f, 1.0f, 0.0f,
+			0.0f, 1.0f, 0.0f,
+			0.0f, 1.0f, 0.0f
+		};
+		mesh.uvs = {
+			0.0f, 0.0f,
+			0.0f, 1.0f,
+			1.0f, 1.0f,
+			1.0f, 0.0f
+		};
+		mesh.indices = {
+			0, 1, 2,  
+			0, 2, 3
+		};
+		mesh.GenerateTangents();
+
+		return mesh;
 	}
 
-	Mesh* MeshLoader::CreateQuad(const float& size) {
+	MeshData MeshLoader::CreateQuad(const float& size) {
 		return CreatePlane(size); // TODO: Change Plane
 	}
 
-	Mesh* MeshLoader::CreateSphere(const float& radius)
+	MeshData MeshLoader::CreateSphere(const float& radius)
 	{
-		std::vector<float> vertexData = std::vector<float>();
-		std::vector<unsigned int> indices = std::vector<unsigned int>();
+		MeshData mesh = MeshData();
 
-		glm::vec3 pos = glm::vec3(0, 1, 0);
-		glm::vec3 norm = glm::vec3(0, 1, 0);
+		glm::vec3 pos = glm::vec3(0, 0, 0);
+		glm::vec3 norm = glm::vec3(0, 0, 0);
 		glm::vec2 uvs = glm::vec2(0);
 
 		auto AddData = [&]() {
 			// Position
-			vertexData.push_back(pos.x);
-			vertexData.push_back(pos.y);
-			vertexData.push_back(pos.z);
+			mesh.position.push_back(pos.x);
+			mesh.position.push_back(pos.y);
+			mesh.position.push_back(pos.z);
 			
 			// Normal
-			vertexData.push_back(norm.x);
-			vertexData.push_back(norm.y);
-			vertexData.push_back(norm.z);
+			mesh.normals.push_back(norm.x);
+			mesh.normals.push_back(norm.y);
+			mesh.normals.push_back(norm.z);
 
 			// UVs
-			vertexData.push_back(uvs.x);
-			vertexData.push_back(uvs.y);
-
-			// Tangent
-			vertexData.push_back(0);
-			vertexData.push_back(0);
-			vertexData.push_back(0);
+			mesh.uvs.push_back(uvs.x);
+			mesh.uvs.push_back(uvs.y);
 		};
 
-		const unsigned int sector = 32;
+		const unsigned int sector = 31;
 		const unsigned int stack = 29;
 
 		const float sectorStep = (2.0f * BE_PI) / (float)sector;
 		const float stackStep = BE_PI / (float)stack;
+
+		const float radiusHalf = radius / 2.0f;
 
 		// Stack
 		for (int i = 0; i <= stack; i++) {
@@ -162,9 +231,9 @@ namespace BE {
 			for (int j = 0; j <= sector; j++) {
 				float sectorAngle = j * sectorStep;
 
-				pos.x = (radius * glm::cos(stackAngle)) * glm::cos(sectorAngle);
-				pos.y = radius * glm::sin(stackAngle);
-				pos.z = (radius * glm::cos(stackAngle)) * glm::sin(sectorAngle);
+				pos.x = (radiusHalf * glm::cos(stackAngle)) * glm::cos(sectorAngle);
+				pos.y = radiusHalf * glm::sin(stackAngle);
+				pos.z = (radiusHalf * glm::cos(stackAngle)) * glm::sin(sectorAngle);
 
 				norm = glm::normalize(pos);
 
@@ -177,28 +246,28 @@ namespace BE {
 
 		unsigned int p;
 		int k1, k2;
-		for (int i = 0; i <= stack; i++) {
+		for (int i = 0; i < stack; i++) {
 			k1 = i * (sector + 1);
 			k2 = k1 + sector + 1;
 
-			for (int j = 0; j <= sector; j++, k1++, k2++) {
+			for (int j = 0; j < sector; j++, k1++, k2++) {
 				if (i != 0)
 				{
-					indices.push_back(k1);
-					indices.push_back(k2);
-					indices.push_back(k1 + 1);
+					mesh.indices.push_back(k1);
+					mesh.indices.push_back(k2);
+					mesh.indices.push_back(k1 + 1);
 				}
 
 				if (i != (stack - 1))
 				{
-					indices.push_back(k1 + 1);
-					indices.push_back(k2);
-					indices.push_back(k2 + 1);
+					mesh.indices.push_back(k1 + 1);
+					mesh.indices.push_back(k2);
+					mesh.indices.push_back(k2 + 1);
 				}
 			}
 		}
 
-		Mesh* mesh = new BE::Mesh(vertexData, {3, 3, 2, 3}, indices);
+		mesh.GenerateTangents();
 		return mesh;
 	}
 }

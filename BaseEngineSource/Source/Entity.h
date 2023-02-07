@@ -19,6 +19,8 @@ namespace BE {
 		inline Scene* GetScene() const { return scene; }
 		inline std::string GetName() const { return name; }
 		inline bool IsActive() const { return isEnabled; }
+		inline void SetName(const char* name) { this->name = name; }
+		inline void SetName(const std::string& name) { this->name = name; }
 
 		template<class T> 
 		inline T* GetComponent() const {

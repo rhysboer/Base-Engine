@@ -1,61 +1,45 @@
 #pragma once
 #include <vector>
 #include <string>
-#include "glad/glad.h"
-#include "GLFW/glfw3.h"
-#include "glm/vec3.hpp"
-#include "glm/mat4x4.hpp"
+#include "MeshData.h"
 
 namespace BE {
+	struct MeshDesc {
 
-	// TODO: Turn into a class, destructure destroy VAO is existant
-	struct SubMesh {
-		std::vector<float> vertexData{};
-		std::vector<unsigned int> attributes{};
-		std::vector<unsigned int> indices{};
-
-		/// <summary> DO NOT EDIT </summary>
-		unsigned int vao = 0;
-		/// <summary> DO NOT EDIT </summary>
-		unsigned int vbo = 0;
-		/// <summary> DO NOT EDIT </summary>
-		unsigned int ebo = 0;
-		/// <summary> DO NOT EDIT </summary>
-		unsigned int indicesCount = 0;
-
-		void Copy(const SubMesh* const mesh);
+		bool mapData = false;
+		unsigned int maxMapSize = 0;
 	};
 
+	class BoundingBox;
 	class Mesh {
 	public:
 
 		Mesh();
-		Mesh(const Mesh const* mesh);
-		Mesh(const std::vector<float>& vertexData, const std::vector<unsigned int>& attributes, const std::vector<unsigned int>& indices = std::vector<unsigned int>());
+		Mesh(const MeshDesc& meshDesc);
+		Mesh(const MeshData& meshData, const MeshDesc& meshDesc = MeshDesc());
+		Mesh(const Mesh&) = delete; // TODO
 		~Mesh();
 
-		void SetMeshData(const unsigned int& subMeshIndex, const std::vector<float>& vertexData, const std::vector<unsigned int>& attributes, const std::vector<unsigned int>& indices = {});
-		void SetMeshData(const unsigned int& subMeshIndex, SubMesh* subMesh);
-		void Apply();
-
-		unsigned int CreateSubMesh();
-
-		// TODO: Work out these functions
-		//void AddMeshData(const BE::Mesh* mesh, const unsigned int& s_subMeshIndex = 0, const unsigned int& d_subMeshIndex = 0, const glm::vec3& offset = { 0, 0, 0 });
-		//void TransformMesh(const glm::mat4& transform, std::vector<unsigned int> attributeIndexes);
+		unsigned int CreateMesh();
+		void CreateMesh(const MeshData& meshData);
+		void UpdateMesh(const MeshData& meshData, const unsigned int& index = 0);
 		
+		void Apply();
 		void Clear(const unsigned int& subMeshIndex = 0);
 		void Destroy();
 
-		void BindVAO(const unsigned int& subMesh = 0);
+		void BindVAO(const unsigned int& subMesh = 0) const;
 
 		inline bool HasEBO(const unsigned int& subMesh = 0) { return (meshes[subMesh]->ebo > 0) ? true : false; }
 		inline unsigned int GetIndicesCount(const unsigned int& subMesh = 0) { return subMesh < meshes.size() ? meshes[subMesh]->indicesCount : 0; }
 		inline unsigned int GetMeshCount() const { return meshes.size(); }
+		inline const BoundingBox* const GetBounds() const { return bounds; }
+
+	protected:
 		
-	private:
-		
-		std::vector<SubMesh*> meshes = std::vector<SubMesh*>();
+		MeshDesc descriptor;
+		BoundingBox* bounds;
+		std::vector<MeshData*> meshes = std::vector<MeshData*>();
 	};
 }
 

@@ -1,6 +1,7 @@
 #include "FLVERLoader.h"
 #include "Logging.h"
 #include <bitset>
+#include "glm/glm.hpp"
 
 #define FLVER_SIGNATURE "FLVER"
 

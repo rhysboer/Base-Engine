@@ -11,11 +11,15 @@
 #endif
 
 namespace BE {
+	Scene* Scene::activeScene = nullptr;
 	std::unordered_map<std::string, Scene*> Scene::scenes = std::unordered_map<std::string, Scene*>();
 
 	Scene* Scene::CreateScene(const char* name) {
-		assert(scenes.find(name) == scenes.end());
+		BE_ASSERT(scenes.find(name) == scenes.end(), "Duplicated name");
 		Scene* scene = new Scene(name);
+
+		if (activeScene == nullptr)
+			activeScene = scene;
 
 		scenes.emplace(name, scene);
 		return scene;
@@ -34,27 +38,14 @@ namespace BE {
 	{ 
 		entityManager = new EntityManager(this);
 		lightManager = new LightManager(this);
+		//sceneRenderer = &renderer;
 	}
 
-	void Scene::OnUpdate() {
-		entityManager->Update();
-	}
-
-    void Scene::UpdateScenes() {
-		for(auto& it : scenes) {
-			if(!it.second->isEnabled)
-				continue;
-
-			it.second->OnUpdate();
+	void Scene::UpdateActiveScene()
+	{
+		if (activeScene != nullptr) 
+		{
+			activeScene->GetEntityManager().Update();
 		}
-    }
-
-    //void Scene::DrawScenes() {
-	//	for(auto& it : scenes) {
-	//		if(!it.second->isEnabled)
-	//			continue;
-	//
-	//		it.second->OnRender();
-	//	}
-	//}
+	}
 }

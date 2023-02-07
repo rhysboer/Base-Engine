@@ -1,5 +1,12 @@
 #pragma once
 
+#define BE_EVENT_WINDOW_RESIZE "WindowResize"
+#define BE_EVENT_WINDOW_MINIMISE "WindowMinimise"
+#define BE_EVENT_ENGINE_UPDATE "EngineUpdate"
+
+
+#define BE_EPSILON 0.0000001f
+
 namespace BE {
 	class Texture;
 	class Material;

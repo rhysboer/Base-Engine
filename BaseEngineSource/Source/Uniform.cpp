@@ -27,7 +27,7 @@ namespace BE {
 		glGetActiveUniformsiv(shaderProg, 1, &uniformIndex, GL_UNIFORM_ARRAY_STRIDE, &uniArray); // TODO: Use this
 		
 		if (glGetUniformLocation(shaderProg, uniName) == -1 && checkLoc) {
-			BE_WARNING("CreateUniform - Uniform %s not in use", uniName);
+			// BE_WARNING("CreateUniform - Uniform %s not in use", uniName);
 			return nullptr;
 		}
 
@@ -116,6 +116,7 @@ namespace BE {
 
 	void* UniformTexture::GetValue(const unsigned int& index) const
 	{
+		texture->Bind();
 		return (void*)texture->GetActiveID();
 	}
 

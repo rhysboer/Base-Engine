@@ -1,4 +1,5 @@
 #include "Light.h"
+#include "glm/gtc/type_ptr.hpp"
 
 #include "imgui.h"
 
@@ -38,7 +39,11 @@ namespace BE {
 			break;
 		}
 		case BE::LightType::POINT:
+			ImGui::Text("Length");
+			ImGui::DragFloat("##Length", &length, 0.2f, 0.0f, 1000.0f);
 			break;
 		}
+
+		ImGui::ColorPicker3("Colour", glm::value_ptr(colourAndIntensity));
 	}
 }

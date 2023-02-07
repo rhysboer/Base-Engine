@@ -55,21 +55,21 @@ namespace BE {
 
 	void Input::DisableCursor(const bool& hideCursor) {
 		if(hideCursor == true) {
-			glfwSetInputMode(&BaseEngine::GetWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+			glfwSetInputMode(BaseEngine::GetWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		} else {
-			glfwSetInputMode(&BaseEngine::GetWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+			glfwSetInputMode(BaseEngine::GetWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 
 			// Center mouse after reactivating
 			int x, y;
 			BaseEngine::GetWindowSize(x, y);
 			glm::vec2 size = glm::vec2(x * 0.5f, y * 0.5f);
-			glfwSetCursorPos(&BaseEngine::GetWindow(), size.x, size.y);
+			glfwSetCursorPos(BaseEngine::GetWindow(), size.x, size.y);
 			mousePosition = size;
 		}
 	}
 
 	bool Input::IsCursorDisabled() {
-		return (glfwGetInputMode(&BaseEngine::GetWindow(), GLFW_CURSOR) == GLFW_CURSOR_NORMAL) ? false : true;
+		return (glfwGetInputMode(BaseEngine::GetWindow(), GLFW_CURSOR) == GLFW_CURSOR_NORMAL) ? false : true;
 	}
 
 	void Input::SetCallbacks(GLFWwindow* window) {
@@ -116,7 +116,7 @@ namespace BE {
 		//mouseDelta = glm::vec2(0.0);
 
 		double x, y;
-		glfwGetCursorPos(&BaseEngine::GetWindow(), &x, &y);
+		glfwGetCursorPos(BaseEngine::GetWindow(), &x, &y);
 		mouseLastPosition = mousePosition;
 		mousePosition.x = x;
 		mousePosition.y = y;

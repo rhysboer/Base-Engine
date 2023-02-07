@@ -14,6 +14,8 @@
 #define BE_SHADER_UNLIT "BE::UnlitColour"
 // A flat simple texture shader with basic built-in lighting.
 #define BE_SHADER_FLAT "BE::Flat"
+#define BE_SHADER_SCREENQUAD "BE::ScreenQuad"
+
 
 // Standard Shader Uniforms
 #define BE_SHADER_UNI_ALPHACLIP "alphaClip"
@@ -54,7 +56,7 @@ namespace BE {
 
 
 		static std::vector<Shader*> shaders;
-		static std::unordered_map<const char*, int> shaderIndexes;
+		static std::unordered_map<std::string, int> shaderIndexes;
 		static std::unordered_map<std::string, std::string> shaderHeaders;
 
 		static unsigned int shaderCount;

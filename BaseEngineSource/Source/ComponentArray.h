@@ -2,6 +2,7 @@
 #include "IComponent.h"
 #include <unordered_map>
 #include <array>
+#include <Logging.h>
 
 #define MAX_COMPONENTS 128
 
@@ -21,6 +22,8 @@ namespace BE {
 		inline bool Has(const unsigned int& entityID) const;
 		inline int Size() const;
 
+		IComponent* operator[] (const unsigned int& index) const;
+
 	private:
 
 		/// <summary> Holds the index for the component with the given Entity (Uint: EntityID, UInt: Component Index) </summary>
@@ -36,7 +39,12 @@ namespace BE {
 		return endPos;
 	}
 
+	inline IComponent* ComponentArray::operator[](const unsigned int& index) const
+	{
+		return components[index];
+	}
+
 	bool ComponentArray::Has(const unsigned int& entityID) const {
-		return indexes.contains(entityID);
+		return indexes.find(entityID) != indexes.end();
 	}
 }

@@ -1,23 +1,26 @@
 #include "Application.h"
+#include "Resources.h"
 #include "imgui.h"
-#include "Logging.h"
-
 #include "Camera.h"
 #include "Entity.h"
 #include "Scene.h"
-#include "Gizmos.h"
-#include "Input.h"
 
+BE::Camera* Application::camera = nullptr;
+BE::Scene* Application::scene = nullptr;
 
 void Application::OnEngineInit()
 {
-	auto* scene = BE::Scene::CreateScene("Graph");
+	Resources::Init();
 
-	auto* camera = scene->GetEntityManager().CreateEntity("Camera");
-	camera->AddComponent<BE::Camera>();
-	camera->transform.SetPosition(0, 0, 10);
+	scene = BE::Scene::CreateScene("Graph");
+	camera = new BE::Camera();
 
+	auto entity = scene->GetEntityManager().CreateEntity("Camera");
+	entity->AddComponent(camera);
+	entity->transform.SetPosition(0, 0, 10);
+	//this->texture = new BE::Texture(BE::File::LoadFile("C:/Users/Rhys/Desktop/circle.png"));
 
+	graph = new GraphManager();
 }
 
 void Application::OnEngineDestroy()
@@ -27,22 +30,5 @@ void Application::OnEngineDestroy()
 
 void Application::OnEngineUpdate() 
 {
-	glm::vec2 mousePos = BE::Input::MousePosition();
-
-	BE::Gizmos::DrawCube(0.5f);
-
-	auto* camera = BE::Scene::GetScene("Graph")->GetEntityManager().GetEntity("Camera")->GetComponent<BE::Camera>();
-
-
-	ImGui::Begin("Node", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize);
-	ImGui::Button("Input");
-	ImGui::SameLine(150.0f);
-
-	ImVec2 pos = ImGui::GetWindowPos();
-	ImGui::Text("%f, %f", pos.x, pos.y);
-	ImGui::Text("%f, %f", mousePos.x, mousePos.y);
-	ImGui::Button("Output");
-	ImGui::End();
-	
-	BE::Gizmos::DrawLine(camera->ScreenSpaceToWorldSpace(glm::vec3(pos.x, pos.y, 0)), camera->ScreenSpaceToWorldSpace(mousePos));
+	graph->Update();
 }

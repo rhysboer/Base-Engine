@@ -92,13 +92,17 @@ namespace BE {
 		uniform->SetValue(texture);
 	}
 
+	void Material::SetMainTexture(const ITexture* texture)
+	{
+		SetUniform("mainTexture", texture);
+	}
+
 	void Material::SetTransparent(const bool& isTransparent)
 	{
 		this->isTransparent = isTransparent;
-
 	}
 
-	void Material::UpdateShaders() {
+	void Material::Use() const {
 		shader->UseProgram();
 
 		for(int i = 0; i < uniforms.size(); i++)

@@ -5,77 +5,105 @@
 #include "Texture.h"
 #include "stb_image.h"
 #include "Logging.h"
+#include "BEMath.h"
 #include <glad/glad.h>
 
 #define ERROR_COL_ONE glm::vec3(255, 0, 255)
 #define ERROR_COL_TWO glm::vec3(0, 0, 0)
 
 namespace BE {
-	Texture::Texture(const std::string& imageData, const TextureFlags& flags)
+	Texture::Texture(const std::string& imageData, const TextureDesc& desc)
 	{
+		int channels;
+
+		// Flip if opengl
 		stbi_set_flip_vertically_on_load(true);
-		stbi_uc* data = stbi_load_from_memory((unsigned char*)imageData.c_str(), imageData.length(), &x, &y, &format, 0);
+		stbi_uc* data = stbi_load_from_memory((unsigned char*)imageData.c_str(), imageData.length(), &x, &y, &channels, FormatToChannels(desc.format));
 
 		if (data == nullptr) {
 			Logging::Error("Failed to load texture");
 			data = GenerateColourTexture(64, 64, ERROR_COL_ONE, ERROR_COL_TWO);
 		}
 
-		CreateTexture(data, (int)flags);
+		CreateTexture(data, desc);
 		stbi_image_free(data);
 	}
 
-	Texture::Texture(const unsigned int& x, const unsigned int& y, const TextureFlags& flags) : x(x), y(y), id(0), format(0)
+	Texture::Texture(const unsigned int& x, const unsigned int& y, const TextureDesc& desc) : x(x), y(y)
 	{
-		CreateTexture(GenerateColourTexture(x, y, glm::vec3(128, 128, 128), glm::vec3(255, 255, 255)), (int)flags);
+		auto pixels = GenerateColourTexture(x, y, glm::vec3(128, 128, 128), glm::vec3(255, 255, 255));
+		CreateTexture(pixels, desc);
+
+		delete[] pixels;
 	}
 
-	Texture::Texture(const unsigned int& x, const unsigned int& y, const glm::vec3& colour, const TextureFlags& flags) : x(x), y(y), id(0), format(0)
+	Texture::Texture(const unsigned int& x, const unsigned int& y, const glm::vec3& colour, const TextureDesc& desc) : x(x), y(y)
 	{
-		CreateTexture(GenerateColourTexture(x, y, colour, colour), (int)flags);
+		auto pixels = GenerateColourTexture(x, y, colour, colour);
+		CreateTexture(pixels, desc);
+
+		delete[] pixels;
 	}
 
-	Texture::Texture(const unsigned int& x, const unsigned int& y, std::vector<unsigned char>& pixels, const TextureFlags& flags) : x(x), y(y), id(0), format(0)
+	Texture::Texture(const unsigned int& x, const unsigned int& y, std::vector<unsigned char>& pixels, const TextureDesc& desc) : x(x), y(y)
 	{
-		format = (pixels.size() == x * y * 4) ? 4 : 3;
-
-		// TODO: Check X & Y range, make sure it fits with the pixel array
-		CreateTexture(&pixels[0], (int)flags);
+		CreateTexture(&pixels[0], desc);
 	}
 
-	void Texture::CreateTexture(unsigned char* data, const int& flags)
+	Texture::~Texture()
 	{
-		GenTextureID();
+		DestroyTexture();
+	}
+
+	void Texture::Redefine(const unsigned int& x, const unsigned int& y, const TextureDesc& desc)
+	{
+		DestroyTexture();
+
+		auto pixels = GenerateColourTexture(x, y, glm::vec3(0, 0, 0), glm::vec3(0, 0, 0));
+		CreateTexture(pixels, desc);
+
+		delete[] pixels;
+	}
+
+	void Texture::CreateTexture(unsigned char* data, const TextureDesc& desc)
+	{
+		CreateTextureObject();
 		Bind();
 
-		glm::vec3 invert = { (flags >> (int)TextureFlags::INVERT_R - 1) & 1, (flags >> (int)TextureFlags::INVERT_G - 1) & 1, (flags >> (int)TextureFlags::INVERT_B - 1) & 1 };
+		const int channels = FormatToChannels(desc.format);
+		const glm::vec4 invert = glm::vec4(
+			BE::Math::IsBitSet((int)desc.flags, 0),
+			BE::Math::IsBitSet((int)desc.flags, 1),
+			BE::Math::IsBitSet((int)desc.flags, 2),
+			BE::Math::IsBitSet((int)desc.flags, 3)
+		);
+
 		if (glm::length(invert) > 0) {
 			int i = 0;
-			while (i < (x * y) * 4) {
+			while (i < (x * y) * channels) {
 				if (invert.r > 0)
 					data[i + 0] = 255 - data[i + 0];
 				if (invert.g > 0)
 					data[i + 1] = 255 - data[i + 1];
 				if (invert.b > 0)
 					data[i + 2] = 255 - data[i + 2];
-				i += 4;// format;
+				if (invert.a > 0)
+					data[i + 3] = 255 - data[i + 3];
+
+				i += channels;
 			}
 		}
-		
-		format = GetFormat(format);
-		
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); // GL_CLAMP_TO_EDGE
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT); // GL_CLAMP_TO_EDGE
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		glTexImage2D(GL_TEXTURE_2D, 0, format, x, y, 0, format, GL_UNSIGNED_BYTE, data);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); // GL_NEAREST
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexImage2D(GL_TEXTURE_2D, 0, (GLint)desc.format, x, y, 0, (GLint)desc.format, GL_UNSIGNED_BYTE, data);
 	}
 
 	stbi_uc* Texture::GenerateColourTexture(const unsigned int& size_x, const unsigned int& size_y, const glm::vec3& c1, const glm::vec3& c2) {
 		this->x = size_x;
 		this->y = size_y;
-		format = 4;
 		
 		stbi_uc* data = new stbi_uc[x * y * 4];
 
@@ -102,17 +130,5 @@ namespace BE {
 		}
 
 		return data;
-	}
-
-	int Texture::GetFormat(const int& format) const
-	{
-		switch (format) {
-			case 1: return GL_RED;
-			case 2: return GL_RG;
-			case 3: return GL_RGB;
-			case 4: return GL_RGBA;
-			default:
-				assert(false && "Texture format not supported");
-		}
 	}
 }

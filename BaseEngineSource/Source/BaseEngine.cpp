@@ -6,76 +6,108 @@
 #include "Scene.h"
 #include "ShaderManager.h"
 #include "BEGlobal.h"
-
-#include "RenderSystem.h"
+#include "EventSystem.h"
+#include "Renderer.h"
 
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 
-void Callback_FrameBufferResize(GLFWwindow* window, int width, int height) {
+void Callback_WindowResize(GLFWwindow* window, int width, int height) {
 	glViewport(0, 0, width, height);
-	//BE::CameraManager::SetAllDirty();
+
+	glm::vec2 size = glm::vec2(width, height);
+	BE::EventSystem::TriggerEvent(BE_EVENT_WINDOW_RESIZE, &size);
 }
 
 namespace BE {
-	GLFWwindow* BaseEngine::window = nullptr;
+	BaseEngine* BaseEngine::engine = nullptr;
 
-	bool BaseEngine::CreateEngine(const char* title, const int& width, const int& height) {
-		if(!glfwInit())
-			return false;
+	BaseEngine::BaseEngine() : window(nullptr), renderer(nullptr)
+	{ }
 
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	BaseEngine::~BaseEngine()
+	{ 
+		delete renderer;
+	}
 
-		this->window = glfwCreateWindow(width, height, title, NULL, NULL);
+	BaseEngine* BaseEngine::CreateEngine(const EngineDesc& desc) {
+		if (engine)
+			return engine;
 
-		if(!this->window) {
-			glfwTerminate();
-			return false;
+		engine = new BaseEngine();
+
+		if (!glfwInit()) {
+			delete engine;
+			return nullptr;
 		}
 
-		glfwMakeContextCurrent(this->window);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, desc.openGL_versionMajor);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, desc.openGl_versionMinor);
+		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+		engine->window = glfwCreateWindow(desc.width, desc.height, desc.name, NULL, NULL);
+
+		if(!engine->window) {
+			glfwTerminate();
+			delete engine;
+			return nullptr;
+		}
+
+		glfwMakeContextCurrent(engine->window);
+		//glfwSwapInterval(0);
 
 		if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
 			glfwTerminate();
-			return false;
+			delete engine;
+			return nullptr;
 		}
 
-		glViewport(0, 0, width, height);
+		glViewport(0, 0, desc.width, desc.height);
 		
-		RegisterCallbacks();
+		// -- Register Callbacks Here
+		glfwSetWindowSizeCallback(engine->window, Callback_WindowResize);
+		Input::SetCallbacks(engine->window);
 
-		this->isInitialized = true;
+		// Initiate
+		engine->renderer = new Renderer();
 
 		ImGui::CreateContext();
-		ImGui_ImplGlfw_InitForOpenGL(window, true);
-		ImGui_ImplOpenGL3_Init("#version 330");
+		ImGui_ImplGlfw_InitForOpenGL(engine->window, true);
+		// TODO: Change with desc.opengl_VersionMajor/Minor
+		ImGui_ImplOpenGL3_Init("#version 330"); 
 		ImGui::StyleColorsDark();
 
+		EventSystem::CreateEvent(BE_EVENT_WINDOW_RESIZE);
+		EventSystem::CreateEvent(BE_EVENT_WINDOW_MINIMISE);
+		EventSystem::CreateEvent(BE_EVENT_ENGINE_UPDATE);
 		ShaderManager::InitBaseShaders();
-		Gizmos::Init();
 		BEGlobal::Init();
 
-		return true;
+		return engine;
 	}
 
-	void BaseEngine::StartEngine() {
-		if(!isInitialized) {
-			Logging::Error("BaseEngine: Engine has not been initialized");
+	void BaseEngine::Run() {
+		if(!engine) {
+			Logging::Error("BaseEngine: Error creating engine");
 			return;
 		}
 
+		if (!renderer->IsValid()) {
+			Logging::Error("BaseEngine: Renderer is not valid");
+			return;
+		}
+
+		// TODO: Move to Renderer.cpp
 		glEnable(GL_DEPTH_TEST); // Depth Testing
 		glEnable(GL_BLEND); // Transparent Blend
 		glDepthFunc(GL_LEQUAL);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		// Call On Start
-		OnEngineInit();
+		//OnEngineInit();
 
-		while(!glfwWindowShouldClose(this->window)) {
+		while(!glfwWindowShouldClose(this->window) && !this->isStopping) {
 			// --  IMGUI UPDATE
 			{
 				ImGui_ImplOpenGL3_NewFrame();
@@ -87,20 +119,17 @@ namespace BE {
 			{
 				Time::Update();
 				
-				Scene::UpdateScenes();
+				Scene::UpdateActiveScene();
 
-				OnEngineUpdate();
+				EventSystem::TriggerEvent(BE_EVENT_ENGINE_UPDATE);
 			}
 
 			// -- CLEAR SCREEN
-			glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			Renderer::ClearBuffer(true, true, true);
 
 			// -- RENDER
 			{
-				//Scene::DrawScenes();
-				RenderSystem::Render();
-				OnEngineRender();
+				renderer->Render();
 			}
 
 			// --  IMGUI RENDER
@@ -117,20 +146,13 @@ namespace BE {
 		}
 
 		// -- DESTROY ENGINE
-		OnEngineDestroy();
+		//OnEngineDestroy();
 
 		// -- IMGUI TERMINATE
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
 		ImGui::DestroyContext();
 		glfwTerminate();
-	}
-
-	void BaseEngine::RegisterCallbacks() {
-		Input::SetCallbacks(this->window);
-
-		// -- Register Callbacks Here
-		glfwSetFramebufferSizeCallback(this->window, Callback_FrameBufferResize);
 	}
 }
 

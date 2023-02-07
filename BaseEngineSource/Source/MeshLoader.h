@@ -11,9 +11,9 @@ namespace BE::MeshLoader {
 
 	Mesh* LoadFile(const char* path, const unsigned int& flags = 0);
 
-	Mesh* CreateCube(const float& size = 1);
-	Mesh* CreatePlane(const float& size = 1); // TODO
-	Mesh* CreateQuad(const float& size = 1);
-	Mesh* CreateSphere(const float& radius = 1);
-	Mesh* CreateIcosphere(); // TODO
+	MeshData CreateCube(const float& size = 1);
+	MeshData CreatePlane(const float& size = 1); // TODO
+	MeshData CreateQuad(const float& size = 1);
+	MeshData CreateSphere(const float& radius = 1);
+	MeshData CreateIcosphere(); // TODO
 }

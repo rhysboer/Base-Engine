@@ -8,6 +8,7 @@ namespace BE {
 	class Shader;
 	class Uniform;
 	class ITexture;
+	class Framebuffer;
 	class Material {
 	public:
 
@@ -23,10 +24,12 @@ namespace BE {
 		void SetUniform(const char* name, const glm::mat4& value, const unsigned int& size = 1);
 		void SetUniform(const char* name, const ITexture* texture);
 
+		void SetMainTexture(const ITexture* texture);
+
 		void SetTransparent(const bool& isTransparent);
 		bool IsTransparent() const { return isTransparent; }
 
-		void UpdateShaders();
+		void Use() const;
 
 	private:
 		Uniform* GetUniform(const char* name) const;

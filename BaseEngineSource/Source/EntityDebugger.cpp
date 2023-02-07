@@ -5,7 +5,11 @@
 #include "EntityManager.h"
 #include "Entity.h"
 #include "glm/gtc/type_ptr.hpp"
+#include "Gizmos.h"
 
+#include "IRender.h"
+#include "Mesh.h"
+#include "BoundingBox.h"
 #include "TimeManager.h"
 #include "Logging.h"
 
@@ -80,6 +84,12 @@ namespace BE::Debug {
 				}
 			}
 
+			BE::Gizmos::DrawTransform(entity->transform.ModelMatrix(), 1);
+
+			BE::IRender* render = entity->GetComponent<BE::IRender>();
+
+			if (render != nullptr)
+				BE::Gizmos::DrawAABB(*render->GetMesh()->GetBounds(), entity->transform.ModelMatrix(), COLOUR_RED);
 		}
 		ImGui::EndChild(); // Selected
 		ImGui::End();

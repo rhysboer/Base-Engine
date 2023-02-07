@@ -5,35 +5,30 @@
 #include "ITexture.h"
 
 namespace BE {
-	enum class TextureFlags
-	{
-		NONE,
-		INVERT_R = 1 << 0,
-		INVERT_G = 1 << 1,
-		INVERT_B = 1 << 2
-	};
-
 	class Texture : public ITexture
 	{
 	public:
-		Texture(const std::string& imageData, const TextureFlags& flags = TextureFlags::NONE);
-		Texture(const unsigned int& x, const unsigned int& y, const TextureFlags& flags = TextureFlags::NONE);
-		Texture(const unsigned int& x, const unsigned int& y, const glm::vec3& colour, const TextureFlags& flags = TextureFlags::NONE);
-		Texture(const unsigned int& x, const unsigned int& y, std::vector<unsigned char>& pixels, const TextureFlags& flags = TextureFlags::NONE);
-		virtual ~Texture() override {}
+		Texture(const std::string& imageData, const TextureDesc& desc = TextureDesc());
+		Texture(const unsigned int& x, const unsigned int& y, const TextureDesc& desc = TextureDesc());
+		Texture(const unsigned int& x, const unsigned int& y, const glm::vec3& colour, const TextureDesc& desc = TextureDesc());
+		Texture(const unsigned int& x, const unsigned int& y, std::vector<unsigned char>& pixels, const TextureDesc& desc = TextureDesc());
+		virtual ~Texture() override;
+
+		inline glm::vec2 GetSize() const { return glm::vec2(x, y); }
 
 		/// <summary>
 		/// Loads texture from a path
 		/// </summary>
-		static Texture* LoadTexture(const std::string& path, const TextureFlags& flags = TextureFlags::NONE);
+		//static Texture* LoadTexture(const std::string& path, const TextureDesc& desc = TextureDesc());
+
+		void Redefine(const unsigned int& x, const unsigned int& y, const TextureDesc& desc = TextureDesc());
 
 	protected:
 
-		void CreateTexture(unsigned char* data, const int& flags = (int)TextureFlags::NONE);
-		int GetFormat(const int& format) const;
+		void CreateTexture(unsigned char* data, const TextureDesc& desc = TextureDesc());
 
-		unsigned int id;
-		int x, y, format;
+		//unsigned int id;
+		int x, y;
 
 	private:
 

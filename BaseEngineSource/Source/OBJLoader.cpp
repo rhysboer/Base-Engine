@@ -2,6 +2,7 @@
 #include "tiny_obj_loader.h"
 #include "MeshLoader.h"
 #include "BEMath.h"
+#include "glm/glm.hpp"
 #include <sstream>
 
 namespace BE::Loader {
@@ -29,23 +30,7 @@ namespace BE::Loader {
 
 		BE::Mesh* mesh = new BE::Mesh();
 		for (size_t s = 0; s < shapes.size(); s++) {
-			unsigned int index = mesh->CreateSubMesh();
-			SubMesh* subMesh = new SubMesh();
-
-			// Position
-			subMesh->attributes.push_back(3);
-			// Normal
-			if (!attrib.normals.empty())
-				subMesh->attributes.push_back(3);
-			// Tex Coords
-			if (!attrib.texcoords.empty())
-				subMesh->attributes.push_back(2);
-			// Tangent Space
-			if (!ignoreTangents)
-				subMesh->attributes.push_back(3);
-			// Vertex Colour
-			//if (!attrib.colors.empty() && settings.importVertexColor)
-			//	mesh->attributes.push_back(3);
+			MeshData meshData = MeshData();
 
 			// Needed for tangent space calculations
 			glm::vec3 vertex_pos[3];
@@ -62,28 +47,28 @@ namespace BE::Loader {
 					tinyobj::index_t idx = shapes[s].mesh.indices[index_offset + v];
 
 					// Vertex Position
-					subMesh->vertexData.push_back(attrib.vertices[3 * idx.vertex_index + 0] /* settings.importScale */);
-					subMesh->vertexData.push_back(attrib.vertices[3 * idx.vertex_index + 1] /* settings.importScale */);
-					subMesh->vertexData.push_back(attrib.vertices[3 * idx.vertex_index + 2] /* settings.importScale */);
+					meshData.position.push_back(attrib.vertices[3 * idx.vertex_index + 0] /* settings.importScale */);
+					meshData.position.push_back(attrib.vertices[3 * idx.vertex_index + 1] /* settings.importScale */);
+					meshData.position.push_back(attrib.vertices[3 * idx.vertex_index + 2] /* settings.importScale */);
 
 					// Vertex Normals
 					if (!attrib.normals.empty()) {
-						subMesh->vertexData.push_back(attrib.normals[3 * idx.normal_index + 0]);
-						subMesh->vertexData.push_back(attrib.normals[3 * idx.normal_index + 1]);
-						subMesh->vertexData.push_back(attrib.normals[3 * idx.normal_index + 2]);
+						meshData.normals.push_back(attrib.normals[3 * idx.normal_index + 0]);
+						meshData.normals.push_back(attrib.normals[3 * idx.normal_index + 1]);
+						meshData.normals.push_back(attrib.normals[3 * idx.normal_index + 2]);
 					}
 
 					// Vertex Color
-					//if (!attrib.colors.empty() /* && settings.importVertexColor*/) {
-					//	mesh->vertexData.push_back(attrib.colors[3 * idx.vertex_index + 0]);
-					//	mesh->vertexData.push_back(attrib.colors[3 * idx.vertex_index + 1]);
-					//	mesh->vertexData.push_back(attrib.colors[3 * idx.vertex_index + 2]);
-					//}
+					if (!attrib.colors.empty() /* && settings.importVertexColor*/) {
+						meshData.colour0.push_back(attrib.colors[3 * idx.vertex_index + 0]);
+						meshData.colour0.push_back(attrib.colors[3 * idx.vertex_index + 1]);
+						meshData.colour0.push_back(attrib.colors[3 * idx.vertex_index + 2]);
+					}
 
 					// UVs / Vertex Texcoords
 					if (!attrib.texcoords.empty()) {
-						subMesh->vertexData.push_back(attrib.texcoords[2 * idx.texcoord_index + 0]);
-						subMesh->vertexData.push_back(1.0f - attrib.texcoords[2 * idx.texcoord_index + 1]);
+						meshData.uvs.push_back(attrib.texcoords[2 * idx.texcoord_index + 0]);
+						meshData.uvs.push_back(1.0f - attrib.texcoords[2 * idx.texcoord_index + 1]);
 					}
 
 					if (!ignoreTangents) {
@@ -108,9 +93,9 @@ namespace BE::Loader {
 						float f = 1.0f / (uv1.x * uv2.y - uv2.x * uv1.y);
 
 						// Tangent
-						subMesh->vertexData.push_back(f * (uv2.y * e1.x - uv1.y * e2.x));
-						subMesh->vertexData.push_back(f * (uv2.y * e1.y - uv1.y * e2.y));
-						subMesh->vertexData.push_back(f * (uv2.y * e1.z - uv1.y * e2.z));
+						meshData.tangents.push_back(f * (uv2.y * e1.x - uv1.y * e2.x));
+						meshData.tangents.push_back(f * (uv2.y * e1.y - uv1.y * e2.y));
+						meshData.tangents.push_back(f * (uv2.y * e1.z - uv1.y * e2.z));
 					}
 				}
 
@@ -120,7 +105,7 @@ namespace BE::Loader {
 				//shapes[s].mesh.material_ids[f];
 			}
 
-			mesh->SetMeshData(s, subMesh);
+			mesh->CreateMesh(meshData);
 		}
 
 		return mesh;

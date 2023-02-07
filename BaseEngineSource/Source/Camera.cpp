@@ -4,16 +4,25 @@
 #include "Input.h"
 #include "Entity.h"
 #include "Scene.h"
+#include "UniformBuffer.h"
+#include "EventSystem.h"
+#include "BEGlobal.h"
 
 namespace BE {
 	Camera::Camera() : cameraType(CameraType::PERSPECTIVE), fov(45.0f), size(fov/2.0f) 
-	{ }
+	{ 
+		eventId = BE::EventSystem::EventSubscribe(BE_EVENT_WINDOW_RESIZE, [&](const void* const) { SetDirty(); });
+	}
 
 	Camera::Camera(const CameraType& cameraType, float fovSize) : cameraType(cameraType), fov(fovSize), size(fovSize / 2.0f) 
-	{ }
+	{ 
+		eventId = BE::EventSystem::EventSubscribe(BE_EVENT_WINDOW_RESIZE, [&](const void* const) { SetDirty(); });
+	}
 
 	Camera::~Camera() 
-	{ }
+	{ 
+		// TODO: Unsub from event
+	}
 
 	void Camera::OnStart() {
 		UpdateCamera();
@@ -28,8 +37,6 @@ namespace BE {
 	void Camera::UpdateCamera() {
 		if(isDirty) {
 			isDirty = false;
-
-			//view = glm::inverse(GetEntity()->transform.ModelMatrix());
 
 			switch(cameraType) {
 				case Camera::CameraType::ORTHOGRAPHIC:
@@ -70,7 +77,6 @@ namespace BE {
 
 	void Camera::SetOrthographic(const float& left, const float& right, const float& bottom, const float& top) {
 		cameraType = CameraType::ORTHOGRAPHIC;
-		autoResizeOrtho = false;
 
 		this->left = left;
 		this->right = right;
@@ -82,7 +88,6 @@ namespace BE {
 
 	void Camera::SetOrthographic(const float& orthoSize, const bool& autoResize) {
 		cameraType = CameraType::ORTHOGRAPHIC;
-		autoResizeOrtho = autoResize;
 
 		int x, y;
 		BaseEngine::GetWindowSize(x, y);
@@ -113,6 +118,12 @@ namespace BE {
 		this->fov = fov;
 
 		projection = glm::perspective(glm::radians(fov), aspect, near, far);
+	}
+
+	void Camera::BindBuffer()
+	{
+		UniformBuffer::GetUniformBuffer("Camera")->SetValue(0, GetView());
+		UniformBuffer::GetUniformBuffer("Camera")->SetValue(1, GetProjection());
 	}
 
 	glm::mat4 Camera::GetView() {

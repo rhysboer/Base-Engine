@@ -70,19 +70,19 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='DebugLib|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
@@ -186,7 +186,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)include;$(ProjectDir)source</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -256,7 +256,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)include;$(ProjectDir)source</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -287,22 +287,23 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="Chunk.cpp" />
     <ClCompile Include="ExampleComponent.cpp" />
     <ClCompile Include="ExampleRaycast.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Source\BasePass.cpp" />
+    <ClCompile Include="source\BoundingBox.cpp" />
     <ClCompile Include="Source\BaseEngine.cpp" />
     <ClCompile Include="source\BEMath.cpp" />
     <ClCompile Include="Source\Camera.cpp" />
     <ClCompile Include="Source\Colour.cpp" />
     <ClCompile Include="Source\Common.cpp" />
     <ClCompile Include="Source\ComponentArray.cpp" />
-    <ClCompile Include="source\DebugComponent.cpp" />
     <ClCompile Include="Source\DebugMovement.cpp" />
     <ClCompile Include="source\BEGlobal.cpp" />
     <ClCompile Include="source\EntityDebugger.cpp" />
     <ClCompile Include="Source\EntityManager.cpp" />
     <ClCompile Include="Source\Cubemap.cpp" />
-    <ClCompile Include="Source\Drawable.cpp" />
     <ClCompile Include="Source\Entity.cpp" />
     <ClCompile Include="Source\EventSystem.cpp" />
     <ClCompile Include="Source\File.cpp" />
@@ -317,11 +318,14 @@
     <ClCompile Include="source\ITexture.cpp" />
     <ClCompile Include="Source\Light.cpp" />
     <ClCompile Include="Source\LightManager.cpp" />
+    <ClCompile Include="source\MeshData.cpp" />
     <ClCompile Include="source\MeshLoader.cpp" />
     <ClCompile Include="Source\OBJLoader.cpp" />
     <ClCompile Include="Source\PlaneCollider.cpp" />
-    <ClCompile Include="source\RenderSystem.cpp" />
+    <ClCompile Include="Source\RenderPass.cpp" />
     <ClCompile Include="Source\Scene.cpp" />
+    <ClCompile Include="Source\Renderer.cpp" />
+    <ClCompile Include="Source\Singleton.cpp" />
     <ClCompile Include="Source\Texture.cpp" />
     <ClCompile Include="Source\Uniform.cpp" />
     <ClCompile Include="Source\IComponent.cpp" />
@@ -337,8 +341,6 @@
     <ClCompile Include="Source\Material.cpp" />
     <ClCompile Include="Source\Mesh.cpp" />
     <ClCompile Include="Source\MeshRenderer.cpp" />
-    <ClCompile Include="Source\Object3D.cpp" />
-    <ClCompile Include="Source\PostProcess.cpp" />
     <ClCompile Include="Source\Raycast.cpp" />
     <ClCompile Include="Source\Shader.cpp" />
     <ClCompile Include="Source\ShaderManager.cpp" />
@@ -352,8 +354,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
+    <ClInclude Include="Chunk.h" />
     <ClInclude Include="ExampleComponent.h" />
     <ClInclude Include="ExampleRaycast.h" />
+    <ClInclude Include="Source\BasePass.h" />
+    <ClInclude Include="source\BoundingBox.h" />
     <ClInclude Include="Source\BaseEngine.h" />
     <ClInclude Include="source\BEMath.h" />
     <ClInclude Include="source\BuiltinShaders.h" />
@@ -361,13 +366,11 @@
     <ClInclude Include="Source\Colour.h" />
     <ClInclude Include="Source\Common.h" />
     <ClInclude Include="Source\ComponentArray.h" />
-    <ClInclude Include="source\DebugComponent.h" />
     <ClInclude Include="Source\DebugMovement.h" />
     <ClInclude Include="source\BEGlobal.h" />
     <ClInclude Include="source\EntityDebugger.h" />
     <ClInclude Include="Source\EntityManager.h" />
     <ClInclude Include="Source\Cubemap.h" />
-    <ClInclude Include="Source\Drawable.h" />
     <ClInclude Include="Source\Entity.h" />
     <ClInclude Include="Source\EventSystem.h" />
     <ClInclude Include="Source\File.h" />
@@ -381,6 +384,7 @@
     <ClInclude Include="Source\Light.h" />
     <ClInclude Include="Source\IRender.h" />
     <ClInclude Include="Source\LightManager.h" />
+    <ClInclude Include="source\MeshData.h" />
     <ClInclude Include="source\MeshLoader.h" />
     <ClInclude Include="Source\OBJLoader.h" />
     <ClInclude Include="Source\PlaneCollider.h" />
@@ -422,8 +426,10 @@
     <ClInclude Include="Source\rapidjson\stringbuffer.h" />
     <ClInclude Include="Source\rapidjson\uri.h" />
     <ClInclude Include="Source\rapidjson\writer.h" />
-    <ClInclude Include="source\RenderSystem.h" />
+    <ClInclude Include="Source\RenderPass.h" />
     <ClInclude Include="Source\Scene.h" />
+    <ClInclude Include="Source\Renderer.h" />
+    <ClInclude Include="Source\Singleton.h" />
     <ClInclude Include="Source\Texture.h" />
     <ClInclude Include="Source\Uniform.h" />
     <ClInclude Include="Source\IComponent.h" />
@@ -442,8 +448,6 @@
     <ClInclude Include="Source\Material.h" />
     <ClInclude Include="Source\Mesh.h" />
     <ClInclude Include="Source\MeshRenderer.h" />
-    <ClInclude Include="Source\Object3D.h" />
-    <ClInclude Include="Source\PostProcess.h" />
     <ClInclude Include="Source\Raycast.h" />
     <ClInclude Include="Source\Shader.h" />
     <ClInclude Include="Source\ShaderManager.h" />

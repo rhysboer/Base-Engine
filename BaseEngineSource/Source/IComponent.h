@@ -1,6 +1,4 @@
 #pragma once
-//#define COMP_PRIORITY_DEFAULT 1000
-//#define COMP_PRIORITY_RENDER 64000
 
 namespace BE {
 	class Entity;
@@ -30,7 +28,6 @@ namespace BE {
 		Transform& GetTransform() const;
 
 		template<typename T>
-		//requires(std::is_base_of_v<IComponent, T> && !std::is_same_v<IComponent, T>)
 		inline static size_t GetComponentID() noexcept {
 			static size_t typeID{ GenerateUniqueComponentID() };
 			return typeID;

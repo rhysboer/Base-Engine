@@ -217,33 +217,38 @@ namespace BE {
 		int success;
 		int logSize = 0;
 
-		glGetShaderiv(toTest, GL_INFO_LOG_LENGTH, &logSize);
-		char* log = new char[logSize];
+		char* log = nullptr;
 
 		switch(statusType) {
 			case GL_COMPILE_STATUS: // SHADER
+				glGetShaderiv(toTest, GL_INFO_LOG_LENGTH, &logSize);
 				glGetShaderiv(toTest, GL_COMPILE_STATUS, &success);
+
+				log = new char[logSize];
 
 				if(!success) {
 					glGetShaderInfoLog(toTest, logSize, NULL, log);
 					BE_ERROR("Shader::ErrorHandler() - Failed to compile shader (Error: %s)", log);
-					return false;
 				}
 
 				break;
 			case GL_LINK_STATUS: // LINK
+				glGetProgramiv(toTest, GL_INFO_LOG_LENGTH, &logSize);
 				glGetProgramiv(toTest, GL_LINK_STATUS, &success);
+
+				log = new char[logSize];
 
 				if(!success) {
 					glGetProgramInfoLog(toTest, logSize, NULL, log);
 					BE_ERROR("Shader::ErrorHandler() - Failed to link shader (Error: %s)", log);
-					return false;
 				}
 
 				break;
 		}
 
-		delete[] log;
+		if(log != nullptr)
+			delete[] log;
+
 		return true;
 	}
 }

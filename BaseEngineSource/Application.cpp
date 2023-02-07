@@ -17,6 +17,9 @@
 #include "ExampleComponent.h"
 #include "ExampleRaycast.h"
 
+#include "BEMath.h"
+#include "BEGlobal.h"
+
 #include "Mesh.h"
 #include "File.h"
 
@@ -30,74 +33,132 @@
 #include <iostream>
 #include "EntityDebugger.h"
 
-#include "DebugComponent.h"
+#include "Renderer.h"
+
+#include "EventSystem.h"
+
+#include "Chunk.h"
+
+#include "BoundingBox.h"
+
+
 /*
-	--- TODO ---
-	- Add Scenes
-		contain all entities registered to it
-		have a render function
-		should only render with cameras active in their scene? 
+void Application::OnEngineInit()
+{
 
-	- Subtype Components
-		Subtype components are components that act the same way as other components but need different data, for example lights.
-		There is many different type of lights, directional, spot, area.
-		We shouldnt need a system for each individual light, they all should fall under 1 system.
-		So within the lighting system/manager, we can register any new lighting component. 
-		This will also work for physical objects, rendering and many others.
+}
 
+void Application::OnEngineDestroy() {
+}
 
+void Application::OnEngineUpdate() {
+	//BE::Debug::EntityDebugger::Update();
+	////BE::Gizmos::DrawThickLine(glm::vec3(0), glm::vec3(15, 15, 0), 0.5f);
+	//
+	//static float fps = 0.0f;
+	//static float ms = 0.0f;
+	//static float lastUpdate = 1.0f;
+	//
+	//if (lastUpdate > 0.1f) {
+	//	fps = 1.0f / BE::Time::DeltaTime();
+	//	ms = BE::Time::DeltaTime();
+	//	lastUpdate = 0.0f;
+	//}
+	//
+	//lastUpdate += BE::Time::DeltaTime();
+	//
+	//
+	//ImGui::Begin("Performance");
+	//ImGui::Text("FPS: %.2f", fps);
+	//ImGui::Text("MS: %.6f", ms);
+	//ImGui::End();
+}
 */
 
+Application::Application()
+{
+	srand(time(NULL));
+	
+	auto engineDesc = BE::EngineDesc();
+	engineDesc.name = "Engine Title";
+	engine = BE::BaseEngine::CreateEngine(engineDesc);
 
-void Application::OnEngineInit() {
-
-	//camera = new BE::FlyCamera(glm::vec3(0, 0, 10)); //BE::Camera::CreateCamera(glm::vec3(0, 5, 10), BE::Camera::CameraType::PERSPECTIVE, 60.0f);
-	//camera->LookAt(glm::vec3(0));
+	BE::EventSystem::EventSubscribe(BE_EVENT_ENGINE_UPDATE, BE_EVENT_FUNC_CREATE(OnUpdate));
 
 	//debugger = new BE::Debugger();
 
-	//BE::Gizmos::Init();
+	BE::Gizmos::CreateGizmos();
 
 	//BE::TextureManager::LoadTexture("mainTexture", R"(C:\Users\Rhys\Desktop\New folder\bunny-atlas.jpg)");//"data/textures/default.png");
 	//ray = camera->CreateRayFromMouse();
-	BE::Texture* texture = new BE::Texture(BE::File::LoadFile(R"(C:\Users\Rhys\Desktop\Dark Souls Assets\textures\m10_stair_bridge_L.png)"));
-	BE::Texture* texture2 = new BE::Texture(BE::File::LoadFile(R"(C:\Users\Rhys\Desktop\Dark Souls Assets\textures\m10_01_tree_01.png)"));
-	BE::Texture* texture_plant = new BE::Texture(BE::File::LoadFile(R"(C:\Users\Rhys\Desktop\Dark Souls Assets\textures\m10_grass_03.png)"));
-	BE::Texture* texture_window = new BE::Texture(BE::File::LoadFile(R"(C:\Users\Rhys\Desktop\blending_transparent_window.png)"));
+	BE::Texture* texture = new BE::Texture(BE::File::LoadFile(R"(data\textures\stone.png)"));
+	BE::Texture* texture_grass = new BE::Texture(BE::File::LoadFile(R"(data\textures\grass.png)"));
+	BE::Texture* texture_ground = new BE::Texture(BE::File::LoadFile("data/textures/bricks.png"));
+	//BE::Texture* texture2 = new BE::Texture(BE::File::LoadFile(R"(C:\Users\Rhys\Desktop\Dark Souls Assets\textures\m10_01_tree_01.png)"));
+	//BE::Texture* texture_plant = new BE::Texture(BE::File::LoadFile(R"(C:\Users\Rhys\Desktop\Dark Souls Assets\textures\m10_grass_03.png)"));
+	//BE::Texture* texture_window = new BE::Texture(BE::File::LoadFile(R"(C:\Users\Rhys\Desktop\blending_transparent_window.png)"));
+	//
+	//BE::Texture* texture_bricks = new BE::Texture(BE::File::LoadFile(R"(C:\Users\Rhys\Desktop\brickwall.jpg)"));
+	BE::TextureDesc desc = BE::TextureDesc();
+	desc.format = BE::TextureFormat::RGB;
+	desc.flags = BE::TextureFlags::INVERT_G;
 
-	BE::Texture* texture_bricks = new BE::Texture(BE::File::LoadFile(R"(C:\Users\Rhys\Desktop\brickwall.jpg)"));
-	BE::Texture* texture_bricksNormal = new BE::Texture(BE::File::LoadFile(R"(C:\Users\Rhys\Desktop\brickwall_normal.jpg)")); // brickwall_normal
+	BE::Texture* texture_bricksNormal = new BE::Texture(BE::File::LoadFile(R"(data\textures\stone_n.png)"), desc); // brickwall_normal
 
-	BE::Texture* texture_orb = new BE::Texture(BE::File::LoadFile(R"(C:\Users\Rhys\Desktop\Dunrik_Pfp.png)"));
+
 
 	BE::Material* mat = new BE::Material(BE_SHADER_STANDARD);
 	mat->SetUniform("mainTexture", texture);
-	
-	BE::Material* mat2 = new BE::Material(BE_SHADER_STANDARD);
-	//mat2->SetUniform("mainTexture", texture2);
+	mat->SetUniform("normTexture", texture_bricksNormal);
+	mat->SetUniform("tiling", glm::vec2(1, 1));
 
-	BE::Material* mat_window = new BE::Material(BE_SHADER_STANDARD);
-	mat_window->SetUniform("mainTexture", texture_window);
-	mat_window->SetUniform(BE_SHADER_UNI_TRANSPARENT, true);
-	mat_window->SetUniform(BE_SHADER_UNI_ALPHACLIP, true);
-	mat_window->SetUniform(BE_SHADER_UNI_ALPHACLIP_THRES, 0.1f);
-	mat_window->SetTransparent(true);
+	BE::Material* mat_sky = new BE::Material(BE_SHADER_STANDARD);
+	mat_sky->SetUniform("mainTexture", texture);
+	mat_sky->SetUniform("normTexture", texture_bricksNormal);
+	mat_sky->SetUniform("tiling", glm::vec2(1, 1));
 
-	BE::Material* material_plant = new BE::Material(BE_SHADER_STANDARD);
-	material_plant->SetUniform("mainTexture", texture_plant);
-	material_plant->SetUniform(BE_SHADER_UNI_ALPHACLIP, true);
-	material_plant->SetUniform(BE_SHADER_UNI_ALPHACLIP_THRES, 0.9f);
-	
-	BE::Material* material_orb = new BE::Material(BE_SHADER_STANDARD);
-	material_orb->SetUniform("mainTexture", texture_orb);
+	BE::Material* mat_grass = new BE::Material(BE_SHADER_STANDARD);
+	mat_grass->SetUniform("mainTexture", texture_grass);
+	//mat->SetUniform(BE_SHADER_UNI_ALPHACLIP, true);
+	mat_grass->SetUniform(BE_SHADER_UNI_TRANSPARENT, true);
+	mat_grass->SetTransparent(true);
 
-	BE::Material* material_bricks = new BE::Material(BE_SHADER_STANDARD);
-	material_bricks->SetUniform("mainTexture", texture_bricks);
-	material_bricks->SetUniform("normTexture", texture_bricksNormal);
-	material_bricks->SetUniform("tiling", glm::vec2(5, 5));
+
+	BE::Material* mat_ground = new BE::Material(BE_SHADER_STANDARD);
+	mat_ground->SetUniform("mainTexture", texture_ground);
+	mat_ground->SetUniform("tiling", glm::vec2(15, 15));
+
+
+	BE::Texture* distortNormal = new BE::Texture(BE::File::LoadFile(R"(C:/Users/Rhys/Desktop/2999-normal.jpg)"));
+	BE::Texture* screenGrab = new BE::Texture(1280, 720);
+
+
+	BE::ShaderManager::AddShaderFile("Sphere", "data/shaders/default/sphere");
+	//BE::Material* material_orb = new BE::Material("Sphere");
+	//material_orb->SetUniform("mainTexture", screenGrab);
+	//material_orb->SetUniform("distortTexture", distortNormal);
+
+
+	//BE::RenderPass* pass = new BE::RenderPass();
+	//pass->name = "Distort";
+	//pass->data = screenGrab;
+	//pass->renderLayers.emplace(BE::RenderLayer::CreateLayer("Distort"));
+	//pass->renderFunc = [](const BE::PassInfo& pass, std::vector<BE::IRender*>& renderables) {
+	//	BE::Texture* texture = (BE::Texture*)pass.passDesc->data;
+	//	BE::BaseEngine::GetRenderer()->GetFrameBuffer()->CopyColorTo(texture);
+	//
+	//	for (int i = 0; i < renderables.size(); i++) {
+	//		if (renderables[i]->GetMaterial(0)->IsTransparent())
+	//			continue;
+	//
+	//		renderables[i]->OnRender();
+	//	}
+	//};
+
+	engine->GetRenderer()->CreateRenderer();
+	//this->GetRenderer()->AddRenderPass(pass);
 
 	mainScene = BE::Scene::CreateScene("Main");
-	
 
 	//BE::Mesh* flverMesh = BE::MeshLoader::LoadFile("C:/Users/Rhys/Desktop/m2022B2A10.flver");
 
@@ -201,7 +262,7 @@ void Application::OnEngineInit() {
 		//"m9000B2A10.obj",
 		//"m9001B2A10.obj"
 	};
-	
+
 	std::vector<std::vector<BE::Material*>> materials = std::vector<std::vector<BE::Material*>>({
 		std::vector<BE::Material*>({ material_m10_base_wall_01, material_m10_cliff_01, material_m10_cliff_01, material_m10_base_stair }),
 	});
@@ -212,13 +273,13 @@ void Application::OnEngineInit() {
 			("C:\\Users\\Rhys\\Desktop\\Dark Souls Assets\\" + names[i]).c_str()
 		);
 		mesh->Apply();
-	
+
 		auto newEnt = mainScene->GetEntityManager().CreateEntity();
 		newEnt->AddComponent<BE::MeshRenderer>(mesh, materials[i]);
 	}
 	*/
 
-	
+
 	//BE::Mesh* mesh = new BE::Mesh(BE::File::LoadFile(R"(C:\Users\Rhys\Desktop\Dark Souls Assets\m8500B2A10.obj)"));//BE::File::LoadFile(R"(C:\Users\Rhys\source\repos\BaseEngineSource\BaseEngineSource\data\bunny.obj)"));
 	//mesh->Apply();
 	//glm::mat4 transform = glm::mat4(1);
@@ -229,19 +290,40 @@ void Application::OnEngineInit() {
 	//mesh->UpdateMesh();
 
 
+
+
 	// Debug Camera
 	auto entity_Cam = mainScene->GetEntityManager().CreateEntity("Camera", 0.0f, 0.0f, 10.0f);
 	entity_Cam->AddComponent<BE::Camera>();
 	entity_Cam->AddComponent<BE::DebugMovement>();
 	entity_Cam->AddComponent<ExampleRaycast>();
 
+
+
 	// Debug Plane
-	auto entity_Plane = mainScene->GetEntityManager().CreateEntity();
-	entity_Plane->AddComponent<BE::MeshRenderer>(BE::MeshLoader::CreatePlane(1), mat);
-	entity_Plane->transform.SetPosition(0, -1.5, 0);
-	entity_Plane->transform.SetScale(5);
-	//auto collider = entity_Plane->AddComponent<BE::PlaneCollider>(1);
-	
+	auto entity_Plane = mainScene->GetEntityManager().CreateEntity("DebugPlane");
+	entity_Plane->AddComponent<BE::MeshRenderer>(BE::MeshLoader::CreatePlane(1), mat_ground);
+	entity_Plane->transform.SetPosition(0, -1.5f, 0);
+	entity_Plane->transform.SetScale(50);
+
+
+	//for (int i = 0; i < 20; i++) {
+	//	float x = BE::Math::RandomFloat(-2.5f, 2.5f);
+	//	float z = BE::Math::RandomFloat(-2.5f, 2.5f);
+	//	float r = BE::Math::RandomFloat(0.0f, 180.0f);
+	//
+	//	auto grass_Plane = mainScene->GetEntityManager().CreateEntity();
+	//	grass_Plane->AddComponent<BE::MeshRenderer>(BE::MeshLoader::CreatePlane(1), mat_grass);
+	//	grass_Plane->transform.SetPosition(glm::vec3(x, 0, z));
+	//	grass_Plane->transform.RotateY(r);
+	//	grass_Plane->transform.RotateX(90.0f);
+	//
+	//	auto grass_Plane2 = mainScene->GetEntityManager().CreateEntity();
+	//	grass_Plane2->AddComponent<BE::MeshRenderer>(BE::MeshLoader::CreatePlane(1), mat_grass);
+	//	grass_Plane2->transform.SetPosition(glm::vec3(x, 0, z));
+	//	grass_Plane2->transform.RotateY(r + 90.0f);
+	//	grass_Plane2->transform.RotateX(90.0f);
+	//}
 
 	//auto entity_box = mainScene->GetEntityManager().CreateEntity();
 	//entity_box->AddComponent<BE::MeshRenderer>(mesh, mat2);
@@ -261,7 +343,7 @@ void Application::OnEngineInit() {
 	//entity_normal->transform.SetPosition(-10, 0, 0);
 	//entity_normal->transform.RotateX(90);
 	//entity_normal->transform.SetScale(5);
-	
+
 
 
 	// Plant
@@ -277,122 +359,79 @@ void Application::OnEngineInit() {
 	//entity_window->transform.SetPosition(0, -0.5f, 1);
 
 
-	
 	// SUN
 	auto entity_Sun = mainScene->GetEntityManager().CreateEntity("Sun");
 	//entity_Sun->AddComponent<BE::DebugComponent>();
-	entity_Sun->AddComponent<BE::Light>(BE::LightType::SPOT);
+	entity_Sun->AddComponent<BE::Light>(BE::LightType::DIRECTION);
 	entity_Sun->transform.RotateX(90.0f);
-	entity_Sun->transform.SetPosition(0, 1, 0.5f);
-
+	entity_Sun->transform.SetPosition(0, 1, 0);
 
 
 
 	// ORB
-	auto* sphereMeshRenderer = new BE::MeshRenderer(BE::MeshLoader::CreateSphere(1), material_orb);
+	auto* sphereMeshRenderer = new BE::MeshRenderer(BE::MeshLoader::CreateSphere(1), mat_sky);
 	auto entity_orb = mainScene->GetEntityManager().CreateEntity("Orb");
 	entity_orb->AddComponent(sphereMeshRenderer);
 	entity_orb->AddComponent<ExampleComponent>();
-	
+	//entity_orb->AddComponent<ExampleComponent>();
+	//sphereMeshRenderer->GetRenderLayer().ClearLayers();
+	//sphereMeshRenderer->GetRenderLayer().AddLayer("Distort");
+	//entity_orb->transform.SetPosition(0, 5, 0);
 
-	std::cout << BE::IComponent::GetComponentID<BE::IRender>() << std::endl;
-	std::cout << BE::IComponent::GetComponentID<BE::MeshRenderer>() << std::endl;
-	
+	// BOX
+	auto entity_box1 = mainScene->GetEntityManager().CreateEntity("Box_1");
+	entity_box1->AddComponent<BE::MeshRenderer>(BE::MeshLoader::CreateCube(1), mat);
+	entity_box1->transform.SetPosition(0, 1, 1);
+
+	// Chunk
+	//auto entity_chunk = mainScene->GetEntityManager().CreateEntity("Chunk");
+	//entity_chunk->AddComponent<BE::MeshRenderer>(mat);
+	//entity_chunk->AddComponent<Chunk>();
+
+
+	// Tree
+	//auto entity_tree = mainScene->GetEntityManager().CreateEntity("Tree");
+	//entity_tree->AddComponent<BE::MeshRenderer>(BE::MeshLoader::LoadFile(R"(C:\Users\Rhys\Desktop\assets\Trees\M_tree_mid_2.obj)"), mat); // { mat_bark, mat_bark, mat_branch1, mat_branch2, mat_leaves }
+	//entity_tree->transform.SetScale(0.01f);
 }
 
-void Application::OnEngineDestroy() {
+Application::~Application()
+{
+	delete engine;
 }
 
-void Application::OnEngineUpdate() {
+void Application::Play()
+{
+	engine->Run();
+}
+
+void Application::OnUpdate(const void* const data)
+{
 	BE::Debug::EntityDebugger::Update();
+	//BE::Gizmos::DrawThickLine(glm::vec3(0), glm::vec3(15, 15, 0), 0.5f);
+	
+	static float fps = 0.0f;
+	static float ms = 0.0f;
+	static float lastUpdate = 1.0f;
+	
+	if (lastUpdate > 0.1f) {
+		fps = 1.0f / BE::Time::DeltaTime();
+		ms = BE::Time::DeltaTime();
+		lastUpdate = 0.0f;
+	}
+	
+	lastUpdate += BE::Time::DeltaTime();
+	
+	
+	ImGui::Begin("Performance");
+	ImGui::Text("FPS: %.2f", fps);
+	ImGui::Text("MS: %.6f", ms);
+	if (ImGui::Button("Stop Engine :)")) {
+		auto entity_box1 = mainScene->GetEntityManager().CreateEntity("Box_");
+		entity_box1->AddComponent<BE::MeshRenderer>(BE::MeshLoader::CreateCube(1));
+		entity_box1->transform.SetPosition(0, 5, 1);
 
-	auto* camera = BE::Scene::GetScene("Main")->GetEntityManager().GetEntity("Camera")->GetComponent<BE::Camera>();
-
-	static glm::vec3 position = glm::vec3(0);
-	ImGui::Begin("Test");
-	ImGui::DragFloat3("Pos", &position[0]);
-
-	BE::Gizmos::DrawCube(0.5f, position, COLOUR_RED);
-
-	glm::vec2 screenPos = camera->WorldSpaceToScreenSpace(position);
-	ImGui::Text("%f, %f", screenPos.x, screenPos.y);
+		//BE::BaseEngine::GetEngine()->Stop();
+	}
 	ImGui::End();
-
-	//std::vector<float> vertexData = std::vector<float>();
-	//std::vector<unsigned int> indices = std::vector<unsigned int>();
-	
-	//glm::vec3 pos = glm::vec3(0, 1, 0);
-	//glm::vec3 norm = glm::vec3(0);
-	//glm::vec2 tex = glm::vec2(0);
-	//
-	//const float BE_PI = 3.1415926f;
-	//const float radius = 1.0f;
-	//
-	//const float sector = 32;
-	//const float stack = 29;
-	//
-	//const float sectorStep = (2.0f * BE_PI) / sector;
-	//const float stackStep = BE_PI / stack;
-	//
-	////float angle = 
-	//
-	//// Top
-	////AddData();
-	//BE::Gizmos::DrawCube(0.1f, glm::vec3(0, 1, 0), COLOUR_RED);
-	//
-	//// Stack
-	//for (int i = 1; i < stack; i++) {
-	//	float stackAngle = BE_PI / 2.0f - i * stackStep;
-	//
-	//	// Sector
-	//	for (int j = 0; j <= sector; j++) {
-	//		float sectorAngle = j * sectorStep; //(2.0f * BE_PI) * ((sectorStep * j) / sector);
-	//
-	//		pos.x = (radius * glm::cos(stackAngle)) * glm::cos(sectorAngle);
-	//		pos.y = radius * glm::sin(stackAngle);
-	//		pos.z = (radius * glm::cos(stackAngle)) * glm::sin(sectorAngle);
-	//
-	//		BE::Gizmos::DrawCube(0.05f, pos, pos + 1.0f / 2.0f);
-	//		//AddData();
-	//	}
-	//}
-	//
-	//BE::Gizmos::DrawCube(0.1f, glm::vec3(0, -1, 0), COLOUR_RED);
-	// Bottom
-	//pos.x = 0;
-	//pos.y = -1;
-	//pos.z = 0;
-	//AddData();
-
-
-
-	//BE::Gizmos::DrawLine({ 0,0,0 }, a1, {}, COLOUR_BLUE);
-	//BE::Gizmos::DrawLine({ 0,0,0 }, a2, {}, COLOUR_RED);
-	//BE::Gizmos::DrawLine({ 0,0,0 }, a3, {}, COLOUR_GREEN);;
-
-	//if (BE::Input::IsKeyPressed(GLFW_KEY_T)) {
-	//	mainScene->GetEntityManager().GetEntity("ASS")->GetComponent<BE::Mesh>()->TransformMesh()
-	//}
-
-	//camera->Update();
-
-	//glm::mat4 mat = glm::rotate(glm::translate(glm::mat4(1), glm::vec3(0, 2, 0)), BE::Time::TotalTime(), glm::vec3(0.3, 1, 1.2));
-	
-	//BE::Gizmos::DrawGrid(20, 40, glm::mat4(1), COLOUR_GREEN);
-	//BE::Gizmos::DrawCube(1);
-
-	//if(BE::Input::IsKeyDown(GLFW_KEY_R)) {
-	//	ray = camera->CreateRayFromMouse();
-	//}
-
-	//BE::Gizmos::DrawRay(ray, COLOUR_MAGENTA);
-	//glm::vec3 pos = camera->ScreenSpaceToWorldSpace(BE::Input::MousePosition());
-	//BE::Gizmos::DrawCube(0.02f, pos);
-}
-
-void Application::OnEngineRender() {
-	//BE::Gizmos::DrawCube(glm::vec3(0), 1);
-
-	//BE::Gizmos::Render(camera->GetProjectionView());
-	//BE::PhysicsManager::RenderDebug();
 }

@@ -11,5 +11,7 @@ public:
 	virtual void OnDestroy() override;
 	virtual size_t GetID() const override;
 	virtual inline const char* GetName() const { return "Example Component"; }
+
+	void Event_Callback(const void* const data);
 };
 

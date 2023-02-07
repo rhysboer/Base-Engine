@@ -3,9 +3,10 @@
 #include "glm/gtx/quaternion.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
-#define CHECK_DIRTY if(isDirty) UpdateTransform(); 
+//#define CHECK_DIRTY if(isDirty) UpdateTransform(); 
 
 namespace BE {
+	class Entity;
 	class Transform {
 	public:
 		Transform();
@@ -22,6 +23,8 @@ namespace BE {
 		inline void SetScale(const float& scale) { SetScale(scale, scale, scale); };
 		void SetRotation(const glm::vec3& euler);
 		void SetRotation(const glm::quat& rotation);
+
+		void SetParent(const Entity* const entity) { parent = entity; }
 
 		// Rotate
 		void RotateX(const float& degree);
@@ -42,12 +45,12 @@ namespace BE {
 		inline glm::vec3 GetRight() const { return rotation * glm::vec3(1, 0, 0); }
 		inline glm::vec3 GetForward() const { return rotation * glm::vec3(0, 0, -1); }
 
-		glm::mat4 ModelMatrix();
+		glm::mat4 ModelMatrix() const;
 
 		void SetDirty();
 		bool IsDirty() const;
 
-		//glm::mat4 operator=(const Transform& transform) { return transform.model; }
+		glm::mat4 operator=(const Transform& transform) const { return transform.ModelMatrix(); }
 
 	private:
 		void UpdateTransform() const;
@@ -58,6 +61,7 @@ namespace BE {
 		glm::quat rotation;
 		glm::vec3 scale;
 
+		const Entity* parent = nullptr;
 		mutable glm::mat4 model;
 	};
 }

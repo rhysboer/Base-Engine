@@ -1,26 +1,24 @@
 #pragma once
 #include "BaseEngine.h"
-
 #include "Scene.h"
 
 namespace BE {
 	class Debugger;
+	class MeshData;
 }
-class Application : public BE::BaseEngine  {
+
+class Application {
 public:
+	Application();
+	~Application();
+
+	void Play();
 
 private:
 
+	void OnUpdate(const void* const);
+
+	BE::BaseEngine* engine;
 	BE::Scene* mainScene;
-
-
-	//BE::Ray ray = BE::Ray(glm::vec3(0), glm::vec3(0));
-
-	// Inherited via BaseEngine
-	virtual void OnEngineInit() override;
-	virtual void OnEngineDestroy() override;
-
-	virtual void OnEngineUpdate() override;
-	virtual void OnEngineRender() override;
 };
 

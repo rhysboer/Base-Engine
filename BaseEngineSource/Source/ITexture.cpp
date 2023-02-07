@@ -1,5 +1,4 @@
 #include "ITexture.h"
-#include "glad/glad.h"
 
 namespace BE {
 	int ITexture::nextActiveTexture = 0;
@@ -25,7 +24,12 @@ namespace BE {
 		return activeIndex;
 	}
 
-	void ITexture::GenTextureID()
+	void ITexture::DestroyTexture()
+	{
+		glDeleteTextures(1, &textureId);
+	}
+
+	void ITexture::CreateTextureObject()
 	{
 		// TODO: Change 1 to be a parameter
 		glGenTextures(1, &textureId);

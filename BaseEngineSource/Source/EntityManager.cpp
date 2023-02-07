@@ -31,6 +31,11 @@ namespace BE {
 
 	Entity* const EntityManager::CreateEntity(const char* name, const float& x, const float& y, const float& z) {
 		Entity* entity = new Entity(scene, name, x, y, z);
+
+		// Rename entity
+		if (entities.find(entity->GetName()) != entities.end())
+			entity->SetName(entity->GetName() + "asd");
+
 		entities.emplace(entity->GetName(), entity);
 		return entity;
 	}

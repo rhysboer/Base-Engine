@@ -13,7 +13,7 @@ namespace BE {
 	std::string File::LoadFile(const char* path) {
 		std::ifstream file(path, std::ios::in | std::ios::binary);
 		if (!file.is_open()) {
-			BE::Logging::Error("Failed to load asset at path: %s", path);
+			BE_WARNING("Failed to find file at path: %s", path);
 			return "";
 		}
 

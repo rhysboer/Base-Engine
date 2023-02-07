@@ -1,9 +1,7 @@
 #pragma once
 #include <vector>
-#include "glad/glad.h"
-#include "GLFW/glfw3.h"
 #include "glm/glm.hpp"
-#include "BaseEngine.h"
+#include "Texture.h"
 
 namespace BE {
 
@@ -14,37 +12,45 @@ namespace BE {
 		COLOUR_TEX_DEPTH_TEX, // Colour and depth texture
 	};
 
+	class Material;
 	class Framebuffer {
 	public:
-		Framebuffer(const glm::vec2& size, const FramebufferType& type, unsigned int colourAttachments = 1);
+		/// <param name="size">Set size to 0 to auto resize to screen size</param>
+		Framebuffer(const FramebufferType& type, const glm::vec2& size = { 0, 0 });
 		~Framebuffer();
 
 		void Render_Begin();
 		void Render_End();
 		void Bind();
 
-		void SetSize(const glm::vec2& size);
+		// TODO: Implement
+		// SetSize(const glm::vec2& size);
 
-		void BindTextureColour(const unsigned int& texture, const unsigned int& index) const;
+		void CopyColorTo(Texture* const texture, Material* const material = nullptr) const;
+
+		void BindTextureColour() const;
 		void BindTextureDepth(const unsigned int& index) const;
 
-		unsigned int GetTexture(unsigned int index) const;
+		Texture* const GetTexture(unsigned int index) const { return textures[0]; }
 
 	private:
 
 		void CreateFramebuffer(const unsigned int& colourAttachments = 1);
 
 		glm::vec2 framebufferSize;
-		glm::vec2 viewportSize; // Viewport size before resizing
-
+		glm::vec2 prevViewportSize; // Viewport size before resizing
+		
 		FramebufferType type;
-
+		
 		unsigned int fbo; // Framebuffer
 		unsigned int rbo; // Renderbuffer
+		
+		std::vector<Texture*> textures = std::vector<Texture*>();
+		Texture* depthTexture = nullptr;
 
-		unsigned int totalColourAttachments;
-		std::vector<unsigned int> colourTexture = std::vector<unsigned int>();
-		unsigned int depthTexture;
+		unsigned int eventId;
+		bool resize = false;
+		bool isDirty = false;
 	};
 }
 
