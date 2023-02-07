@@ -16,6 +16,7 @@ namespace BE {
 	public:
 		IRender();
 		~IRender();
+		
 
 		virtual void OnStart() = 0;
 		virtual void OnDestroy() = 0;
