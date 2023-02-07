@@ -17,7 +17,6 @@ namespace BE {
 		IRender();
 		~IRender();
 
-
 		virtual void OnStart() = 0;
 		virtual void OnDestroy() = 0;
 		virtual inline const char* GetName() const = 0;
