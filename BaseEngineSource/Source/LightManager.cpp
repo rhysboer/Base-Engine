@@ -1,19 +1,47 @@
 #include "LightManager.h"
 #include "UniformBuffer.h"
+#include "Framebuffer.h"
 #include "glm/glm.hpp"
 #include "Light.h"
 #include "Scene.h"
 #include "EntityManager.h"
+#include "Renderer.h"
 
 #include "Logging.h"
 
 namespace BE {
-	LightManager::LightManager(Scene* scene) : scene(scene), ambientLight(0.1f), countUniformIndex(-1), ambientUniformIndex(-1)
-	{
+	LightManager::LightManager(Scene* scene) 
+		: scene(scene), ambientLight(0.1f), countUniformIndex(-1), ambientUniformIndex(-1), shadowBuffer(nullptr)
+	{ }
 
+	LightManager::~LightManager()
+	{
+		if (IsUsingShadowMap()) {
+			delete shadowBuffer;
+			shadowBuffer = nullptr;
+		}
 	}
 
-	void LightManager::BindLights()
+	void LightManager::CreateShadowMap(const int& width, const int& height)
+	{
+		if (IsUsingShadowMap())
+			return;
+
+		TextureDesc desc = {};
+		desc.wrapping = Wrapping::BORDER;
+		desc.borderColour[0] = 1.0f;
+		desc.borderColour[1] = 1.0f;
+		desc.borderColour[2] = 1.0f;
+		desc.borderColour[3] = 1.0f;
+
+		shadowWidth = width;
+		shadowHeight = height;
+		shadowBuffer = new Framebuffer(FramebufferType::DEPTH_TEX, shadowWidth, shadowHeight, desc);
+
+		BE::Renderer::SetGlobalTexture(BE_GLOBALTEX_SHADOWDEPTH, (ITexture*)shadowBuffer->GetDepthTexture());
+	}
+
+	void LightManager::BindBuffer()
 	{
 		ComponentArray* const lights = scene->GetEntityManager().GetComponents<Light>();
 		

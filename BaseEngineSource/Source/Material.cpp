@@ -8,7 +8,9 @@
 
 namespace BE {
 	Material::Material(const char* shaderName) : Material(ShaderManager::GetShader(shaderName)) {}
-	Material::Material(const int& shaderId) : Material(ShaderManager::GetShader(shaderId)) {}
+	Material::Material(const PremadeShaders id) : Material(ShaderManager::GetPremadeShader(id)) {}
+	Material::Material() : Material(ShaderManager::GetPremadeShader(PremadeShaders::STANDARD)) {}
+
 	Material::Material(const Shader const * shader) : shader(shader) {
 		int uniformCount = 0;
 		
@@ -61,6 +63,17 @@ namespace BE {
 		uniform->SetValue((void*)&value[0], 3);
 	}
 
+	void Material::SetUniform(const char* name, const glm::vec4& value, const unsigned int& size)
+	{
+		Uniform* uniform = GetUniform(name);
+		if (uniform == nullptr) {
+			BE_ERROR("Material::SetUniform() - Failed to find vec4 uniform with name of %s", name);
+			return;
+		}
+
+		uniform->SetValue((void*)&value[0], 4);
+	}
+
 	void Material::SetUniform(const char* name, const int& value, const unsigned int& size) {
 		Uniform* uniform = GetUniform(name);
 		if (uniform == nullptr) {
@@ -97,6 +110,17 @@ namespace BE {
 		SetUniform("mainTexture", texture);
 	}
 
+	ITexture* Material::GetMainTexture() const
+	{
+		UniformTexture* uniform = (UniformTexture*)GetUniform("mainTexture");
+		if (uniform == nullptr) {
+			BE_ERROR("Material::GetMainTexture() - Failed to find uniform with name of mainTexture");
+			return nullptr;
+		}
+		
+		return (ITexture*)uniform->GetValue(0);
+	}
+
 	void Material::SetTransparent(const bool& isTransparent)
 	{
 		this->isTransparent = isTransparent;
@@ -107,6 +131,17 @@ namespace BE {
 
 		for(int i = 0; i < uniforms.size(); i++)
 			shader->SetUniform(*uniforms[i]);
+
+		// TODO: Change this so its not setting for every single object
+		if (!depthWrite) {
+			glDisable(GL_DEPTH_TEST);
+			glDepthFunc(GL_ALWAYS);
+		}
+		else 
+		{
+			glEnable(GL_DEPTH_TEST);
+			glDepthFunc(GL_LEQUAL);
+		}
 	}
 
 	Uniform* Material::GetUniform(const char* name) const {
@@ -115,5 +150,13 @@ namespace BE {
 
 		auto index = indexing.find(name);
 		return index != indexing.end() ? uniforms[(*index).second] : nullptr;
+	}
+
+	Uniform* Material::GetUniform(const int& index) const
+	{
+		if (index < 0 || index >= uniforms.size())
+			return nullptr;
+
+		return uniforms[index];
 	}
 }

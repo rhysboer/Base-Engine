@@ -1,16 +1,17 @@
 #pragma once
-#include "glad/glad.h"
-#include "GLFW/glfw3.h"
 
 namespace BE {
+	class PhysicsManager;
 	class Time {
+		friend PhysicsManager;
 	public:
 		static void Update();
 		static float DeltaTime();
-		static float TotalTime();
+		static double TotalTime();
 	private:
 		static float deltaTime;
 		static float sinceLastUpdate;
-		static float totalTime;
+		static double totalTime;
+		static float physicsTime;
 	};
 }

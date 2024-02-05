@@ -8,20 +8,35 @@
 #include "EventSystem.h"
 #include "BEGlobal.h"
 
+#ifdef BE_DEBUG
+#include "imgui.h"
+#endif
+
 namespace BE {
+	Camera* Camera::mainCamera = nullptr;
+
 	Camera::Camera() : cameraType(CameraType::PERSPECTIVE), fov(45.0f), size(fov/2.0f) 
 	{ 
 		eventId = BE::EventSystem::EventSubscribe(BE_EVENT_WINDOW_RESIZE, [&](const void* const) { SetDirty(); });
+		
+		if (mainCamera == nullptr)
+			mainCamera = this;
 	}
 
 	Camera::Camera(const CameraType& cameraType, float fovSize) : cameraType(cameraType), fov(fovSize), size(fovSize / 2.0f) 
 	{ 
 		eventId = BE::EventSystem::EventSubscribe(BE_EVENT_WINDOW_RESIZE, [&](const void* const) { SetDirty(); });
+
+		if (mainCamera == nullptr)
+			mainCamera = this;
 	}
 
 	Camera::~Camera() 
 	{ 
 		// TODO: Unsub from event
+
+		if (mainCamera == this)
+			mainCamera = nullptr;
 	}
 
 	void Camera::OnStart() {
@@ -122,8 +137,17 @@ namespace BE {
 
 	void Camera::BindBuffer()
 	{
-		UniformBuffer::GetUniformBuffer("Camera")->SetValue(0, GetView());
-		UniformBuffer::GetUniformBuffer("Camera")->SetValue(1, GetProjection());
+		if (isDirty) {
+			UpdateCamera();
+		}
+
+		Camera::BindBuffer(GetProjection(), GetView());
+	}
+
+	void Camera::BindBuffer(const glm::mat4& proj, const glm::mat4& view)
+	{
+		UniformBuffer::GetUniformBuffer("Camera")->SetValue(0, view);
+		UniformBuffer::GetUniformBuffer("Camera")->SetValue(1, proj);
 	}
 
 	glm::mat4 Camera::GetView() {
@@ -266,6 +290,45 @@ namespace BE {
 		}
 	}
 
+#ifdef BE_DEBUG
+	void Camera::OnComponentDraw()
+	{
+		const char* typeNames[] = { "Orthographic", "Perspective" };
+		bool dirty = false;
+
+		if (ImGui::BeginCombo("Type", typeNames[(int)this->cameraType])) 
+		{
+			for (int i = 0; i < 2; i++)
+			{
+				if (ImGui::Selectable(typeNames[i], (int)this->cameraType == i))
+				{
+					this->cameraType = (CameraType)i;
+					SetDirty();
+				}
+			}
+
+			ImGui::EndCombo();
+		}
+
+		if (cameraType == CameraType::PERSPECTIVE) {
+			dirty |= ImGui::DragFloat("FOV", &this->fov, 1, 1, 179.0f);
+		}
+		else {
+			dirty |= ImGui::DragFloat("Size", &this->size, 0.1f, 0.001f, 1000.0f);
+		}
+
+		dirty |= ImGui::DragFloat("Near", &this->near, 0.001f, 0, 100.0f);
+		dirty |= ImGui::DragFloat("Far", &this->far, 1, 0, 10000.0f);
+
+		if (dirty) {
+			this->fov = glm::clamp(this->fov, 1.0f, 179.0f);
+			this->size = glm::clamp(this->size, 0.001f, 1000.0f);
+
+
+			SetDirty();
+		}
+	}
+#endif
 
 	//bool Camera::IsPointInFrustum(const glm::vec3& point) {
 	//	UpdateCamera();

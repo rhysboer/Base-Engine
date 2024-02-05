@@ -139,6 +139,12 @@
     <Filter Include="Source Files\Source\Rendering\Passes">
       <UniqueIdentifier>{c20da61a-6529-4c61-a861-b0c4d2942205}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Source\Core\Debugger">
+      <UniqueIdentifier>{2e09cbfa-80bc-4ae6-b2db-0c8ac424b60a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Source\Core\Debugger">
+      <UniqueIdentifier>{a86ec746-dc24-40d0-a93b-a03bbb22c294}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\imgui.cpp">
@@ -171,9 +177,6 @@
     <ClCompile Include="Source\Sprite.cpp">
       <Filter>Source Files\Source\Textures</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Framebuffer.cpp">
-      <Filter>Source Files\Source</Filter>
-    </ClCompile>
     <ClCompile Include="Source\glad.c">
       <Filter>Source Files\Source</Filter>
     </ClCompile>
@@ -181,9 +184,6 @@
       <Filter>Source Files\Source</Filter>
     </ClCompile>
     <ClCompile Include="Source\TimeManager.cpp">
-      <Filter>Source Files\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\tiny_obj_loader.cc">
       <Filter>Source Files\Source</Filter>
     </ClCompile>
     <ClCompile Include="Source\Transform.cpp">
@@ -246,9 +246,6 @@
     <ClCompile Include="Source\IComponent.cpp">
       <Filter>Source Files\Source\Components\Base</Filter>
     </ClCompile>
-    <ClCompile Include="Source\IRender.cpp">
-      <Filter>Source Files\Source\Components\Base</Filter>
-    </ClCompile>
     <ClCompile Include="Source\EntityManager.cpp">
       <Filter>Source Files\Source\ECS</Filter>
     </ClCompile>
@@ -279,9 +276,6 @@
     <ClCompile Include="Source\Colour.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\LightManager.cpp">
-      <Filter>Source Files\Source</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Light.cpp">
       <Filter>Source Files\Source\Components</Filter>
     </ClCompile>
@@ -290,9 +284,6 @@
     </ClCompile>
     <ClCompile Include="source\BEGlobal.cpp">
       <Filter>Source Files\Source\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="source\EntityDebugger.cpp">
-      <Filter>Source Files\Source</Filter>
     </ClCompile>
     <ClCompile Include="source\MeshLoader.cpp">
       <Filter>Source Files\Source\Util</Filter>
@@ -336,11 +327,29 @@
     <ClCompile Include="Source\BasePass.cpp">
       <Filter>Source Files\Source\Rendering\Passes</Filter>
     </ClCompile>
+    <ClCompile Include="Source\LightManager.cpp">
+      <Filter>Source Files\Source\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Framebuffer.cpp">
+      <Filter>Source Files\Source\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="source\ShadowPass.cpp">
+      <Filter>Source Files\Source\Rendering\Passes</Filter>
+    </ClCompile>
+    <ClCompile Include="source\EngineDesc.cpp">
+      <Filter>Source Files\Source\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="source\GL.cpp">
+      <Filter>Source Files\Source\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Oracle.cpp">
+      <Filter>Source Files\Source\Core\Debugger</Filter>
+    </ClCompile>
+    <ClCompile Include="source\PhysicsManager.cpp">
+      <Filter>Source Files\Source\Physics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Source\Framebuffer.h">
-      <Filter>Header Files\Source</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Input.h">
       <Filter>Header Files\Source</Filter>
     </ClInclude>
@@ -348,9 +357,6 @@
       <Filter>Header Files\Source</Filter>
     </ClInclude>
     <ClInclude Include="Source\TimeManager.h">
-      <Filter>Header Files\Source</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\tiny_obj_loader.h">
       <Filter>Header Files\Source</Filter>
     </ClInclude>
     <ClInclude Include="Source\imconfig.h">
@@ -447,9 +453,6 @@
       <Filter>Header Files\Example</Filter>
     </ClInclude>
     <ClInclude Include="Source\IComponent.h">
-      <Filter>Header Files\Source\Components\Base</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\IRender.h">
       <Filter>Header Files\Source\Components\Base</Filter>
     </ClInclude>
     <ClInclude Include="Source\MeshRenderer.h">
@@ -599,9 +602,6 @@
     <ClInclude Include="Source\Colour.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\LightManager.h">
-      <Filter>Header Files\Source</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Light.h">
       <Filter>Header Files\Source\Components</Filter>
     </ClInclude>
@@ -613,9 +613,6 @@
     </ClInclude>
     <ClInclude Include="source\BuiltinShaders.h">
       <Filter>Header Files\Source\Shaders</Filter>
-    </ClInclude>
-    <ClInclude Include="source\EntityDebugger.h">
-      <Filter>Header Files\Source</Filter>
     </ClInclude>
     <ClInclude Include="source\MeshLoader.h">
       <Filter>Header Files\Source\Util</Filter>
@@ -655,6 +652,27 @@
     </ClInclude>
     <ClInclude Include="Source\BasePass.h">
       <Filter>Header Files\Source\Rendering\Passes</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\LightManager.h">
+      <Filter>Header Files\Source\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Framebuffer.h">
+      <Filter>Header Files\Source\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ShadowPass.h">
+      <Filter>Header Files\Source\Rendering\Passes</Filter>
+    </ClInclude>
+    <ClInclude Include="source\EngineDesc.h">
+      <Filter>Header Files\Source\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="source\GL.h">
+      <Filter>Header Files\Source\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Oracle.h">
+      <Filter>Header Files\Source\Core\Debugger</Filter>
+    </ClInclude>
+    <ClInclude Include="source\PhysicsManager.h">
+      <Filter>Header Files\Source\Physics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -3,6 +3,10 @@
 namespace BE {
 	int ITexture::nextActiveTexture = 0;
 
+	ITexture::ITexture(unsigned int width, unsigned int height) : sizeX(width), sizeY(height)
+	{
+	}
+
 	ITexture::~ITexture() = default;
 
 	void ITexture::Bind() const
@@ -33,6 +37,15 @@ namespace BE {
 	{
 		// TODO: Change 1 to be a parameter
 		glGenTextures(1, &textureId);
+	}
+
+	void ITexture::SetPixels(const std::vector<unsigned char>& pixels)
+	{
+		if (textureId == 0)
+			return;
+
+		glBindTexture(GL_TEXTURE_2D, textureId);
+		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, sizeX, sizeY, (GLint)format, GL_UNSIGNED_BYTE, &pixels[0]);
 	}
 }
 

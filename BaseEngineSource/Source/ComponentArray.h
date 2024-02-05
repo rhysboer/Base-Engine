@@ -2,7 +2,7 @@
 #include "IComponent.h"
 #include <unordered_map>
 #include <array>
-#include <Logging.h>
+#include "Logging.h"
 
 #define MAX_COMPONENTS 128
 
@@ -15,7 +15,7 @@ namespace BE {
 
 		/// <summary> Adds the component to the list, while returning the index </summary>
 		void Add(IComponent* component);
-		inline void Remove(IComponent* component);
+		void Remove(IComponent* component);
 
 		IComponent* AtIndex(const unsigned int& index) const;
 		IComponent* GetFromEntityID(const unsigned int& entityID) const;

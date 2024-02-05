@@ -2,16 +2,16 @@
 #include "Entity.h"
 
 namespace BE {
-	Transform::Transform() : 
-		position(0), rotation(glm::identity<glm::quat>()), scale(1), model(1), isDirty(false) 
+	Transform::Transform(Entity* entity) : 
+		position(0), rotation(glm::identity<glm::quat>()), scale(1), model(1), isDirty(false), self(entity)
 	{}
 
-	Transform::Transform(const glm::vec3& position) :
-		position(position), rotation(glm::identity<glm::quat>()), scale(1), model(1), isDirty(false)
+	Transform::Transform(const glm::vec3& position, Entity* entity) :
+		position(position), rotation(glm::identity<glm::quat>()), scale(1), model(1), isDirty(false), self(entity)
 	{}
 
-	Transform::Transform(const float& x, const float& y, const float& z) :
-		position(x, y, z), rotation(glm::identity<glm::quat>()), scale(1), model(1), isDirty(false)
+	Transform::Transform(const float& x, const float& y, const float& z, Entity* entity) :
+		position(x, y, z), rotation(glm::identity<glm::quat>()), scale(1), model(1), isDirty(false), self(entity)
 	{ }
 
 	Transform::Transform(const Transform& other) {
@@ -26,32 +26,43 @@ namespace BE {
 
 	void Transform::SetRotation(const glm::vec3& euler) {
 		SetDirty();
-
+		this->euler = euler;
 		this->rotation = glm::quat(euler);
 	}
 
 	void Transform::SetRotation(const glm::quat& rotation) {
 		SetDirty();
-
+		
 		this->rotation = rotation;
 	}
 
-	void Transform::RotateX(const float& angle) {
-		SetDirty();
+	void Transform::SetParent(Entity* const entity)
+	{
+		// TODO: Check if entity is child
+		if (entity == self)
+			return;
 
-		this->rotation = glm::rotate(this->rotation, glm::radians(angle), glm::vec3(1, 0, 0));
+		SetParent(entity, true);
+	}
+
+	void Transform::AddChild(Entity* const entity)
+	{
+		if (entity == self || parent == entity)
+			return;
+
+		AddChild(entity, true);
+	}
+
+	void Transform::RotateX(const float& angle) {
+		SetRotation(glm::vec3(this->euler.x + glm::radians(angle), this->euler.y, this->euler.z));
 	}
 
 	void Transform::RotateY(const float& angle) {
-		SetDirty();
-
-		this->rotation = glm::rotate(this->rotation, glm::radians(angle), glm::vec3(0, 1, 0));
+		SetRotation(glm::vec3(this->euler.x, this->euler.y + glm::radians(angle), this->euler.z));
 	}
 
 	void Transform::RotateZ(const float& angle) {
-		SetDirty();
-
-		this->rotation = glm::rotate(this->rotation, glm::radians(angle), glm::vec3(0, 0, 1));
+		SetRotation(glm::vec3(this->euler.x, this->euler.y, this->euler.z + glm::radians(angle)));
 	}
 
 	void Transform::Rotate(const glm::vec3& axis, const float& degree) {
@@ -63,7 +74,7 @@ namespace BE {
 	void Transform::LookAt(const glm::vec3& point) {
 		SetDirty();
 
-		rotation = glm::quat(glm::inverse(glm::lookAt(position, point, GetUp())));
+		rotation = glm::quat((glm::lookAt(position, point, GetUp())));
 	}
 
 	//void Transform::RotateAroundPoint(const glm::vec3& point, const float& angle, const glm::vec3& axis) {
@@ -96,12 +107,15 @@ namespace BE {
 		Translate(offset.x, offset.y, offset.z);
 	}
 
-	void Transform::SetDirty() {
-		isDirty = true;
+	void Transform::Translate(const glm::vec2& offset)
+	{
+		Translate(offset.x, offset.y, 0.0f);
 	}
 
-	bool Transform::IsDirty() const {
-		return isDirty;
+	void Transform::ForceUpdate() const
+	{
+		isDirty = true;
+		UpdateTransform();
 	}
 
 	glm::mat4 Transform::ModelMatrix() const {
@@ -114,5 +128,33 @@ namespace BE {
 			model = glm::translate(glm::mat4(1), position) * glm::toMat4(rotation) * glm::scale(glm::mat4(1), scale);
 			isDirty = false;
 		}
+	}
+
+	void Transform::SetParent(Entity* entity, const bool& callAddChild)
+	{
+		parent = entity;
+
+		if(callAddChild)
+			entity->transform.AddChild(self, false);
+	}
+
+	void Transform::AddChild(Entity* entity, const bool& callSetParent)
+	{
+		const int id = entity->GetEntityID();
+
+		// TODO: Fix this mess, was too tired to implement this correctly
+		for (int i = 0; i < children.size(); i++)
+		{
+			if (children[i]->GetEntityID() == id)
+			{
+				return;
+			}
+		}
+		// TODO end
+
+		children.push_back(entity);
+
+		if(callSetParent)
+			entity->transform.SetParent(self, false);
 	}
 }

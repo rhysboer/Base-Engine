@@ -2,44 +2,51 @@
 #include "File.h"
 #include "BEMath.h"
 #include "glm/glm.hpp"
+//#include "Parser.h"
 
 #include "Logging.h"
 
-#include "OBJLoader.h"
-#include "FLVERLoader.h"
 
-#define OBJ_HASH 3674688
-#define FLVER_HASH 1263813696
+//#define OBJ_HASH 3674688
+//#define FLVER_HASH 1263813696
+//#define FBX_HASH 1316288
 
 namespace BE {
-	Mesh* MeshLoader::LoadFile(const char* path, const unsigned int& flags)
+	BE::MeshData MeshLoader::LoadFile(const char* path, const unsigned int& flags)
 	{
 		auto file = File::LoadFile(path);
-		auto ext = File::GetFileExtension(path);
+		if (file.empty())
+			return BE::MeshData();
+		
+		return BE::MeshData(file.c_str(), file.length());
 
-		unsigned long hash = 0;
-		for (int i = 0; i < ext.length(); i++) {
-			hash = hash << 6;
+		//auto ext = File::GetFileExtension(path);
+		//
+		//unsigned long hash = 0;
+		//for (int i = 0; i < ext.length(); i++) {
+		//	hash = hash << 6;
+		//
+		//	char c = std::tolower(ext[i]);
+		//
+		//	if(!std::isalnum(c))
+		//		continue;
+		//
+		//	c -= std::isdigit(c) ? 22 : 97;
+		//
+		//	hash = (hash | c);
+		//	//BE_LOG("SHIFT: %s", std::bitset<64>(hash).to_string().c_str());
+		//}
 
-			char c = std::tolower(ext[i]);
 
-			if(!std::isalnum(c))
-				continue;
-
-			c -= std::isdigit(c) ? 22 : 97;
-
-			hash = (hash | c);
-			//BE_LOG("SHIFT: %s", std::bitset<64>(hash).to_string().c_str());
-		}
-
-		switch (hash)
-		{
-		case OBJ_HASH: return Loader::OBJ::Load(file, flags);
-		case FLVER_HASH: return Loader::FLVER::Load(file, flags);
-		default:
-			BE_ERROR("MeshLoader::LoadFile() - No mesh loader for %s files", ext.c_str());
-			return nullptr;
-		}
+		//switch (hash)
+		//{
+		//case OBJ_HASH: return Parser::ParseOBJ(file, flags);
+		//case FLVER_HASH: return Parser::ParseOBJ(file, flags);
+		//case FBX_HASH: return Parser::ParseFBX(file, flags);
+		//default:
+		//	BE_ERROR("MeshLoader::LoadFile() - No mesh loader for %s files", ext.c_str());
+		//	return nullptr;
+		//}
 	}
 
 	MeshData MeshLoader::CreateCube(const float& size) {
@@ -47,22 +54,22 @@ namespace BE {
 
 		mesh.position = {
 			// Bot
-		   -0.5f * size,-0.5f * size,-0.5f * size, // Bot Left
 		   -0.5f * size,-0.5f * size, 0.5f * size, // Top Left
-			0.5f * size,-0.5f * size, 0.5f * size, // Top Right
+		   -0.5f * size,-0.5f * size,-0.5f * size, // Bot Left
 			0.5f * size,-0.5f * size,-0.5f * size, // Bot Right
+			0.5f * size,-0.5f * size, 0.5f * size, // Top Right
 
 			// Top
-		   -0.5f * size, 0.5f * size, 0.5f * size, 
 		   -0.5f * size, 0.5f * size,-0.5f * size, 
-			0.5f * size, 0.5f * size,-0.5f * size, 
+		   -0.5f * size, 0.5f * size, 0.5f * size, 
 			0.5f * size, 0.5f * size, 0.5f * size, 
+			0.5f * size, 0.5f * size,-0.5f * size, 
 
 			// Left
-		   -0.5f * size,-0.5f * size, 0.5f * size, 
 		   -0.5f * size,-0.5f * size,-0.5f * size, 
-		   -0.5f * size, 0.5f * size,-0.5f * size, 
+		   -0.5f * size,-0.5f * size, 0.5f * size, 
 		   -0.5f * size, 0.5f * size, 0.5f * size, 
+		   -0.5f * size, 0.5f * size,-0.5f * size, 
 
 		   // Right
 		   0.5f * size,-0.5f * size, 0.5f * size, // bot left
@@ -71,16 +78,16 @@ namespace BE {
 		   0.5f * size, 0.5f * size, 0.5f * size, // top left
 
 		   // Front
-		  -0.5f * size,-0.5f * size, 0.5f * size,  
 		  -0.5f * size, 0.5f * size, 0.5f * size,  
-		   0.5f * size, 0.5f * size, 0.5f * size,  
+		  -0.5f * size,-0.5f * size, 0.5f * size,  
 		   0.5f * size,-0.5f * size, 0.5f * size,  
+		   0.5f * size, 0.5f * size, 0.5f * size,  
 
 		   // Back
+		   0.5f * size, 0.5f * size,-0.5f * size,  // top left
+		   0.5f * size,-0.5f * size,-0.5f * size,  // bot left
 		  -0.5f * size,-0.5f * size,-0.5f * size,  // bot right
 		  -0.5f * size, 0.5f * size,-0.5f * size,  // top right
-		   0.5f * size,-0.5f * size,-0.5f * size,  // bot left
-		   0.5f * size, 0.5f * size,-0.5f * size,  // top left
 		};
 		mesh.normals = {
 			 0.0f,-1.0f, 0.0f,
@@ -114,19 +121,14 @@ namespace BE {
 			 0.0f, 0.0f,-1.0f
 		};
 		mesh.uvs = {
-			 1.0f, 0.0f,
-			 0.0f, 0.0f,
-			 0.0f, 1.0f,
-			 1.0f, 1.0f,
-
 			 0.0f, 0.0f,
 			 0.0f, 1.0f,
 			 1.0f, 1.0f,
 			 1.0f, 0.0f,
 
-			 1.0f, 0.0f,
-			 0.0f, 0.0f,
 			 0.0f, 1.0f,
+			 0.0f, 0.0f,
+			 1.0f, 0.0f,
 			 1.0f, 1.0f,
 
 			 0.0f, 0.0f,
@@ -135,14 +137,19 @@ namespace BE {
 			 0.0f, 1.0f,
 
 			 0.0f, 0.0f,
-			 0.0f, 1.0f,
-			 1.0f, 1.0f,
 			 1.0f, 0.0f,
+			 1.0f, 1.0f,
+			 0.0f, 1.0f,
+
+			 0.0f, 1.0f,
+			 0.0f, 0.0f,
+			 1.0f, 0.0f,
+			 1.0f, 1.0f,
 			 
+			 0.0f, 1.0f,	  
+			 0.0f, 0.0f,  
 			 1.0f, 0.0f,  
 			 1.0f, 1.0f,  
-			 0.0f, 0.0f,  
-			 0.0f, 1.0f,	  
 		};
 		mesh.indices = {
 			0, 1, 2,  0, 2, 3, // BOT
@@ -150,7 +157,7 @@ namespace BE {
 			8, 9,10,  8,10,11, // LEFT
 		   12,13,14, 12,14,15, // RIGHT
 		   16,17,18, 16,18,19, // FRONT 16,17,18, 16,18,19,
-		   20,21,22, 21,22,23  // BACK
+		   20,21,22, 20,22,23  // BACK
 		};
 		mesh.GenerateTangents();
 
@@ -158,13 +165,18 @@ namespace BE {
 	}
 
 	MeshData MeshLoader::CreatePlane(const float& size) {
+		return CreatePlaneOffset(0.0f, 0.0f, 0.0f, size);
+	}
+
+	MeshData MeshLoader::CreatePlaneOffset(const float& offsetX, const float& offsetY, const float& offsetZ, const float& size)
+	{
 		MeshData mesh = MeshData();
 
 		mesh.position = {
-			-0.5f * size, 0.0f , 0.5f * size,
-			-0.5f * size, 0.0f ,-0.5f * size,
-			 0.5f * size, 0.0f ,-0.5f * size,
-			 0.5f * size, 0.0f , 0.5f * size
+			(-0.5f * size) + offsetX, 0.0f + offsetY ,(-0.5f * size) + offsetZ,
+			(-0.5f * size) + offsetX, 0.0f + offsetY ,( 0.5f * size) + offsetZ,
+			( 0.5f * size) + offsetX, 0.0f + offsetY ,( 0.5f * size) + offsetZ,
+			( 0.5f * size) + offsetX, 0.0f + offsetY ,(-0.5f * size) + offsetZ,
 		};
 		mesh.normals = {
 			0.0f, 1.0f, 0.0f,
@@ -173,13 +185,13 @@ namespace BE {
 			0.0f, 1.0f, 0.0f
 		};
 		mesh.uvs = {
-			0.0f, 0.0f,
 			0.0f, 1.0f,
-			1.0f, 1.0f,
-			1.0f, 0.0f
+			0.0f, 0.0f,
+			1.0f, 0.0f,
+			1.0f, 1.0f
 		};
 		mesh.indices = {
-			0, 1, 2,  
+			0, 1, 2,
 			0, 2, 3
 		};
 		mesh.GenerateTangents();
@@ -189,6 +201,11 @@ namespace BE {
 
 	MeshData MeshLoader::CreateQuad(const float& size) {
 		return CreatePlane(size); // TODO: Change Plane
+	}
+
+	MeshData MeshLoader::CreateQuadOffset(const float& offsetX, const float& offsetY, const float& offsetZ, const float& size)
+	{
+		return CreatePlaneOffset(offsetX, offsetY, offsetZ, size);
 	}
 
 	MeshData MeshLoader::CreateSphere(const float& radius)
@@ -254,15 +271,15 @@ namespace BE {
 				if (i != 0)
 				{
 					mesh.indices.push_back(k1);
-					mesh.indices.push_back(k2);
 					mesh.indices.push_back(k1 + 1);
+					mesh.indices.push_back(k2);
 				}
 
 				if (i != (stack - 1))
 				{
 					mesh.indices.push_back(k1 + 1);
-					mesh.indices.push_back(k2);
 					mesh.indices.push_back(k2 + 1);
+					mesh.indices.push_back(k2);
 				}
 			}
 		}

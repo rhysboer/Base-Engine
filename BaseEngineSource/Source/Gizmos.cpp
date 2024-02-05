@@ -15,7 +15,9 @@
 namespace BE {
 	Gizmos::GizmoData Gizmos::triangles = Gizmos::GizmoData();
 	Gizmos::GizmoData Gizmos::lines = Gizmos::GizmoData();
-	unsigned int Gizmos::shaderId = 0;
+	glm::vec3 Gizmos::colour = COLOUR_GREY;
+	Shader* Gizmos::shader = nullptr;
+	bool Gizmos::init = false;
 
 	void Gizmos::CreateGizmos(const unsigned int& totalBytes) {
 		std::string vertexSource = R"(
@@ -45,7 +47,9 @@ namespace BE {
 			} \n\
 		";
 
-		shaderId = ShaderManager::AddShaderSource("Gizmos", vertexSource.c_str(), fragmentSource.c_str());
+		shader = Shader::CreateShader("BE::Gizmos", vertexSource.c_str(), fragmentSource.c_str());
+
+		init = true;
 
 		MeshDesc desc = MeshDesc();
 		desc.mapData = true;
@@ -61,9 +65,12 @@ namespace BE {
 	}
 
 	void Gizmos::Render(const glm::mat4& cameraMatrix) {
+		if (!init)
+			return;
+
 		std::vector<unsigned int> attributes = std::vector<unsigned int>({ 3, 3 });
 
-		Shader* shader = ShaderManager::GetShader((int)shaderId);
+		//Shader* shader = ShaderManager::GetShader((int)shaderId);
 		shader->UseProgram();
 		shader->SetMatrix4("projectionView", cameraMatrix);
 		shader->SetMatrix4("model", glm::mat4(1));
@@ -91,12 +98,33 @@ namespace BE {
 		lines.mesh->Clear();
 	}
 
-	void Gizmos::DrawLine(const glm::vec3& start, const glm::vec3& end, const glm::vec3& colour)
+	void Gizmos::SetMode(const GizmoMode& mode)
 	{
-		DrawLine(start, end, glm::mat4(1), colour);
+		triangles.use = mode == GizmoMode::NORMAL || mode == GizmoMode::SOLID_ONLY;
+		lines.use = mode == GizmoMode::NORMAL || mode == GizmoMode::LINES_ONLY;
 	}
 
-	void Gizmos::DrawLine(const glm::vec3& start, const glm::vec3& end, const glm::mat4& mat, const glm::vec3& colour) {
+	void Gizmos::SetColour(const glm::vec3& colour)
+	{
+		Gizmos::colour = colour;
+	}
+
+	void Gizmos::RevertColour()
+	{
+		Gizmos::colour = COLOUR_GREY;
+	}
+
+	void Gizmos::DrawLine(const glm::vec2& start, const glm::vec2& end)
+	{
+		DrawLine(glm::vec3(start, 0), glm::vec3(end, 0));
+	}
+
+	void Gizmos::DrawLine(const glm::vec3& start, const glm::vec3& end)
+	{
+		DrawLine(start, end, glm::mat4(1));
+	}
+
+	void Gizmos::DrawLine(const glm::vec3& start, const glm::vec3& end, const glm::mat4& mat) {
 		lines.SetTransform(mat);
 
 		lines.AddPoint(start, colour);
@@ -108,20 +136,20 @@ namespace BE {
 		lines.AddOffset(2);
 	}
 
-	void Gizmos::DrawLine(const std::vector<glm::vec3>& positions, const glm::vec3& colour)
+	void Gizmos::DrawLine(const std::vector<glm::vec3>& positions)
 	{
-		DrawLine(positions, glm::mat4(1), colour);
+		DrawLine(positions, glm::mat4(1));
 	}
 
-	void Gizmos::DrawLine(const std::vector<glm::vec3>& positions, const glm::mat4& mat, const glm::vec3& colour)
+	void Gizmos::DrawLine(const std::vector<glm::vec3>& positions, const glm::mat4& mat)
 	{
 		int size = (positions.size() % 2) == 0 ? positions.size() : glm::max<int>(positions.size() - 1, 0);
 
 		for (int i = 0; i < size; i+=2)
-			DrawLine(positions[i], positions[i + 1], mat, colour);
+			DrawLine(positions[i], positions[i + 1], mat);
 	}
 
-	void Gizmos::DrawConnectedLines(const std::vector<float>& positions, const glm::mat4& mat, const glm::vec3& colour) {
+	void Gizmos::DrawConnectedLines(const std::vector<float>& positions, const glm::mat4& mat) {
 		const int size = positions.size();
 
 		if(size <= 5) // Needs at least 2 points to draw
@@ -129,14 +157,14 @@ namespace BE {
 
 		int offset = positions.size() % 3;
 		for(int i = 0; i < size - 3 - offset; i += 3)
-			DrawLine(glm::vec3(positions[i + 0], positions[i + 1], positions[i + 2]), glm::vec3(positions[i + 3], positions[i + 4], positions[i + 5]), mat, colour);
+			DrawLine(glm::vec3(positions[i + 0], positions[i + 1], positions[i + 2]), glm::vec3(positions[i + 3], positions[i + 4], positions[i + 5]), mat);
 	}
 
-	void Gizmos::DrawConnectedLines(const std::vector<glm::vec3>& positions, const glm::mat4& mat, const glm::vec3& colour) {
-		DrawConnectedLines(positions, false, mat, colour);
+	void Gizmos::DrawConnectedLines(const std::vector<glm::vec3>& positions, const glm::mat4& mat) {
+		DrawConnectedLines(positions, false, mat);
 	}
 
-	void Gizmos::DrawConnectedLines(const std::vector<glm::vec3>& positions, const bool& connectToStart, const glm::mat4& mat, const glm::vec3& colour)
+	void Gizmos::DrawConnectedLines(const std::vector<glm::vec3>& positions, const bool& connectToStart, const glm::mat4& mat)
 	{
 		const int size = positions.size();
 
@@ -144,56 +172,56 @@ namespace BE {
 			return;
 
 		for (int i = 0; i < size - 1; i++)
-			DrawLine(positions[i], positions[i + 1], mat, colour);
+			DrawLine(positions[i], positions[i + 1], mat);
 
 		if (connectToStart)
-			DrawLine(positions[positions.size() - 1], positions[0], mat, colour);
+			DrawLine(positions[positions.size() - 1], positions[0], mat);
 	}
 
-	void Gizmos::DrawThickLine(const glm::vec3& start, const glm::vec3& end, const float& width, const glm::mat4& mat, const glm::vec3& colour)
-	{
-		triangles.SetTransform(mat);
+	//void Gizmos::DrawThickLine(const glm::vec3& start, const glm::vec3& end, const float& width, const glm::mat4& mat, const glm::vec3& colour)
+	//{
+	//	triangles.SetTransform(mat);
+	//
+	//	glm::vec3 dir1 = glm::normalize(end - start);
+	//	glm::vec3 dir2 = dir1;
+	//
+	//	for (int i = 0; i < 3; i++) {
+	//		std::swap(dir1[i], dir1[glm::mod(i + 1, 3)]);
+	//		std::swap(dir2[i], dir2[glm::mod(i - 1, 3)]);
+	//	}
+	//
+	//	triangles.AddPoint(start + (dir1 * width), colour);
+	//	triangles.AddPoint(start + (dir1 * -width), colour);
+	//	
+	//	triangles.AddPoint(end + (dir1 * width), colour);
+	//	triangles.AddPoint(end + (dir1 * -width), colour);
+	//
+	//	triangles.AddPoint(start + (dir2 * width), colour);
+	//	triangles.AddPoint(start + (dir2 * -width), colour);
+	//	
+	//	triangles.AddPoint(end + (dir2 * width), colour);
+	//	triangles.AddPoint(end + (dir2 * -width), colour);
+	//
+	//	// Lines
+	//	triangles.AddIndices(0, 1, 2);
+	//	triangles.AddIndices(1, 2, 3);
+	//	triangles.AddIndices(4, 5, 6);
+	//	triangles.AddIndices(5, 6, 7);
+	//
+	//	// Caps
+	//	triangles.AddIndices(0, 1, 4);
+	//	triangles.AddIndices(0, 1, 5);
+	//	triangles.AddIndices(2, 3, 6);
+	//	triangles.AddIndices(2, 3, 7);
+	//
+	//	triangles.AddOffset(8);
+	//}
 
-		glm::vec3 dir1 = glm::normalize(end - start);
-		glm::vec3 dir2 = dir1;
-
-		for (int i = 0; i < 3; i++) {
-			std::swap(dir1[i], dir1[glm::mod(i + 1, 3)]);
-			std::swap(dir2[i], dir2[glm::mod(i - 1, 3)]);
-		}
-
-		triangles.AddPoint(start + (dir1 * width), colour);
-		triangles.AddPoint(start + (dir1 * -width), colour);
-		
-		triangles.AddPoint(end + (dir1 * width), colour);
-		triangles.AddPoint(end + (dir1 * -width), colour);
-
-		triangles.AddPoint(start + (dir2 * width), colour);
-		triangles.AddPoint(start + (dir2 * -width), colour);
-		
-		triangles.AddPoint(end + (dir2 * width), colour);
-		triangles.AddPoint(end + (dir2 * -width), colour);
-
-		// Lines
-		triangles.AddIndices(0, 1, 2);
-		triangles.AddIndices(1, 2, 3);
-		triangles.AddIndices(4, 5, 6);
-		triangles.AddIndices(5, 6, 7);
-
-		// Caps
-		triangles.AddIndices(0, 1, 4);
-		triangles.AddIndices(0, 1, 5);
-		triangles.AddIndices(2, 3, 6);
-		triangles.AddIndices(2, 3, 7);
-
-		triangles.AddOffset(8);
-	}
-
-    void Gizmos::DrawCube(const float& size, const glm::vec3& position, const glm::vec3& colour) {
-		DrawCube(size, glm::translate(glm::mat4(1), position), colour);
+    void Gizmos::DrawCube(const float& size, const glm::vec3& position) {
+		DrawCube(size, glm::translate(glm::mat4(1), position));
     }
 
-	void Gizmos::DrawCube(const float& size, const glm::mat4& mat, const glm::vec3& colour) {
+	void Gizmos::DrawCube(const float& size, const glm::mat4& mat) {
 		triangles.SetTransform(mat);
 		lines.SetTransform(mat);
 
@@ -202,6 +230,7 @@ namespace BE {
 		triangles.AddPoint(-0.5f * size,-0.5f * size,-0.5f * size, colour.r, colour.g, colour.b);
 		triangles.AddPoint( 0.5f * size,-0.5f * size,-0.5f * size, colour.r, colour.g, colour.b);
 		triangles.AddPoint( 0.5f * size,-0.5f * size, 0.5f * size, colour.r, colour.g, colour.b);
+
 		triangles.AddPoint(-0.5f * size, 0.5f * size, 0.5f * size, colour.r, colour.g, colour.b);
 		triangles.AddPoint(-0.5f * size, 0.5f * size,-0.5f * size, colour.r, colour.g, colour.b);
 		triangles.AddPoint( 0.5f * size, 0.5f * size,-0.5f * size, colour.r, colour.g, colour.b);
@@ -209,12 +238,12 @@ namespace BE {
 
 		triangles.AddIndices(0, 1, 2);
 		triangles.AddIndices(0, 2, 3);
-		triangles.AddIndices(0, 1, 5);
-		triangles.AddIndices(0, 5, 4);
-		triangles.AddIndices(3, 7, 6);
-		triangles.AddIndices(3, 6, 2);
-		triangles.AddIndices(0, 4, 7);
-		triangles.AddIndices(0, 7, 3);
+		triangles.AddIndices(1, 0, 4);
+		triangles.AddIndices(1, 4, 5);
+		triangles.AddIndices(3, 6, 7);
+		triangles.AddIndices(3, 2, 6);
+		triangles.AddIndices(0, 7, 4);
+		triangles.AddIndices(0, 3, 7);
 		triangles.AddIndices(1, 5, 6);
 		triangles.AddIndices(1, 6, 2);
 		triangles.AddIndices(4, 7, 6);
@@ -246,7 +275,7 @@ namespace BE {
 		lines.AddOffset(8);
 	}
 
-	void Gizmos::DrawSphere(const float& diameter, const glm::mat4& mat, const int& stack, const int& sector, const glm::vec3 colour)
+	void Gizmos::DrawSphere(const float& diameter, const glm::mat4& mat, const int& stack, const int& sector)
 	{
 		triangles.SetTransform(mat);
 		lines.SetTransform(mat);
@@ -334,13 +363,14 @@ namespace BE {
 		lines.AddOffset(((stack - 1) * sector) + 2);
 	}
 
-	void Gizmos::DrawSphere(const float& diameter, const glm::vec3& center, const int& stack, const int& sector, const glm::vec3 colour) 
+	void Gizmos::DrawSphere(const float& diameter, const glm::vec3& center, const int& stack, const int& sector) 
 	{
-		DrawSphere(diameter, glm::translate(glm::mat4(1), center), stack, sector, colour);
+		DrawSphere(diameter, glm::translate(glm::mat4(1), center), stack, sector);
 	}
 
 	// Source: http://www.songho.ca/opengl/gl_sphere.html#icosphere
-	void Gizmos::DrawIcosphere(const glm::vec3& center, const float& diameter, const int& subdivision, const glm::vec3& colour) {
+	void Gizmos::DrawIcosphere(const glm::vec3& center, const float& diameter, const int& subdivision) {
+		// TODO: This
 		//std::vector<float> vertexData = std::vector<float>();
 		//
 		//constexpr float pi = glm::pi<float>();
@@ -478,11 +508,11 @@ namespace BE {
 		////gizmos.push_back(obj);
 	}
 
-	void Gizmos::DrawCircle(const float& diameter, const int& vertices, const glm::vec3& position, const glm::vec3& colour) {
-		DrawCircle(diameter, vertices, glm::translate(glm::mat4(1), position), colour);
+	void Gizmos::DrawCircle(const float& diameter, const int& vertices, const glm::vec3& position) {
+		DrawCircle(diameter, vertices, glm::translate(glm::mat4(1), position));
 	}
 
-	void Gizmos::DrawCircle(const float& diameter, const int& vertices, const glm::mat4& mat, const glm::vec3& colour) {
+	void Gizmos::DrawCircle(const float& diameter, const int& vertices, const glm::mat4& mat) {
 		triangles.SetTransform(mat);
 		lines.SetTransform(mat);
 
@@ -506,31 +536,78 @@ namespace BE {
 		lines.AddOffset(max);
 	}
 
-	void Gizmos::DrawPlane(const float& size, const glm::vec3& position, const glm::vec3& colour) {
-		DrawPlane(glm::vec2(size, size), glm::translate(glm::mat4(1), position), colour);
+	void Gizmos::DrawTorus(const float& size, const int& rings, const int& density, const glm::vec3& position)
+	{
+		DrawTorus(size, rings, density, glm::translate(glm::mat4(1), position));
 	}
 
-	void Gizmos::DrawPlane(const float& size, const glm::mat4& mat, const glm::vec3& colour) {
-		DrawPlane(glm::vec2(size, size), mat, colour);
-	}
-
-	void Gizmos::DrawPlane(const glm::vec2& size, const glm::vec3& position, const glm::vec3& colour) {
-		DrawPlane(size, glm::translate(glm::mat4(1), position), colour);
-	}
-
-	void Gizmos::DrawPlane(const glm::vec2& size, const glm::mat4& mat, const glm::vec3& colour) {
+	void Gizmos::DrawTorus(const float& size, const int& rings, const int& density, const glm::mat4& mat)
+	{
 		triangles.SetTransform(mat);
 		lines.SetTransform(mat);
+		/*
+		for (int i = 0; i < 8; i++) {
+			//float sin = glm::sin((i / 8.0f) * glm::pi<float>() * 2);
+			//float cos = glm::cos((i / 8.0f) * glm::pi<float>() * 2);
+			//
+			//glm::vec3 point = glm::vec3(sin * 0.5f, 0, cos * 0.5f);
+			//
+			//
+			//
+			//float x = point.x;
+			//float y = point.y;
+			//point.x = x * glm::cos(1.5708f) - y * glm::sin(1.5708f);
+			//point.y = y * glm::cos(1.5708f) + x * glm::sin(1.5708f);
+			//
+			//point.z += 1;
+			//
+			//x = point.x;
+			//y = point.z;
+			//point.x = x * glm::cos(angle2) - y * glm::sin(angle2);
+			//point.z = y * glm::cos(angle2) + x * glm::sin(angle2);
 
-		// Triangles
-		//triangles.AddPoint(-0.5f * size.x, 0.0f, 0.5f * size.y, colour);
-		//triangles.AddPoint(-0.5f * size.x, 0.0f, -0.5f * size.y, colour);
-		//triangles.AddPoint(0.5f * size.x, 0.0f, -0.5f * size.y, colour);
-		//triangles.AddPoint(0.5f * size.x, 0.0f, 0.5f * size.y, colour);
-		//
-		//triangles.AddIndices(0, 1, 2);
-		//triangles.AddIndices(0, 2, 3);
-		//triangles.AddOffset(4);
+			//BE::Gizmos::DrawCube(0.1f, point, COLOUR_RED);
+
+
+			float sin = glm::sin((i / 8.0f) * glm::pi<float>() * 2);
+			float cos = glm::cos((i / 8.0f) * glm::pi<float>() * 2);
+
+			glm::vec3 center = glm::vec3(sin, 0, cos);
+
+			for (int j = 0; j < 8; j++)
+			{
+				float sin1 = glm::sin((j / 8.0f) * glm::pi<float>() * 2);
+				float cos1 = glm::cos((j / 8.0f) * glm::pi<float>() * 2);
+
+				glm::vec3 point = glm::vec3(0, sin1 * 0.5f, cos1 * 0.5f);
+				float z = point.z;
+				float x = point.x;
+
+				point.x = x * cos + z * sin;
+				point.z = z * cos - x * sin;
+
+				BE::Gizmos::DrawCube(0.1, point + center);
+
+			}
+		}
+		*/
+	}
+
+	void Gizmos::DrawPlane(const float& size, const glm::vec3& position) {
+		DrawPlane(glm::vec2(size, size), glm::translate(glm::mat4(1), position));
+	}
+
+	void Gizmos::DrawPlane(const float& size, const glm::mat4& mat) {
+		DrawPlane(glm::vec2(size, size), mat);
+	}
+
+	void Gizmos::DrawPlane(const glm::vec2& size, const glm::vec3& position) {
+		DrawPlane(size, glm::translate(glm::mat4(1), position));
+	}
+
+	void Gizmos::DrawPlane(const glm::vec2& size, const glm::mat4& mat) {
+		triangles.SetTransform(mat);
+		lines.SetTransform(mat);
 
 		// Lines
 		lines.AddPoint(-0.5f * size.x, 0.0f, 0.5f * size.y, COLOUR_RED);
@@ -545,11 +622,11 @@ namespace BE {
 		lines.AddOffset(4);
 	}
 
-	void Gizmos::DrawGrid(const float& size, const unsigned int& totalLines, const glm::vec3& position, const glm::vec3& colour) {
-		DrawGrid(size, totalLines, glm::translate(glm::mat4(1), position), colour);
+	void Gizmos::DrawGrid(const float& size, const unsigned int& totalLines, const glm::vec3& position) {
+		DrawGrid(size, totalLines, glm::translate(glm::mat4(1), position));
 	}
 
-	void Gizmos::DrawGrid(const float& size, const unsigned int& totalLines, const glm::mat4& mat, const glm::vec3& colour) {
+	void Gizmos::DrawGrid(const float& size, const unsigned int& totalLines, const glm::mat4& mat) {
 		lines.SetTransform(mat);
 
 		unsigned int max = (int)glm::max((float)totalLines, 2.0f);
@@ -653,6 +730,8 @@ namespace BE {
 		triangles.AddOffset(25);
     }
 
+	/*
+	// TODO: Fix these
 	void Gizmos::DrawTangents(const MeshData& mesh, const Transform& trans, const float& size)
 	{
 		DrawTangents(mesh, glm::translate(glm::mat4(1), trans.GetPosition()) * glm::toMat4(trans.GetRotation()), size);
@@ -696,72 +775,32 @@ namespace BE {
 			offset += 3;
 		}
 	}
+	*/
 
-	void Gizmos::DrawRay(const Ray& ray, const glm::vec3& colour) {
-		DrawLine(ray.GetOrigin(), ray.GetEnd(), glm::mat4(1), colour);
+	void Gizmos::DrawRay(const Ray& ray) {
+		DrawLine(ray.GetOrigin(), ray.GetEnd(), glm::mat4(1));
 	}
 
 	
-	void Gizmos::DrawAABB(const BoundingBox& box, const glm::mat4& mat, const glm::vec3& colour)
+	void Gizmos::DrawAABB(const BoundingBox& box, const glm::mat4& mat)
 	{
 		glm::vec3 points[BE_BOUNDING_BOX_SIZE];
 
 		box.GetAABB(mat, points);
 
-		DrawConnectedLines({points[0], points[1], points[2], points[3]}, true, glm::mat4(1), colour);
-		DrawConnectedLines({points[4], points[5], points[6], points[7]}, true, glm::mat4(1), colour);
-		DrawLine({points[0], points[4], points[1], points[5], points[2], points[6], points[3], points[7]}, glm::mat4(1), colour);
+		DrawConnectedLines({points[0], points[1], points[2], points[3]}, true, glm::mat4(1));
+		DrawConnectedLines({points[4], points[5], points[6], points[7]}, true, glm::mat4(1));
+		DrawLine({points[0], points[4], points[1], points[5], points[2], points[6], points[3], points[7]}, glm::mat4(1));
 	}
 
-	void Gizmos::DrawOBB(const BoundingBox& box, const glm::mat4& mat, const glm::vec3& colour)
+	void Gizmos::DrawOBB(const BoundingBox& box, const glm::mat4& mat)
 	{
 		glm::vec3 points[BE_BOUNDING_BOX_SIZE];
 
 		box.GetOBB(mat, points);
 
-		DrawConnectedLines({ points[0], points[1], points[2], points[3] }, true, glm::mat4(1), colour);
-		DrawConnectedLines({ points[4], points[5], points[6], points[7] }, true, glm::mat4(1), colour);
-		DrawLine({ points[0], points[4], points[1], points[5], points[2], points[6], points[3], points[7] }, glm::mat4(1), colour);
-
-		//glm::vec3 min = box.GetMin();
-		//glm::vec3 max = box.GetMax();
-
-		//DrawConnectedLines
-		//(
-		//	{
-		//		glm::vec3(max.x, max.y, max.z),
-		//		glm::vec3(min.x, max.y, max.z),
-		//		glm::vec3(min.x, max.y, min.z),
-		//		glm::vec3(max.x, max.y, min.z),
-		//	},
-		//	true, mat, colour
-		//);
-		//
-		//DrawConnectedLines
-		//(
-		//	{
-		//		glm::vec3(max.x, min.y, max.z),
-		//		glm::vec3(min.x, min.y, max.z),
-		//		glm::vec3(min.x, min.y, min.z),
-		//		glm::vec3(max.x, min.y, min.z),
-		//	},
-		//	true, mat, colour
-		//);
-		//
-		//DrawLine
-		//(
-		//	{
-		//		glm::vec3(max.x, max.y, max.z),
-		//		glm::vec3(max.x, min.y, max.z),
-		//		glm::vec3(min.x, max.y, max.z),
-		//		glm::vec3(min.x, min.y, max.z),
-		//
-		//		glm::vec3(min.x, max.y, min.z),
-		//		glm::vec3(min.x, min.y, min.z),
-		//		glm::vec3(max.x, max.y, min.z),
-		//		glm::vec3(max.x, min.y, min.z),
-		//	},
-		//	mat, colour
-		//);
+		DrawConnectedLines({ points[0], points[1], points[2], points[3] }, true, glm::mat4(1));
+		DrawConnectedLines({ points[4], points[5], points[6], points[7] }, true, glm::mat4(1));
+		DrawLine({ points[0], points[4], points[1], points[5], points[2], points[6], points[3], points[7] }, glm::mat4(1));
 	}
 }

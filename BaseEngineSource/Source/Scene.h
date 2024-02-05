@@ -12,14 +12,15 @@
 namespace BE {
 	class Entity;
 	class LightManager;
+	class PhysicsManager;
 	//class SceneRenderer;
 
 	class Scene {
 		friend class BaseEngine;
-		friend class RenderSystem;
+		friend PhysicsManager;
 	public:
 
-		~Scene() {};
+		~Scene();
 	
 		inline EntityManager& GetEntityManager() { return *entityManager; }
 		inline LightManager& GetLightManager() { return *lightManager; }
@@ -45,8 +46,9 @@ namespace BE {
 
 		Scene(const char* name);
 
-		static void RenderActiveScene();
+		//static void RenderActiveScene();
 		static void UpdateActiveScene();
+		static void PhysicsStepActiveScene(const float& dt);
 		
 		static Scene* activeScene;
 		static std::unordered_map<std::string, Scene*> scenes;

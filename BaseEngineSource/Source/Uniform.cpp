@@ -2,9 +2,13 @@
 #include "Logging.h"
 #include "glad/glad.h"
 #include "ITexture.h"
+#include "ShaderManager.h"
 #include "BEGlobal.h"
+#include "Renderer.h"
 
 #define BE_NORMAL_PREFIX "norm"
+#define BE_INTERNAL_PREFIX "BE_"
+#define BE_DEFAULT_VALUE 0
 
 namespace BE {
 
@@ -12,7 +16,9 @@ namespace BE {
 #pragma region Base_Uniform
 
 	Uniform::Uniform(const UniformType& uniformType, const char* uniformName, const unsigned int& arraySize, const unsigned int offset)
-		: type(uniformType), name(uniformName), arraySize(arraySize), offset(offset) {
+		: type(uniformType), name(uniformName), arraySize(arraySize), offset(offset) 
+	{
+		isInternalUniform = strncmp(BE_INTERNAL_PREFIX, name.c_str(), 3) == 0;
 	}
 
 	Uniform* Uniform::CreateUniform(const unsigned int& shaderProg, const unsigned int& uniformIndex, const bool& checkLoc) {//const UniformType& uniformType, const char* uniformName, const unsigned int& arraySize) {
@@ -39,8 +45,16 @@ namespace BE {
 			case BE::UniformType::VECTOR_4: return new UniformFloat((UniformType)uniType, uniName, 4 * uniSize, uniOffset);
 			case BE::UniformType::MATRIX_3: return new UniformFloat((UniformType)uniType, uniName, 9 * uniSize, uniOffset);
 			case BE::UniformType::MATRIX_4: return new UniformFloat((UniformType)uniType, uniName, 16 * uniSize, uniOffset);
-			case BE::UniformType::TEXTURE_2D: return new UniformTexture((UniformType)uniType, uniName, 1 * uniSize, uniOffset);
 			case BE::UniformType::BOOLEAN: return new UniformInt((UniformType)uniType, uniName, 1 * uniSize, uniOffset);
+			case BE::UniformType::TEXTURE_2D:
+			{
+				ITexture* texture = (ITexture*)((strncmp(uniName, BE_NORMAL_PREFIX, 4) == 0 ? BEGlobal::GetDefaultNormalTexture() : BEGlobal::GetDefaultTexture()));
+				auto uniform = new UniformTexture((UniformType)uniType, uniName, 1 * uniSize, uniOffset, texture);
+
+				BE::Renderer::RegisterUniformGlobalTexture(*uniform);
+
+				return uniform;
+			}
 			default: BE_ASSERT(false, "CreateUniform - Unsupported Uniform Type %i", uniType);
 		}
 
@@ -56,7 +70,7 @@ namespace BE {
 		: Uniform(uniformType, uniformName, arraySize, offset) {
 		data = new int[arraySize];
 		for(int i = 0; i < arraySize; i++)
-			data[i] = 0; // Default value
+			data[i] = BE_DEFAULT_VALUE;
 	}
 
 	void UniformInt::SetValue(const void* value, const unsigned int& size) {
@@ -79,7 +93,7 @@ namespace BE {
 		: Uniform(uniformType, uniformName, arraySize, offset) {
 		data = new float[arraySize];
 		for(int i = 0; i < arraySize; i++)
-			data[i] = 0.0f; // Default value
+			data[i] = BE_DEFAULT_VALUE;
 	}
 
 	void BE::UniformFloat::SetValue(const void* value, const unsigned int& size) {
@@ -99,10 +113,10 @@ namespace BE {
 
 #pragma region Texture_Uniform
 	// -----------------------------------------------------------
-	UniformTexture::UniformTexture(const UniformType& uniformType, const char* uniformName, const unsigned int& arraySize, const unsigned int& offset)
+	UniformTexture::UniformTexture(const UniformType& uniformType, const char* uniformName, const unsigned int& arraySize, const unsigned int& offset, ITexture* texture)
 		: Uniform(uniformType, uniformName, arraySize, offset)
 	{
-		texture = (ITexture*)((strncmp(uniformName, BE_NORMAL_PREFIX, 4) == 0 ? BE::BEGlobal::GetDefaultNormalTexture() : BEGlobal::GetDefaultTexture()));
+		this->texture = texture;
 	}
 
 	void UniformTexture::SetValue(const void* value, const unsigned int& size)
@@ -116,8 +130,9 @@ namespace BE {
 
 	void* UniformTexture::GetValue(const unsigned int& index) const
 	{
-		texture->Bind();
-		return (void*)texture->GetActiveID();
+		ITexture* t = texture != nullptr ? texture : (ITexture*)BEGlobal::GetDefaultTexture();
+		//t->Bind();
+		return (void*)t;//(void*)t->GetActiveID();
 	}
 
 	// -----------------------------------------------------------

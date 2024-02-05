@@ -1,12 +1,20 @@
 #include "EntityManager.h"
 #include "Entity.h"
-#include <assert.h>
+#include "MeshLoader.h"
+#include "MeshRenderer.h"
+#include "Logging.h"
 
 namespace BE {
 	EntityManager::EntityManager(Scene* scene) : scene(scene) {
 	}
 
 	EntityManager::~EntityManager() {
+		for (auto iter = entities.begin(); iter != entities.end(); iter++) {
+			DeleteEntityComponents((*iter).second->GetEntityID());
+			delete (*iter).second;
+		}
+
+		entities.clear();
 	}
 
     Entity* const EntityManager::CreateEntity() {
@@ -34,35 +42,99 @@ namespace BE {
 
 		// Rename entity
 		if (entities.find(entity->GetName()) != entities.end())
-			entity->SetName(entity->GetName() + "asd");
+			entity->SetName(entity->GetName() + "_"); // TODO: Fix
 
 		entities.emplace(entity->GetName(), entity);
 		return entity;
 	}
 
+	Entity* const EntityManager::CreateCamera(const char* name, const float& x, const float& y, const float& z)
+	{
+		Entity* entity = new Entity(scene, name, x, y, z);
+
+		entity->AddComponent<BE::Camera>();
+
+		// TODO: Check for duplicate names
+		entities.emplace(name, entity);
+
+		return entity;
+	}
+
+	Entity* const EntityManager::CreateCamera(const char* name, glm::vec3 position)
+	{
+		return CreateCamera(name, position.x, position.y, position.z);
+	}
+
+	Entity* const EntityManager::CreatePrimitive(const char* name, const PrimitiveType& type)
+	{
+		Entity* entity = CreateEntity(name);
+
+		switch (type)	
+		{
+		case PrimitiveType::BOX_STATIC:
+		case PrimitiveType::BOX_RIGIDBODY:
+			entity->AddComponent<MeshRenderer>(BE::MeshLoader::CreateCube(1));
+			break;
+		case PrimitiveType::PLANE:
+			entity->AddComponent<MeshRenderer>(BE::MeshLoader::CreatePlane(1));
+			break;
+		case PrimitiveType::SPHERE_RIGIDBODY:
+		case PrimitiveType::SPHERE_STATIC:
+			entity->AddComponent<MeshRenderer>(BE::MeshLoader::CreateSphere(1));
+			break;
+		}
+
+		return entity;
+	}
+
+	Entity* const EntityManager::GetEntity(std::string name) const
+	{
+		auto entity = entities.find(name);
+		if (entity != entities.end())
+			return (*entity).second;
+		return nullptr;
+	}
 
 	void EntityManager::Update() {
+		int size;
 		for(auto& it : components) {
-			for(int i = 0; i < it.second->Size(); i++) {
+			int size = it.second->Size();
+			for(int i = 0; i < size; i++) {
 				IComponent* component = it.second->AtIndex(i);
 
-				if(component->IsActive())
+				if (component->IsActive()) {
 					component->OnProcess();
+				}
 			}
 		}
 	}
 
-	Entity* const EntityManager::GetEntity(std::string name) const {
-		auto entity = entities.find(name);
-		assert(entity != entities.end());
+	void EntityManager::PhysicsStep(const float& dt)
+	{
+		int size;
+		for (auto& it : components) {
+			size = it.second->Size();
+			for (int i = 0; i < size; i++) {
+				IComponent* component = it.second->AtIndex(i);
 
-		return (*entity).second;
+				if (component->IsActive()) {
+					component->OnPhysicsStep(dt);
+				}
+			}
+		}
 	}
 
-	void EntityManager::RegisterComponent(IComponent* component) {
-		assert(component != nullptr);
+	//Entity* const EntityManager::GetEntity(std::string name) const {
+	//	auto entity = entities.find(name);
+	//	assert(entity != entities.end());
+	//
+	//	return (*entity).second;
+	//}
 
-		int id = component->GetID(); // component->GetEntity()->GetEntityID();
+	void EntityManager::RegisterComponent(IComponent* component) {
+		BE_ASSERT(component != nullptr, "Component is null");
+
+		size_t id = component->GetID(); // component->GetEntity()->GetEntityID();
 
 		auto iter = components.find(id);
 		if(iter == components.end()) {
@@ -81,6 +153,16 @@ namespace BE {
 			IComponent* comp = it.second->GetFromEntityID(entityID);
 			if (comp != nullptr)
 				components.push_back(comp);
+		}
+	}
+
+	void EntityManager::DeleteEntityComponents(const unsigned int& entityId)
+	{
+		for (auto& it : this->components) {
+			IComponent* comp = it.second->GetFromEntityID(entityId);
+			if (comp != nullptr) {
+				it.second->Remove(comp);
+			}
 		}
 	}
 }

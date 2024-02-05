@@ -1,19 +1,69 @@
 #include "Shader.h"
+#include "ShaderManager.h"
+#include "File.h"
+#include "BEMath.h"
+
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include "Uniform.h"
+#include "ITexture.h"
 #include "Logging.h"
 #include "glm/gtc/type_ptr.hpp"
 
+#define FRAG_APPEND ".frag"
+#define VERT_APPEND ".vert"
+#define GEOM_APPEND ".geom"
+
 namespace BE {
-	Shader::Shader() : 
-		shaderProgram(-1) 
-	{}
+	Shader::Shader(const char* name, const char* vertexSource, const char* fragmentSource, const char* geometrySource)
+		: shaderProgram(-1), name(name)
+	{
+		LoadShader(vertexSource, fragmentSource, geometrySource);
+		BE::ShaderManager::RegisterShader(this);
+	}
+
+	Shader* Shader::CreateShader(const char* name, const char* vertexSource, const char* fragmentSource, const char* geometrySource)
+	{
+		Shader* shader = nullptr;
+
+		std::string shaderName = name;
+		std::string vertex = vertexSource ? vertexSource : "";
+		std::string fragment = fragmentSource ? fragmentSource : "";
+		std::string geometry = geometrySource ? geometrySource : "";
+
+		if (vertexSource == nullptr || vertex.empty() || fragmentSource == nullptr || fragment.empty()) {
+			BE_WARNING("Shader '%s', has no valid vertex or fragment shader", name);
+			return nullptr;
+		}
+
+		BE::ShaderManager::TryAddHeaders(vertex);
+		BE::ShaderManager::TryAddHeaders(fragment);
+		BE::ShaderManager::TryAddHeaders(geometry);
+
+		if (BE::ShaderManager::GetShader(name) != nullptr) {
+			BE_WARNING("Shader with name '%s' already exists!", name);
+			shaderName = name + std::to_string(BE::Math::RandomInt());
+		}
+
+		shader = new Shader(shaderName.c_str(), vertex.c_str(), fragment.c_str(), geometry.empty() ? nullptr : geometry.c_str());
+		return shader;
+	}
+
+	Shader* Shader::CreateShaderFromFile(const char* name, const std::string& path, bool useGeometry)
+	{
+		std::string vertex = File::LoadFile(path + VERT_APPEND);
+		std::string fragment = File::LoadFile(path + FRAG_APPEND);
+		std::string geometry = useGeometry ? File::LoadFile(path + GEOM_APPEND) : "";
+
+		return CreateShader(name, vertex.c_str(), fragment.c_str(), useGeometry ? geometry.c_str() : nullptr);
+	}
 
 	Shader::~Shader() {
 		if(shaderProgram != 0)
 			glDeleteProgram(shaderProgram);
+
+		BE::ShaderManager::DeregisterShader(this);
 	}
 
 	bool Shader::LoadShader(const char* vertSource, const char* fragSource, const char* geomShader) {
@@ -30,20 +80,23 @@ namespace BE {
 		glShaderSource(shaderVertex, 1, &vertSource, NULL);
 		glCompileShader(shaderVertex);
 
-		if(!ErrorHandler(shaderVertex, GL_COMPILE_STATUS)) return false;
+		if(!ErrorHandler(shaderVertex, GL_COMPILE_STATUS)) 
+			return false;
 
 		// FRAGMENT
 		glShaderSource(shaderFragment, 1, &fragSource, NULL);
 		glCompileShader(shaderFragment);
 
-		if(!ErrorHandler(shaderFragment, GL_COMPILE_STATUS)) return false;
+		if(!ErrorHandler(shaderFragment, GL_COMPILE_STATUS)) 
+			return false;
 
 		// GEOMETRY
 		if(geomShader != nullptr) {
 			glShaderSource(shaderGeometry, 1, &geomShader, NULL);
 			glCompileShader(shaderGeometry);
 
-			if(!ErrorHandler(shaderGeometry, GL_COMPILE_STATUS)) return false;
+			if(!ErrorHandler(shaderGeometry, GL_COMPILE_STATUS)) 
+				return false;
 		}
 
 		// LINK SHADER
@@ -55,7 +108,8 @@ namespace BE {
 
 		glLinkProgram(shaderProgram);
 
-		if(!ErrorHandler(shaderProgram, GL_LINK_STATUS)) return false;
+		if(!ErrorHandler(shaderProgram, GL_LINK_STATUS)) 
+			return false;
 
 		// Delete
 		glDeleteShader(shaderVertex);
@@ -73,19 +127,20 @@ namespace BE {
 		glShaderSource(shaderIndex, 1, &computeSource, NULL);
 		glCompileShader(shaderIndex);
 
-		if(!ErrorHandler(shaderIndex, GL_COMPILE_STATUS)) return false;
+		if(!ErrorHandler(shaderIndex, GL_COMPILE_STATUS)) 
+			return false;
 
 		shaderProgram = glCreateProgram();
 		glAttachShader(shaderProgram, shaderIndex);
 		glLinkProgram(shaderProgram);
 
-		if(!ErrorHandler(shaderProgram, GL_LINK_STATUS)) return false;
+		if(!ErrorHandler(shaderProgram, GL_LINK_STATUS)) 
+			return false;
 
 		glDeleteShader(shaderIndex);
 
 		return true;
 	}
-
 
 	void Shader::UseProgram() const {
 		glUseProgram(shaderProgram);
@@ -200,16 +255,22 @@ namespace BE {
 		BE_ASSERT(loc != -1, "Shader::SetUniform() - Failed to find location of Uniform (Name: %s, Type: %i)", uniform.GetName(), uniform.GetType());
 
 		switch(uniform.GetType()) {
-			case UniformType::TEXTURE_2D: 
-			case UniformType::BOOLEAN: 
-			case UniformType::INT: glUniform1i(loc, (int)uniform.GetValue(0)); break;
-			case UniformType::FLOAT: glUniform1f(loc, *(float*)uniform.GetValue(0)); break;
-			case UniformType::VECTOR_2: glUniform2f(loc, *(float*)uniform.GetValue(0), *(float*)uniform.GetValue(1)); break;
-			case UniformType::VECTOR_3: glUniform3f(loc, *(float*)uniform.GetValue(0), *(float*)uniform.GetValue(1), *(float*)uniform.GetValue(2)); break;
-			case UniformType::VECTOR_4: glUniform4f(loc, *(float*)uniform.GetValue(0), *(float*)uniform.GetValue(1), *(float*)uniform.GetValue(2), *(float*)uniform.GetValue(3)); break;;
-			case UniformType::MATRIX_3: break; // TODO
-			case UniformType::MATRIX_4: glUniformMatrix4fv(loc, 1, false, (float*)uniform.GetValue()); break;
-			default: BE_ERROR("Shader::SetUniform() - Unsupported uniform type (%i)", uniform.GetType());
+		case UniformType::TEXTURE_2D:
+		{
+			ITexture* texture = (ITexture*)uniform.GetValue(0);
+			texture->Bind();
+			glUniform1i(loc, texture->GetActiveID());
+			break;
+		}
+		case UniformType::BOOLEAN: 
+		case UniformType::INT: glUniform1i(loc, (int)uniform.GetValue(0)); break;
+		case UniformType::FLOAT: glUniform1f(loc, *(float*)uniform.GetValue(0)); break;
+		case UniformType::VECTOR_2: glUniform2f(loc, *(float*)uniform.GetValue(0), *(float*)uniform.GetValue(1)); break;
+		case UniformType::VECTOR_3: glUniform3f(loc, *(float*)uniform.GetValue(0), *(float*)uniform.GetValue(1), *(float*)uniform.GetValue(2)); break;
+		case UniformType::VECTOR_4: glUniform4f(loc, *(float*)uniform.GetValue(0), *(float*)uniform.GetValue(1), *(float*)uniform.GetValue(2), *(float*)uniform.GetValue(3)); break;;
+		case UniformType::MATRIX_3: break; // TODO
+		case UniformType::MATRIX_4: glUniformMatrix4fv(loc, 1, false, (float*)uniform.GetValue()); break;
+		default: BE_ERROR("Shader::SetUniform() - Unsupported uniform type (%i)", uniform.GetType());
 		}
 	}
 
@@ -228,7 +289,7 @@ namespace BE {
 
 				if(!success) {
 					glGetShaderInfoLog(toTest, logSize, NULL, log);
-					BE_ERROR("Shader::ErrorHandler() - Failed to compile shader (Error: %s)", log);
+					BE_ERROR("Shader Error: '%s' failed to compile shader (Error: %s)", name.c_str(), log);
 				}
 
 				break;
@@ -240,7 +301,7 @@ namespace BE {
 
 				if(!success) {
 					glGetProgramInfoLog(toTest, logSize, NULL, log);
-					BE_ERROR("Shader::ErrorHandler() - Failed to link shader (Error: %s)", log);
+					BE_ERROR("Shader Error: '%s' failed to link shader (Error: %s)", name.c_str(), log);
 				}
 
 				break;

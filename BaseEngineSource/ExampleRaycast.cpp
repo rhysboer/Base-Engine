@@ -18,11 +18,17 @@ void ExampleRaycast::OnProcess() {
 		}
 	}
 
-	if(ray != nullptr)
-		BE::Gizmos::DrawRay(*ray, COLOUR_PURPLE);
+	if (ray != nullptr) {
+		BE::Gizmos::SetColour(COLOUR_PURPLE);
+		BE::Gizmos::DrawRay(*ray);
+		BE::Gizmos::RevertColour();
+	}
 
-	if(rayHit.Hit())
-		BE::Gizmos::DrawCube(0.2f, rayHit.CollidPoint(), COLOUR_RED);
+	if (rayHit.Hit()) {
+		BE::Gizmos::SetColour(COLOUR_RED);
+		BE::Gizmos::DrawCube(0.2f, rayHit.CollidPoint());
+		BE::Gizmos::RevertColour();
+	}
 }
 
 void ExampleRaycast::OnDestroy() {

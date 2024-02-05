@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 #include "glm/glm.hpp"
 #include "glm/gtx/quaternion.hpp"
 #include "glm/gtc/matrix_transform.hpp"
@@ -9,22 +10,23 @@ namespace BE {
 	class Entity;
 	class Transform {
 	public:
-		Transform();
-		Transform(const glm::vec3& position);
-		Transform(const float& x, const float& y, const float& z);
+		Transform(Entity* entity);
+		Transform(const glm::vec3& position, Entity* entity);
+		Transform(const float& x, const float& y, const float& z, Entity* entity);
 		Transform(const Transform& other);
 		~Transform();
 
 		inline void SetPosition(const float& x, const float& y, const float& z) { SetDirty(); position.x = x; position.y = y; position.z = z; }
-		//inline void SetPosition(const int& x, const int& y, const int& z) { SetDirty(); position.x = x; position.y = y; position.z = z; }
 		inline void SetPosition(const glm::vec3& position) { SetPosition(position.x, position.y, position.z); }
+		inline void SetPosition(const glm::vec2& position) { SetPosition(position.x, position.y, 0.0f); }
 		inline void SetScale(const float& x, const float& y, const float& z) { SetDirty(); scale.x = x; scale.y = y; scale.z = z; }
 		inline void SetScale(const glm::vec3& scale) { SetScale(scale.x, scale.y, scale.z); }
 		inline void SetScale(const float& scale) { SetScale(scale, scale, scale); };
 		void SetRotation(const glm::vec3& euler);
 		void SetRotation(const glm::quat& rotation);
 
-		void SetParent(const Entity* const entity) { parent = entity; }
+		void SetParent(Entity* const entity);
+		void AddChild(Entity* const entity);
 
 		// Rotate
 		void RotateX(const float& degree);
@@ -37,6 +39,7 @@ namespace BE {
 
 		void Translate(const float& x, const float& y, const float& z);
 		void Translate(const glm::vec3& offset);
+		void Translate(const glm::vec2& offset);
 
 		inline glm::vec3 GetPosition() const { return position; }
 		inline glm::quat GetRotation() const { return rotation; }
@@ -44,24 +47,37 @@ namespace BE {
 		inline glm::vec3 GetUp() const { return rotation * glm::vec3(0, 1, 0); }
 		inline glm::vec3 GetRight() const { return rotation * glm::vec3(1, 0, 0); }
 		inline glm::vec3 GetForward() const { return rotation * glm::vec3(0, 0, -1); }
+		inline glm::vec3 GetEuler() const { return euler; }
+		inline const Entity* GetParent() const { return parent; }
+		inline unsigned int GetChildCount() const { return children.size(); }
+		inline Entity* const GetChild(const unsigned int& index) const { return index < children.size() ? children[index] : nullptr; }
+
+		void ForceUpdate() const;
 
 		glm::mat4 ModelMatrix() const;
 
-		void SetDirty();
-		bool IsDirty() const;
+		inline void SetDirty() { isDirty = true; }
+		inline bool IsDirty() const { return isDirty;  }
 
 		glm::mat4 operator=(const Transform& transform) const { return transform.ModelMatrix(); }
 
+
 	private:
 		void UpdateTransform() const;
+
+		void SetParent(Entity* entity, const bool& callAddChild);
+		void AddChild(Entity* entity, const bool& callSetParent);
 
 		mutable bool isDirty;
 
 		glm::vec3 position;
 		glm::quat rotation;
 		glm::vec3 scale;
+		glm::vec3 euler = glm::vec3(0, 0, 0);
 
+		Entity* self = nullptr;
 		const Entity* parent = nullptr;
+		std::vector<Entity*> children = std::vector<Entity*>();
 		mutable glm::mat4 model;
 	};
 }

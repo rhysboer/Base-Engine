@@ -17,9 +17,19 @@
 #define COLOUR_DARK_RED glm::vec3(0.3f, 0, 0)
 
 namespace BE {
+	enum class GizmoMode
+	{
+		NORMAL,
+		LINES_ONLY,
+		SOLID_ONLY
+	};
+
 	class BoundingBox;
 	class Ray;
 	class Transform;
+	class Shader;
+	struct GizmoData;
+
 	class Gizmos {
 	public:
 
@@ -27,41 +37,53 @@ namespace BE {
 			TODO:
 				- Add a "fill" flag to functions (wireframe)
 				- Add a Text function
+
+				- Add DrawFrustum
+				- Add DrawCone/DrawLight
+				- Add DrawString/DrawText
 		*/
 
 		static void CreateGizmos(const unsigned int& totalBytes = 1000000);
 		static void Render(const glm::mat4& cameraMatrix);
 		static void Destroy(); // TODO
 
-		static void DrawLine(const glm::vec3& start, const glm::vec3& end, const glm::vec3& colour = COLOUR_GREY);
-		static void DrawLine(const glm::vec3& start, const glm::vec3& end, const glm::mat4& mat = glm::mat4(1), const glm::vec3& colour = COLOUR_GREY); // DONE
-		static void DrawLine(const std::vector<glm::vec3>& positions, const glm::vec3& colour = COLOUR_GREY); // DONE
-		static void DrawLine(const std::vector<glm::vec3>& positions, const glm::mat4& mat = glm::mat4(1), const glm::vec3& colour = COLOUR_GREY); // DONE
-		static void DrawConnectedLines(const std::vector<float>& positions, const glm::mat4& mat = glm::mat4(1), const glm::vec3& colour = COLOUR_GREY); // DONE
-		static void DrawConnectedLines(const std::vector<glm::vec3>& positions, const glm::mat4& mat = glm::mat4(1), const glm::vec3& colour = COLOUR_GREY); // DONE
-		static void DrawConnectedLines(const std::vector<glm::vec3>& positions, const bool& connectToStart, const glm::mat4& mat = glm::mat4(1), const glm::vec3& colour = COLOUR_GREY); // DONE
-		static void DrawThickLine(const glm::vec3& start, const glm::vec3& end, const float& width, const glm::mat4& mat = glm::mat4(1), const glm::vec3& colour = COLOUR_GREY); // DONE
-		static void DrawThickLines(const std::vector<glm::vec3>& positions, const float& width, const glm::mat4& mat = glm::mat4(1), const glm::vec3& colour = COLOUR_GREY); 
-		static void DrawCube(const float& size, const glm::vec3& position, const glm::vec3& colour = COLOUR_GREY); // DONE
-		static void DrawCube(const float& size, const glm::mat4& mat = glm::mat4(1), const glm::vec3& colour = COLOUR_GREY); // DONE
-		static void DrawSphere(const float& diameter, const glm::vec3& center, const int& stack = 12, const int& sector = 18, const glm::vec3 colour = COLOUR_GREY); // DONE
-		static void DrawSphere(const float& diameter, const glm::mat4& mat = glm::mat4(1), const int& stack = 12, const int& sector = 18, const glm::vec3 colour = COLOUR_GREY);
-		static void DrawIcosphere(const glm::vec3& center, const float& diameter, const int& subdivision = 1, const glm::vec3& colour = COLOUR_GREY);
-		static void DrawCircle(const float& diameter, const int& vertices, const glm::vec3& position, const glm::vec3& colour = COLOUR_GREY); // DONE
-		static void DrawCircle(const float& diameter, const int& vertices, const glm::mat4& mat = glm::mat4(1), const glm::vec3& colour = COLOUR_GREY); // DONE
-		static void DrawPlane(const float& size, const glm::vec3& position, const glm::vec3& colour = COLOUR_GREY); // DONE
-		static void DrawPlane(const float& size, const glm::mat4& mat = glm::mat4(1), const glm::vec3& colour = COLOUR_GREY); // DONE 
-		static void DrawPlane(const glm::vec2& size, const glm::vec3& position, const glm::vec3& colour = COLOUR_GREY); // DONE
-		static void DrawPlane(const glm::vec2& size, const glm::mat4& mat = glm::mat4(1), const glm::vec3& colour = COLOUR_GREY); // DONE
-		static void DrawGrid(const float& size, const unsigned int& totalLines, const glm::vec3& position, const glm::vec3& colour = COLOUR_GREY); // DONE
-		static void DrawGrid(const float& size, const unsigned int& totalLines, const glm::mat4& mat = glm::mat4(1), const glm::vec3& colour = COLOUR_GREY); // DONE
+		// TODO: Change to a variable?
+		static void SetMode(const GizmoMode& mode);
+		static void SetColour(const glm::vec3& colour);
+		static void RevertColour();
+
+		static void DrawLine(const glm::vec2& start, const glm::vec2& end);
+		static void DrawLine(const glm::vec3& start, const glm::vec3& end);
+		static void DrawLine(const glm::vec3& start, const glm::vec3& end, const glm::mat4& mat); // DONE
+		static void DrawLine(const std::vector<glm::vec3>& positions); // DONE
+		static void DrawLine(const std::vector<glm::vec3>& positions, const glm::mat4& mat = glm::mat4(1)); // DONE
+		static void DrawConnectedLines(const std::vector<float>& positions, const glm::mat4& mat = glm::mat4(1)); // DONE
+		static void DrawConnectedLines(const std::vector<glm::vec3>& positions, const glm::mat4& mat = glm::mat4(1)); // DONE
+		static void DrawConnectedLines(const std::vector<glm::vec3>& positions, const bool& connectToStart, const glm::mat4& mat = glm::mat4(1)); // DONE
+		//static void DrawThickLine(const glm::vec3& start, const glm::vec3& end, const float& width, const glm::mat4& mat = glm::mat4(1), const glm::vec3& colour = COLOUR_GREY); // DONE
+		//static void DrawThickLines(const std::vector<glm::vec3>& positions, const float& width, const glm::mat4& mat = glm::mat4(1), const glm::vec3& colour = COLOUR_GREY); 
+		static void DrawCube(const float& size, const glm::vec3& position); // DONE
+		static void DrawCube(const float& size, const glm::mat4& mat = glm::mat4(1)); // DONE
+		static void DrawSphere(const float& diameter, const glm::vec3& center, const int& stack = 12, const int& sector = 18); // DONE
+		static void DrawSphere(const float& diameter, const glm::mat4& mat = glm::mat4(1), const int& stack = 12, const int& sector = 18);
+		static void DrawIcosphere(const glm::vec3& center, const float& diameter, const int& subdivision = 1);
+		static void DrawCircle(const float& diameter, const int& vertices, const glm::vec3& position); // DONE
+		static void DrawCircle(const float& diameter, const int& vertices, const glm::mat4& mat = glm::mat4(1)); // DONE
+		static void DrawTorus(const float& size, const int& rings, const int& density, const glm::vec3& position);
+		static void DrawTorus(const float& size, const int& rings, const int& density, const glm::mat4& mat = glm::mat4(1));
+		static void DrawPlane(const float& size, const glm::vec3& position); // DONE
+		static void DrawPlane(const float& size, const glm::mat4& mat = glm::mat4(1)); // DONE 
+		static void DrawPlane(const glm::vec2& size, const glm::vec3& position); // DONE
+		static void DrawPlane(const glm::vec2& size, const glm::mat4& mat = glm::mat4(1)); // DONE
+		static void DrawGrid(const float& size, const unsigned int& totalLines, const glm::vec3& position); // DONE
+		static void DrawGrid(const float& size, const unsigned int& totalLines, const glm::mat4& mat = glm::mat4(1)); // DONE
 		static void DrawTransform(const glm::mat4& transform, const float& size = 1); // DONE
-		static void DrawTangents(const MeshData& mesh, const Transform& trans, const float& size = 1.0f); // DONE
-		static void DrawTangents(const MeshData& mesh, const glm::mat4& mat = glm::mat4(1), const float& size = 1.0f); // DONE
-		static void DrawTangents(const MeshData& mesh, const glm::vec3& pos, const float& size = 1.0f); // DONE
-		static void DrawRay(const Ray& ray, const glm::vec3& colour = COLOUR_GREY); // DONE
-		static void DrawAABB(const BoundingBox& box, const glm::mat4& mat = glm::mat4(1), const glm::vec3& colour = COLOUR_GREY);
-		static void DrawOBB(const BoundingBox& box, const glm::mat4& mat = glm::mat4(1), const glm::vec3& colour = COLOUR_GREY);
+		//static void DrawTangents(const MeshData& mesh, const Transform& trans, const float& size = 1.0f); // DONE
+		//static void DrawTangents(const MeshData& mesh, const glm::mat4& mat = glm::mat4(1), const float& size = 1.0f); // DONE
+		//static void DrawTangents(const MeshData& mesh, const glm::vec3& pos, const float& size = 1.0f); // DONE
+		static void DrawRay(const Ray& ray); // DONE
+		static void DrawAABB(const BoundingBox& box, const glm::mat4& mat = glm::mat4(1));
+		static void DrawOBB(const BoundingBox& box, const glm::mat4& mat = glm::mat4(1));
 
 		//static void DrawPlane(const Plane& plane, const glm::vec3& normalColour = COLOUR_GREY, const glm::vec3& colour = COLOUR_GREY);
 		//static void DrawAABB(const AABB& aabb, const glm::vec3& colour = COLOUR_GREY);
@@ -74,6 +96,8 @@ namespace BE {
 			glm::mat4 transform;
 			unsigned int indexOffset;
 
+			bool use = true;
+
 			void Clear() {
 				data->Clear();
 				indexOffset = 0;
@@ -84,6 +108,9 @@ namespace BE {
 			}
 
 			void AddPoint(glm::vec3 point, glm::vec3 colour) {
+				if (!use)
+					return;
+
 				point = transform * glm::vec4(point.x, point.y, point.z, 1);
 
 				data->position.push_back(point.x);
@@ -109,32 +136,50 @@ namespace BE {
 			}
 
 			void AddIndices(const unsigned int& index) {
+				if (!use)
+					return;
+
 				data->indices.push_back(indexOffset + index);
 			}
 
 			void AddIndices(const unsigned int& x, const unsigned int& y) {
+				if (!use)
+					return;
+
 				data->indices.push_back(indexOffset + x);
 				data->indices.push_back(indexOffset + y);
 			}
 
 			void AddIndices(const unsigned int& x, const unsigned int& y, const unsigned int& z) {
+				if (!use)
+					return;
+
 				data->indices.push_back(indexOffset + x);
 				data->indices.push_back(indexOffset + y);
 				data->indices.push_back(indexOffset + z);
 			}
 
 			void AddIndices(const std::vector<unsigned int>& indices) {
+				if (!use)
+					return;
+
 				for (int i = 0; i < indices.size(); i++)
 					AddIndices(indices[i]);
 			}
 
 			void AddOffset(const unsigned int& offset) {
+				if (!use)
+					return;
+
 				indexOffset += offset;
 			}
 		};
 
-		static unsigned int shaderId;
 		static GizmoData triangles;
 		static GizmoData lines;
+		static glm::vec3 colour;
+		static Shader* shader;
+
+		static bool init;
 	};
 }

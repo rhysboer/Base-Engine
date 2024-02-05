@@ -6,6 +6,10 @@
 
 #define WHITE 255, 255, 255, 255
 #define GREY 128, 128, 128, 255
+
+#define WHITE_LINE WHITE, GREY, WHITE, GREY, WHITE, GREY, WHITE, GREY
+#define GREY_LINE GREY, WHITE, GREY, WHITE, GREY, WHITE, GREY, WHITE
+
 #define NORM 128, 128, 255, 255
 
 namespace BE {
@@ -19,22 +23,28 @@ namespace BE {
 	{
 		std::vector<unsigned char> tex = std::vector<unsigned char>(
 		{
-		  GREY, WHITE, GREY, WHITE,
-		  WHITE, GREY, WHITE, GREY,
-		  GREY, WHITE, GREY, WHITE,
-		  WHITE, GREY, WHITE, GREY
+		  WHITE_LINE,
+		  GREY_LINE,
+		  WHITE_LINE,
+		  GREY_LINE,
+		  WHITE_LINE,
+		  GREY_LINE,
+		  WHITE_LINE,
+		  GREY_LINE,
+		  WHITE_LINE
 		});
+
 		std::vector<unsigned char> norm = std::vector<unsigned char>(
 		{
 			NORM, NORM, NORM, NORM,
 		});
 
-		// Generate Default Texture
-		defaultTexture = new Texture(4, 4, tex);
+		TextureDesc desc = TextureDesc();
+		desc.format = BE::TextureFormat::RGBA;
+		desc.filter = BE::Filtering::NEAREST;
 
-		// Generate Default Normal Texture
-		defaultNormal = new Texture(1, 1, norm);
-
+		defaultTexture = new Texture(8, 8, tex, desc); // Generate Default Texture
+		defaultNormal = new Texture(1, 1, norm, desc); // Generate Default Normal Texture
 
 		defaultMaterial = new Material("BE::Standard");
 
@@ -45,3 +55,5 @@ namespace BE {
 
 #undef WHITE
 #undef GREY
+#undef WHITE_LINE
+#undef GREY_LINE

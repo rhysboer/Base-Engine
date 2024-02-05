@@ -24,6 +24,7 @@ namespace BE {
 
 		/// <summary> Updates the global Camera buffer </summary>
 		void BindBuffer();
+		static void BindBuffer(const glm::mat4& proj, const glm::mat4& view);
 
 		inline void SetNear(const float& distance) { near = distance; SetDirty(); }
 		inline void SetFar(const float& distance) { far = distance; SetDirty(); }
@@ -31,6 +32,7 @@ namespace BE {
 		inline void SetOrthoSize(const float& size) { this->size = size / 2.0f; SetDirty(); }
 		inline void SetDirty() { this->isDirty = true; }
 		inline void SetActive(bool toggle) { isActive = toggle; }
+		inline void SetMainCamera() { mainCamera = this; }
 		//inline void LookAt(const glm::vec3& point) { transform.LookAt(point); SetDirty(); }
 
 		glm::mat4 GetView();
@@ -44,6 +46,7 @@ namespace BE {
 		inline float GetAspect() const { return aspect; }
 		//inline unsigned int GetCameraIndex() const { return cameraIndex; }
 		inline CameraType GetType() const { return cameraType; }
+		static inline Camera* const GetMainCamera() { return mainCamera; }
 
 		// Clip Space
 		glm::vec3 ScreenSpaceToWorldSpace(const glm::vec2& screenCoord);
@@ -65,6 +68,10 @@ namespace BE {
 		virtual void OnDestroy() override;
 		inline virtual size_t GetID() const override { return IComponent::GetComponentID<Camera>(); }
 
+#ifdef BE_DEBUG
+		virtual void OnComponentDraw() override;
+#endif
+
 		// Update camera
 		void UpdateCamera();
 		void UpdateFrustumPlanes();
@@ -85,6 +92,10 @@ namespace BE {
 
 		unsigned int eventId;
 		bool isDirty = true;
+
+	private:
+
+		static Camera* mainCamera;
 	};
 }
 

@@ -30,10 +30,12 @@ namespace BE {
 
 		void BindVAO(const unsigned int& subMesh = 0) const;
 
-		inline bool HasEBO(const unsigned int& subMesh = 0) { return (meshes[subMesh]->ebo > 0) ? true : false; }
-		inline unsigned int GetIndicesCount(const unsigned int& subMesh = 0) { return subMesh < meshes.size() ? meshes[subMesh]->indicesCount : 0; }
+		inline bool HasEBO(const unsigned int& subMesh = 0) const { return (meshes[subMesh]->ebo > 0) ? true : false; }
+		inline unsigned int GetIndicesCount(const unsigned int& subMesh = 0) const { return subMesh < meshes.size() ? meshes[subMesh]->indicesCount : 0; }
 		inline unsigned int GetMeshCount() const { return meshes.size(); }
 		inline const BoundingBox* const GetBounds() const { return bounds; }
+
+		inline const MeshData* const GetMeshData(const unsigned int& subMeshIndex = 0) const { return meshes[subMeshIndex]; }
 
 	protected:
 		

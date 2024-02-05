@@ -13,6 +13,8 @@ namespace BE {
 		virtual void OnStart() = 0;
 		/// <summary> Called On Each Tick </summary>
 		virtual void OnProcess() = 0;
+		/// <Summary> Called on each physics step </summary>
+		virtual void OnPhysicsStep(const float& dt) {}
 		/// <summary> Called on Component Destruction </summary>
 		virtual void OnDestroy() = 0;
 		/// <summary> Returns the components unique ID </summary>

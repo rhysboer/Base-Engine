@@ -1,6 +1,7 @@
 #pragma once
 #include <functional>
 #include <unordered_map>
+#include <string>
 
 #define BE_EVENT_FUNC_CREATE(func) [=](const void* const d){ func(d); }
 

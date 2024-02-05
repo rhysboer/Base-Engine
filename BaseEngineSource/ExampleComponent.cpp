@@ -8,10 +8,10 @@
 
 void ExampleComponent::OnProcess() {
 	//GetEntity()->transform.Rotate(glm::vec3(1.4f, glm::sin(BE::Time::TotalTime()) * 3.0f, glm::cos(BE::Time::TotalTime() * 0.3f) * 3.0f), 1.0f);
-	GetEntity()->transform.RotateY(BE::Time::DeltaTime() * 25.0f);
-
-	auto entityCamera = GetEntity()->GetScene()->GetEntityManager().GetEntity("Camera");
-	GetEntity()->transform.SetPosition(entityCamera->transform.GetPosition());
+	GetEntity()->transform.RotateY(BE::Time::DeltaTime() * 10.0f);
+	//
+	//auto entityCamera = GetEntity()->GetScene()->GetEntityManager().GetEntity("Camera");
+	//GetEntity()->transform.SetPosition(entityCamera->transform.GetPosition());
 
 
 	//BE::Gizmos::DrawTransform(GetEntity()->transform.ModelMatrix(), 5);

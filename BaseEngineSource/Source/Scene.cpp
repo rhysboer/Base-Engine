@@ -3,7 +3,6 @@
 #include "Camera.h"
 #include "EntityManager.h"
 #include "LightManager.h"
-#include "IRender.h"
 #include <assert.h>
 
 #if _DEBUG
@@ -13,6 +12,17 @@
 namespace BE {
 	Scene* Scene::activeScene = nullptr;
 	std::unordered_map<std::string, Scene*> Scene::scenes = std::unordered_map<std::string, Scene*>();
+
+	Scene::~Scene()
+	{
+		scenes.erase(name);
+		
+		if (activeScene == this)
+			activeScene = nullptr;
+
+		delete entityManager;
+		//delete lightManager;
+	}
 
 	Scene* Scene::CreateScene(const char* name) {
 		BE_ASSERT(scenes.find(name) == scenes.end(), "Duplicated name");
@@ -37,6 +47,8 @@ namespace BE {
 		: name(name), isEnabled(true)
 	{ 
 		entityManager = new EntityManager(this);
+
+		// TODO: Lightmanager shouldn't be instantiated per scene 
 		lightManager = new LightManager(this);
 		//sceneRenderer = &renderer;
 	}
@@ -46,6 +58,14 @@ namespace BE {
 		if (activeScene != nullptr) 
 		{
 			activeScene->GetEntityManager().Update();
+		}
+	}
+
+	void Scene::PhysicsStepActiveScene(const float& dt)
+	{
+		if (activeScene != nullptr)
+		{
+			activeScene->GetEntityManager().PhysicsStep(dt);
 		}
 	}
 }

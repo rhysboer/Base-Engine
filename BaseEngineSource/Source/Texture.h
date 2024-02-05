@@ -8,13 +8,12 @@ namespace BE {
 	class Texture : public ITexture
 	{
 	public:
-		Texture(const std::string& imageData, const TextureDesc& desc = TextureDesc());
+		Texture(const std::string& imageData, const TextureDesc& desc = TextureDesc(), bool overrideFormat = false);
 		Texture(const unsigned int& x, const unsigned int& y, const TextureDesc& desc = TextureDesc());
 		Texture(const unsigned int& x, const unsigned int& y, const glm::vec3& colour, const TextureDesc& desc = TextureDesc());
 		Texture(const unsigned int& x, const unsigned int& y, std::vector<unsigned char>& pixels, const TextureDesc& desc = TextureDesc());
 		virtual ~Texture() override;
 
-		inline glm::vec2 GetSize() const { return glm::vec2(x, y); }
 
 		/// <summary>
 		/// Loads texture from a path
@@ -28,11 +27,10 @@ namespace BE {
 		void CreateTexture(unsigned char* data, const TextureDesc& desc = TextureDesc());
 
 		//unsigned int id;
-		int x, y;
 
 	private:
 
-		unsigned char* GenerateColourTexture(const unsigned int& x, const unsigned int& y, const glm::vec3& c1, const glm::vec3& c2);
+		unsigned char* GenerateColourTexture(const unsigned int& x, const unsigned int& y, const glm::vec3& c1, const glm::vec3& c2, const unsigned int& channels = 4);
 	};
 }
 

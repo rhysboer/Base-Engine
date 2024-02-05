@@ -8,7 +8,7 @@
 
 namespace BE {
 	class Camera;
-	class IRender;
+	class MeshRenderer;
 	class Entity {
 	public:
 		Entity(Scene* scene, const char* name, glm::vec3 position);
@@ -21,6 +21,7 @@ namespace BE {
 		inline bool IsActive() const { return isEnabled; }
 		inline void SetName(const char* name) { this->name = name; }
 		inline void SetName(const std::string& name) { this->name = name; }
+		inline void SetEnabled(const bool& isEnabled) { this->isEnabled = isEnabled; }
 
 		template<class T> 
 		inline T* GetComponent() const {
@@ -37,7 +38,7 @@ namespace BE {
 
 			// Check if component is a renderer, entities can only have 1 renderer
 			// TODO: Check if outdated
-			if(std::is_base_of<IRender, T>()) {
+			if(std::is_base_of<MeshRenderer, T>()) {
 				assert(hasRenderer == false);
 				hasRenderer = true;
 			}
@@ -83,6 +84,8 @@ namespace BE {
 		}
 
 		Transform transform;
+
+		friend bool operator== (const Entity& c1, const Entity& c2);
 
 	private:
 

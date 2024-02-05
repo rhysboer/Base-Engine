@@ -63,7 +63,6 @@ namespace BE {
 		unsigned int* indices = new unsigned int[size];
 		glGetActiveUniformBlockiv(shaderProg, blockIndex, GL_UNIFORM_BLOCK_ACTIVE_UNIFORM_INDICES, (int*)indices);
 
-		int length;
 		for (int i = 0; i < size; i++) {
 			Uniform* uniform = Uniform::CreateUniform(shaderProg, indices[i], false);
 			if (uniform == nullptr)

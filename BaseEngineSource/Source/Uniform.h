@@ -24,6 +24,7 @@ namespace BE {
 
 	class Shader;
 	class Material;
+	class ITexture;
 
 	// ------------ Base Uniform
 	class Uniform {
@@ -37,6 +38,7 @@ namespace BE {
 		inline UniformType GetType() const { return type; }
 		inline const char* GetName() const { return name.c_str(); }
 		inline unsigned int GetOffset() const { return offset; }
+		inline bool IsBEInternal() const { return isInternalUniform; }
 
 		static Uniform* CreateUniform(const unsigned int& shaderProg, const unsigned int& uniformIndex, const bool& checkLoc = true);
 
@@ -48,6 +50,9 @@ namespace BE {
 		unsigned int arraySize;
 		unsigned int offset;
 
+	private:
+
+		bool isInternalUniform = false; 
 	};
 
 	// ------------ Int Uniform
@@ -85,7 +90,7 @@ namespace BE {
 	class UniformTexture : public Uniform {
 	public:
 
-		UniformTexture(const UniformType& uniformType, const char* uniformName, const unsigned int& arraySize, const unsigned int& offset);
+		UniformTexture(const UniformType& uniformType, const char* uniformName, const unsigned int& arraySize, const unsigned int& offset, ITexture* texture = nullptr);
 		~UniformTexture() { /* TODO */ }
 
 		virtual void SetValue(const void* value, const unsigned int& size = 1) override;

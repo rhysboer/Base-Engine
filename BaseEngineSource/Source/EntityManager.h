@@ -1,10 +1,12 @@
 #pragma once
 #include <unordered_map>
+#include <string>
 #include "ComponentArray.h"
 #include "glm/glm.hpp"
 
+
 namespace BE {
-	enum class PrimitiveEntity {
+	enum class PrimitiveType {
 		BOX_STATIC,
 		BOX_RIGIDBODY,
 		SPHERE_STATIC,
@@ -16,6 +18,7 @@ namespace BE {
 	class Entity;
 	class EntityManager {
 		friend Entity;
+		friend Scene;
 	public:
 
 		EntityManager(Scene* scene);
@@ -31,7 +34,11 @@ namespace BE {
 		Entity* const CreateEntity(const char* name, glm::vec3 position);
 		//Entity* const CreateEntity(PrimitiveEntity type, glm::vec3 position = glm::vec3(0), const char* name = nullptr); // TODO
 
-		void Update();
+		Entity* const CreateCamera(const char* name, const float& x = 0.0f, const float& y = 0.0f, const float& z = 10.0f);
+		Entity* const CreateCamera(const char* name, glm::vec3 position);
+
+		// TODO: Move this somewhere else
+		Entity* const CreatePrimitive(const char* name, const PrimitiveType& type);
 
 		/// <summary> Returns all components of type in current scene </summary>
 		template<class T>
@@ -44,6 +51,9 @@ namespace BE {
 		inline std::unordered_map<std::string, Entity*>::iterator GetEntityIterEnd() { return entities.end(); }
 	private:
 
+		void Update();
+		void PhysicsStep(const float& dt);
+
 		/// <summary> Registers an entitys component </summary>
 		void RegisterComponent(IComponent* component);
 
@@ -53,6 +63,8 @@ namespace BE {
 
 		/// <summary> Returns all entities components </summary>
 		void GetEntityComponents(std::vector<IComponent*>& components, const unsigned int& entityID) const;
+
+		void DeleteEntityComponents(const unsigned int& entityId);
 
 		/// <summary> Checks if entity has the component (EntityID: ID of the entity) </summary>
 		template<class T>
@@ -67,7 +79,7 @@ namespace BE {
 		/// <summary> List of entities inside the scene </summary>
 		std::unordered_map<std::string, Entity*> entities = std::unordered_map<std::string, Entity*>();
 
-		/// <summary> List of all components in the game (uint: Component ID, ComponentArray: All components of type) </summary>
+		/// <summary> List of all components in the game (uint: Component ID, ComponentArray*: All components of type) </summary>
 		std::unordered_map<unsigned int, ComponentArray*> components = std::unordered_map<unsigned int, ComponentArray*>();
 	};
 

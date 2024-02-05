@@ -12,7 +12,7 @@ namespace BE {
 		++endPos;
 	}
 
-	inline void ComponentArray::Remove(IComponent* component) {
+	void ComponentArray::Remove(IComponent* component) {
 		// TODO
 	}
 
